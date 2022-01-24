@@ -1,6 +1,6 @@
 package com.eojjeol.dev.member.repository;
 
-import com.eojjeol.dev.member.entity.Member;
+import com.eojjeol.dev.entity.member.Member;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -12,8 +12,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 //    Optional<Member> findOneWithAuthoritiesByUsername(String username);
 
     @EntityGraph(attributePaths = "memberAuthorities")
-    Optional<Member> findOneWithAuthoritiesByUsername(String username);
+    Optional<Member> findOneWithAuthoritiesByEmail(String email);
 
-    void deleteMemberByUsername(String username);
+    void deleteMemberByEmail(String email);
 
 }

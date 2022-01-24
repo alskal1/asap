@@ -1,7 +1,7 @@
 package com.eojjeol.dev.member.dto;
 
 import com.eojjeol.dev.authority.dto.AuthorityDto;
-import com.eojjeol.dev.member.entity.Member;
+import com.eojjeol.dev.entity.member.Member;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -37,8 +37,8 @@ public class MemberDto {
         if(member == null) return null;
 
         return MemberDto.builder()
-                .username(member.getUsername())
-                .nickname(member.getNickname())
+                .username(member.getEmail())
+                .nickname(member.getName())
                 .authorityDtoSet(member.getMemberAuthorities().stream()
                         .map(authority -> AuthorityDto.builder().authorityName(authority.getAuthority().getAuthorityName()).build())
                         .collect(Collectors.toSet()))
