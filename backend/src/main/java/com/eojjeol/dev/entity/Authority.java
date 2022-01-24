@@ -19,6 +19,6 @@ public class Authority {
     @Column(name = "authority_name", length = 50)
     private String authorityName;
 
-    @OneToMany(mappedBy = "authority", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "authority")
     private Set<MemberAuthority> memberAuthorities;
 }

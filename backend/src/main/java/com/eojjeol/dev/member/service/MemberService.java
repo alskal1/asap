@@ -27,17 +27,18 @@ public class MemberService {
 
     @Transactional
     public MemberDto signup(MemberDto memberDto) throws Exception {
-        Member member1 = memberRepository.findOneWithAuthoritiesByEmail(memberDto.getUsername()).orElse(null);
-        if (memberRepository.findOneWithAuthoritiesByEmail(memberDto.getUsername()).orElse(null) != null) {
+        Member member1 = memberRepository.findOneWithAuthoritiesByEmail(memberDto.getEmail()).orElse(null);
+        if (memberRepository.findOneWithAuthoritiesByEmail(memberDto.getEmail()).orElse(null) != null) {
             throw new Exception("이미 가입되어 있는 유저입니다.");
         }
+
 
         Authority authority = Authority.builder()
                 .authorityName("ROLE_USER")
                 .build();
 
         Member member = Member.builder()
-                .name(memberDto.getUsername())
+                .email(memberDto.getEmail())
                 .password(passwordEncoder.encode(memberDto.getPassword()))
                 .memberAuthorities(new HashSet<>())
                 .build();

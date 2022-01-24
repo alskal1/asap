@@ -36,7 +36,7 @@ public class Member {
     @Column(length = 50)
     private String name;
 
-    private int point;
+    private Integer point;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<WinHistory> winHistoryList = new ArrayList<>();
