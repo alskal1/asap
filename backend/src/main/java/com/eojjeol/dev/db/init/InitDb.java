@@ -45,9 +45,7 @@ public class InitDb {
 
             em.persist(userAuthority);
             em.persist(adminAuthority);
-
         }
-
     }
 }
 

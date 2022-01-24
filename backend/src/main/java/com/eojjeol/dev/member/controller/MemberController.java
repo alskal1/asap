@@ -37,7 +37,7 @@ public class MemberController {
     public ResponseEntity<TokenDto> authorize(@Valid @RequestBody LoginDto loginDto) {
 
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
+                new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
 
         // authenticate 함수가 실행 될때 CustomUserDetailsService 의 loadUserByUsername 실행된다
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -50,6 +50,7 @@ public class MemberController {
 
         return new ResponseEntity<>(new TokenDto(jwt), httpHeaders, HttpStatus.OK);
     }
+
     @PatchMapping("/")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<?> updateMember(@RequestBody MemberDto memberDto) {
@@ -67,7 +68,7 @@ public class MemberController {
     public ResponseEntity<MemberDto> getMyUserInfo(HttpServletRequest request) {
         return ResponseEntity.ok(memberService.getMyUserWithAuthorities());
     }
-//
+
     @GetMapping("/accreditation/{username}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<MemberDto> getUserInfo(@PathVariable String username) {
