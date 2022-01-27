@@ -13,13 +13,14 @@ public class WinHistory {
     @Column(name = "win_history_id")
     private Long id;
 
-    private Float weight;
+    private String productName;
 
     private Integer count;
 
-    private Integer final_price;
+    private Integer finalPrice;
 
     private WinState winState;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -29,7 +30,4 @@ public class WinHistory {
     @JoinColumn(name = "auction_id")
     private Auction auction;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
 }
