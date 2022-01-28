@@ -1,6 +1,6 @@
 package com.eojjeol.dev.db.init;
 
-import com.eojjeol.dev.authority.entity.Authority;
+import com.eojjeol.dev.entity.Authority;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 
-//@Component
+@Component
 @RequiredArgsConstructor
 public class InitDb {
     private final InitService initService;
@@ -45,9 +45,7 @@ public class InitDb {
 
             em.persist(userAuthority);
             em.persist(adminAuthority);
-
         }
-
     }
 }
 

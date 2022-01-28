@@ -1,6 +1,6 @@
-package com.eojjeol.dev.member.entity;
+package com.eojjeol.dev.entity.member;
 
-import com.eojjeol.dev.authority.entity.Authority;
+import com.eojjeol.dev.entity.Authority;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -9,8 +9,8 @@ import java.util.Set;
 @Entity
 @Data
 public class MemberAuthority {
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
+    @Column(name = "member_authority_id")
     Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

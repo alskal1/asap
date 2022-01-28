@@ -1,6 +1,6 @@
 package com.eojjeol.dev.security.service;
 
-import com.eojjeol.dev.member.entity.Member;
+import com.eojjeol.dev.entity.member.Member;
 import com.eojjeol.dev.member.repository.MemberRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(final String username) {
-        return memberRepository.findOneWithAuthoritiesByUsername(username)
+        return memberRepository.findOneWithAuthoritiesByEmail(username)
                 .map(member -> createMember(username, member))
                 .orElseThrow(() -> new UsernameNotFoundException(username + " -> 데이터베이스에서 찾을 수 없습니다."));
     }
@@ -33,7 +33,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         List<GrantedAuthority> grantedAuthorities = member.getMemberAuthorities().stream()
                 .map(authority -> new SimpleGrantedAuthority(authority.getAuthority().getAuthorityName()))
                 .collect(Collectors.toList());
-        return new org.springframework.security.core.userdetails.User(member.getUsername(),
+        return new org.springframework.security.core.userdetails.User(member.getEmail(),
                 member.getPassword(),
                 grantedAuthorities);
     }

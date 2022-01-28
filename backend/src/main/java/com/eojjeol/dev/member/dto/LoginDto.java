@@ -1,5 +1,6 @@
 package com.eojjeol.dev.member.dto;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
@@ -14,9 +15,11 @@ public class LoginDto {
 
     @NotNull
     @Size(min = 3, max = 50)
-    private String username;
+    @ApiModelProperty(example = "test@test.com")
+    private String email;
 
     @NotNull
     @Size(min = 3, max = 100)
+    @ApiModelProperty(example = "test")
     private String password;
 }
