@@ -1,6 +1,6 @@
-package com.eojjeol.dev.authority.entity;
+package com.eojjeol.dev.entity;
 
-import com.eojjeol.dev.member.entity.MemberAuthority;
+import com.eojjeol.dev.entity.member.MemberAuthority;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,15 +15,10 @@ import java.util.Set;
 @NoArgsConstructor
 public class Authority {
 
-//    @Id
-//    @GeneratedValue
-//    @Column(name = "authority_id")
-//    Long id;
-
     @Id
     @Column(name = "authority_name", length = 50)
     private String authorityName;
 
-    @OneToMany(mappedBy = "authority", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "authority")
     private Set<MemberAuthority> memberAuthorities;
 }

@@ -1,12 +1,11 @@
 package com.eojjeol.dev.member.service;
 
 import java.util.HashSet;
-import java.util.Optional;
 
-import com.eojjeol.dev.authority.entity.Authority;
+import com.eojjeol.dev.entity.Authority;
 import com.eojjeol.dev.member.dto.MemberDto;
-import com.eojjeol.dev.member.entity.Member;
-import com.eojjeol.dev.member.entity.MemberAuthority;
+import com.eojjeol.dev.entity.member.Member;
+import com.eojjeol.dev.entity.member.MemberAuthority;
 import com.eojjeol.dev.member.repository.MemberRepository;
 import com.eojjeol.dev.security.util.SecurityUtil;
 import lombok.AllArgsConstructor;
@@ -21,15 +20,10 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-//    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-//        this.userRepository = userRepository;
-//        this.passwordEncoder = passwordEncoder;
-//    }
-
     @Transactional
     public MemberDto signup(MemberDto memberDto) throws Exception {
-        Member member1 = memberRepository.findOneWithAuthoritiesByUsername(memberDto.getUsername()).orElse(null);
-        if (memberRepository.findOneWithAuthoritiesByUsername(memberDto.getUsername()).orElse(null) != null) {
+        Member member1 = memberRepository.findOneWithAuthoritiesByEmail(memberDto.getEmail()).orElse(null);
+        if (memberRepository.findOneWithAuthoritiesByEmail(memberDto.getEmail()).orElse(null) != null) {
             throw new Exception("이미 가입되어 있는 유저입니다.");
         }
 
@@ -38,9 +32,11 @@ public class MemberService {
                 .build();
 
         Member member = Member.builder()
-                .username(memberDto.getUsername())
+                .email(memberDto.getEmail())
                 .password(passwordEncoder.encode(memberDto.getPassword()))
-                .nickname(memberDto.getNickname())
+                .name(memberDto.getName())
+                .point(0)
+                .phone(memberDto.getPhone())
                 .memberAuthorities(new HashSet<>())
                 .build();
 
@@ -51,31 +47,30 @@ public class MemberService {
     }
 
     public MemberDto updateMember(MemberDto memberDto) {
-        Member findMember = SecurityUtil.getCurrentUsername().flatMap(memberRepository::findOneWithAuthoritiesByUsername).orElse(null);
-        findMember.setNickname(memberDto.getNickname());
+        Member findMember = SecurityUtil.getCurrentEmail().flatMap(memberRepository::findOneWithAuthoritiesByEmail).orElse(null);
+        findMember.setName(memberDto.getName());
         findMember.setPassword(passwordEncoder.encode(memberDto.getPassword()));
+        findMember.setPhone(memberDto.getPhone());
         MemberDto updateMemberDto = MemberDto.from(findMember);
         return updateMemberDto;
     }
 
     public MemberDto deleteMember() {
-        MemberDto memberDto = MemberDto.from(SecurityUtil.getCurrentUsername().flatMap(memberRepository::findOneWithAuthoritiesByUsername).orElse(null));
+        MemberDto memberDto = MemberDto.from(SecurityUtil.getCurrentEmail().flatMap(memberRepository::findOneWithAuthoritiesByEmail).orElse(null));
         if (memberDto != null) {
-            String username = SecurityUtil.getCurrentUsername().get();
-            memberRepository.deleteMemberByUsername(username);
+            String email = SecurityUtil.getCurrentEmail().get();
+            memberRepository.deleteMemberByEmail(email);
         }
         return memberDto;
     }
 
     @Transactional(readOnly = true)
-    public MemberDto getUserWithAuthorities(String username) {
-        return MemberDto.from(memberRepository.findOneWithAuthoritiesByUsername(username).orElse(null));
+    public MemberDto getUserWithAuthorities(String email) {
+        return MemberDto.from(memberRepository.findOneWithAuthoritiesByEmail(email).orElse(null));
     }
 
     @Transactional(readOnly = true)
     public MemberDto getMyUserWithAuthorities() {
-        return MemberDto.from(SecurityUtil.getCurrentUsername().flatMap(memberRepository::findOneWithAuthoritiesByUsername).orElse(null));
+        return MemberDto.from(SecurityUtil.getCurrentEmail().flatMap(memberRepository::findOneWithAuthoritiesByEmail).orElse(null));
     }
-
-
 }
