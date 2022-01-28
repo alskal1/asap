@@ -9,8 +9,6 @@ server:
     trust-store: classpath:keystore/ssafy.ts
     trust-store-password: 123456
 
-
-
 spring:
   jpa:
     hibernate:
@@ -40,6 +38,9 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+  web:
+    resources:
+      static-locations: classpath:/dist
 
 jwt:
   header: Authorization
