@@ -5,22 +5,24 @@ import com.eojjeol.dev.entity.member.Member;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
-public class BidHistory {
+public class Room {
 
     @Id @GeneratedValue
-    @Column(name = "bid_history_id")
+    @Column(name = "room_id")
     private Long id;
 
-    private Integer price;
+    private String url;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "room", cascade=CascadeType.ALL)
+    private List<Auction> auctionList = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "auction_id")
-    private Auction auction;
 }
