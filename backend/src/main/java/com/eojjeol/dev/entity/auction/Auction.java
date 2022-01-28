@@ -1,33 +1,38 @@
 package com.eojjeol.dev.entity.auction;
 
 import com.eojjeol.dev.entity.BaseTimeEntity;
-import com.eojjeol.dev.entity.BidHistory;
-import com.eojjeol.dev.entity.Product;
+import com.eojjeol.dev.entity.Room;
 import com.eojjeol.dev.entity.WinHistory;
 import com.eojjeol.dev.entity.member.Member;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Auction extends BaseTimeEntity {
 
     @Id @GeneratedValue
-    @Column(name = "auction_io")
+    @Column(name = "auction_id")
     private Long id;
 
-    private Integer final_price;
+    private String productName;
 
-    private Integer start_price;
+    private Integer finalPrice;
 
-    private Integer bid_term;
+    private Integer startPrice;
 
-    private Integer price_term;
+    private Integer bidTerm;
 
-    private Integer current_price;
+    private Integer priceTerm;
+
+    private Integer currentPrice;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -37,11 +42,10 @@ public class Auction extends BaseTimeEntity {
     private WinHistory winHistory;
 
     @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL)
-    private List<BidHistory> bidHistoryList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL)
-    private List<Product> productList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL)
     private List<AuctionViewer> auctionViewerList = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id")
+    private Room room;
+
 }

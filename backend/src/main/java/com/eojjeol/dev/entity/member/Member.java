@@ -38,11 +38,11 @@ public class Member {
 
     private Integer point;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<WinHistory> winHistoryList = new ArrayList<>();
+    @OneToOne(mappedBy = "member")
+    private Room room;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<BidHistory> bidHistoryList = new ArrayList<>();
+    private List<WinHistory> winHistoryList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Auction> auctionList = new ArrayList<>();
@@ -64,4 +64,6 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<QnaComment> qnaCommentList = new ArrayList<>();
+
+
 }
