@@ -42,7 +42,7 @@ public class Member {
     private Room room;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<WinHistory> winHistoryList = new ArrayList<>();
+    private List<History> winHistoryList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Auction> auctionList = new ArrayList<>();

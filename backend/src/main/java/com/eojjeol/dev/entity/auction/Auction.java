@@ -1,8 +1,8 @@
 package com.eojjeol.dev.entity.auction;
 
 import com.eojjeol.dev.entity.BaseTimeEntity;
+import com.eojjeol.dev.entity.History;
 import com.eojjeol.dev.entity.Room;
-import com.eojjeol.dev.entity.WinHistory;
 import com.eojjeol.dev.entity.member.Member;
 import lombok.*;
 
@@ -39,7 +39,7 @@ public class Auction extends BaseTimeEntity {
     private Member member;
 
     @OneToOne(mappedBy = "auction", cascade = CascadeType.ALL)
-    private WinHistory winHistory;
+    private History winHistory;
 
     @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL)
     private List<AuctionViewer> auctionViewerList = new ArrayList<>();
