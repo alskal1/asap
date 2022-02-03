@@ -14,6 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class HistoryService {
@@ -34,7 +37,7 @@ public class HistoryService {
                     .deliveryState(historyDto.getDeliveryState())
                     .sellerId(historyDto.getSellerId())
                     .member(member)
-                    .auction(auctionRepository.getById(historyDto.getId()))
+                    .auction(auctionRepository.getById(historyDto.getAuctionId()))
                     .build();
 
             History savedHistory = historyRepository.save(history);
@@ -55,23 +58,35 @@ public class HistoryService {
         return null;
     }*/
 
-    public ResponseEntity<HistoryDto> selectSell(String sellerId) {
+    public ResponseEntity<List<HistoryDto>> selectSell() {
         try {
+            Member member = SecurityUtil.getCurrentEmail().flatMap(memberRepository::findOneWithAuthoritiesByEmail).orElse(null);
+            List<History> historyList = historyCustomRepository.findAllSell(member.getEmail());
+            List<HistoryDto> historyDtoList = new ArrayList<>();
 
+            for(History history : historyList) {
+                historyDtoList.add(HistoryDto.from(history));
+            }
+
+            return new ResponseEntity<>(historyDtoList, HttpStatus.OK);
         } catch (Exception e) {
-
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-
-        return null;
     }
 
-    public ResponseEntity<HistoryDto> selectWin() {
+    public ResponseEntity<List<HistoryDto>> selectWin() {
         try {
+            Member member = SecurityUtil.getCurrentEmail().flatMap(memberRepository::findOneWithAuthoritiesByEmail).orElse(null);
+            List<History> historyList = historyCustomRepository.findAllWin(member.getId());
+            List<HistoryDto> historyDtoList = new ArrayList<>();
 
+            for(History history : historyList) {
+                historyDtoList.add(HistoryDto.from(history));
+            }
+
+            return new ResponseEntity<>(historyDtoList, HttpStatus.OK);
         } catch (Exception e) {
-
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-
-        return null;
     }
 }

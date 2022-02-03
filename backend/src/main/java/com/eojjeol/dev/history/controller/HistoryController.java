@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/history")
 @RequiredArgsConstructor
@@ -16,7 +18,7 @@ public class HistoryController {
 
     @PostMapping("/")
     public ResponseEntity<HistoryDto> createHistory(@RequestBody HistoryDto historyDto) {
-        return null;
+        return historyService.createHistory(historyDto);
     }
 
     /*@GetMapping("/")
@@ -25,12 +27,12 @@ public class HistoryController {
     }*/
 
     @GetMapping("/sell-list")
-    public ResponseEntity<HistoryDto> selectSell() {
-        return null;
+    public ResponseEntity<List<HistoryDto>> selectSell() {
+        return historyService.selectSell();
     }
 
     @GetMapping("/win-list")
-    public ResponseEntity<HistoryDto> selectWin() {
-        return null;
+    public ResponseEntity<List<HistoryDto>> selectWin() {
+        return historyService.selectWin();
     }
 }
