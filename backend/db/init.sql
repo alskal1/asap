@@ -1,0 +1,1 @@
+create database if not exists eojjeol_db collate utf8mb4_general_ci

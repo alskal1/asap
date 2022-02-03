@@ -1,0 +1,56 @@
+#version: "3.8"
+#
+#services:
+#  db:
+#    image: mysql:5.7
+#    container_name: eojjeol_db
+#    restart: always
+#
+#    ports:
+#      - "32000:3306"
+#    environment:
+#      MYSQL_ROOT_PASSWORD: 1234
+#      TZ: "Asia/Seoul"
+#    privileged: true
+#
+#    volumes:
+#      - ./db:/docker-entrypoint-initdb.d
+#
+#    networks:
+#      - backend
+#  kurento:
+#    image: kurento/kurento-media-server:latest
+#    restart: always
+#    ports:
+#      - "8888:8888"
+#    environment:
+#      TZ: "Asia/Seoul"
+#      KMS_STUN_IP: "<TURN 서버가 기동되는 퍼블릭 IPV4 주소>"
+#      KMS_STUN_PORT: "3478"
+#      KMS_TURN_URL: "myuser:mypassword@<TURN 서버가 기동되는 퍼블릭 ipv4 주소>:3478?transport=udp"
+#    networks:
+#      - backend
+#
+#  app:
+#    build:
+#      context: ./
+#    container_name: eojjeol_app
+#    restart: always
+#    ports:
+#      - "8080:8080"
+#      - "8443:8443"
+#    environment:
+#      TZ: "Asia/Seoul"
+#      # Spring DB 설정
+#      SPRING_DATASOURCE_URL:
+#        " jdbc:mysql://localhost:3306/ssafy_web_db?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true"
+#      #Kurento media 서버 url 설정
+#      JAVA_TOOL_OPTIONS: "-Dkms.url=ws://kurento:8888/kurento"
+#      server.address: 0.0.0.0
+#    depends_on:
+#      - db
+#      - kurento
+#    networks:
+#      - backend
+#networks:
+#backend:
