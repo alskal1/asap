@@ -14,9 +14,8 @@ public class DevApplication {
 		SpringApplication.run(DevApplication.class, args);
 	}
 
-	@Bean
+	/*@Bean
 	JPAQueryFactory jpaQueryFactory(EntityManager entityManager) {
 		return new JPAQueryFactory(entityManager);
-	}
-
+	}*/
 }

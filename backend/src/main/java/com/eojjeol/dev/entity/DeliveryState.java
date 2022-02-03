@@ -1,5 +1,5 @@
 package com.eojjeol.dev.entity;
 
-public enum WinState {
+public enum DeliveryState {
     READY, DELIVERY, COMPLETE
 }

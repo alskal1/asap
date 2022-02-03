@@ -2,13 +2,19 @@ package com.eojjeol.dev.entity;
 
 import com.eojjeol.dev.entity.auction.Auction;
 import com.eojjeol.dev.entity.member.Member;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Data
-public class WinHistory {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class History {
     @Id @GeneratedValue
     @Column(name = "win_history_id")
     private Long id;
@@ -19,8 +25,9 @@ public class WinHistory {
 
     private Integer finalPrice;
 
-    private WinState winState;
+    private DeliveryState deliveryState;
 
+    private String sellerId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
