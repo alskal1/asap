@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/auction")
 @AllArgsConstructor
@@ -24,10 +26,10 @@ public class AuctionController {
         return auctionService.selectOneAuction(id);
     }
 
-//    @PatchMapping
-//    public ResponseEntity<AuctionDto> updateAuction(@RequestBody AuctionDto auctionDto) {
-//        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-//    }
+    @GetMapping("/list/{roomId}")
+    public ResponseEntity<List<AuctionDto>> selectAllAuctions(@PathVariable Long roomId) {
+        return auctionService.selectAllAuction(roomId);
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<AuctionDto> deleteAuction(@PathVariable Long id) {

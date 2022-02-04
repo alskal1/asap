@@ -14,6 +14,8 @@ public class AuctionDto {
     @ApiModelProperty(hidden = true)
     private Long id;
 
+    private Long roomId;
+
     private String productName;
 
     private Integer finalPrice;
@@ -30,6 +32,7 @@ public class AuctionDto {
         if(auction == null) return null;
         return AuctionDto.builder()
                 .id(auction.getId())
+                .roomId(auction.getRoom().getId())
                 .productName(auction.getProductName())
                 .finalPrice(auction.getFinalPrice())
                 .startPrice(auction.getStartPrice())
