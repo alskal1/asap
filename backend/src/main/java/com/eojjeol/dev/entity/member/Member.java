@@ -65,5 +65,6 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<QnaComment> qnaCommentList = new ArrayList<>();
 
-
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Point> pointList = new ArrayList<>();
 }
