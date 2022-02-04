@@ -6,7 +6,10 @@ import com.eojjeol.dev.point.service.PointService;
 import com.eojjeol.dev.security.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/point")
@@ -16,18 +19,21 @@ public class PointController {
     private final PointService pointService;
 
     @PostMapping("/")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<PointDto> createPoint(@RequestBody PointDto pointDto) {
         return pointService.createPoint(pointDto);
     }
 
-    @GetMapping
-    public ResponseEntity<PointDto> selectPoint() {
-        return null;
+    @GetMapping("/")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity<List<PointDto>> selectPoint() {
+        return pointService.selectPoint();
     }
 
     @GetMapping("/{status}")
-    public ResponseEntity<PointDto> selectPointByStatus(@PathVariable PointStatus status){
-        return null;
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity<List<PointDto>> selectPointByStatus(@PathVariable PointStatus status){
+        return pointService.selectPointByStatus(status);
     }
 
 }
