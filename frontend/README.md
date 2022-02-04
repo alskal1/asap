@@ -7,6 +7,11 @@ ASAP
 npm install
 ```
 
+### Install quasar cli to build
+```bash
+npm install -g @quasar/cli
+```
+
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
 ```bash
 quasar dev
