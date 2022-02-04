@@ -21,11 +21,6 @@ public class HistoryController {
         return historyService.createHistory(historyDto);
     }
 
-    /*@GetMapping("/")
-    public ResponseEntity<HistoryDto> selectAll() {
-        return null;
-    }*/
-
     @GetMapping("/sell-list")
     public ResponseEntity<List<HistoryDto>> selectSell() {
         return historyService.selectSell();
