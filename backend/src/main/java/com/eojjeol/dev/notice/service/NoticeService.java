@@ -5,6 +5,7 @@ import com.eojjeol.dev.entity.Notice;
 import com.eojjeol.dev.entity.member.Member;
 import com.eojjeol.dev.member.repository.MemberRepository;
 import com.eojjeol.dev.notice.dto.NoticeDto;
+import com.eojjeol.dev.notice.repository.NoticeQueryRepository;
 import com.eojjeol.dev.notice.repository.NoticeRepository;
 import com.eojjeol.dev.security.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class NoticeService {
 
     private final NoticeRepository noticeRepository;
     private final MemberRepository memberRepository;
+    private final NoticeQueryRepository noticeQueryRepository;
 
     public ResponseEntity<List<NoticeDto>> selectAll() {
         try{
@@ -67,9 +69,9 @@ public class NoticeService {
     }
 
     @Transactional
-    public ResponseEntity<NoticeDto> updateNotice(Long id, NoticeDto noticeDto) {
+    public ResponseEntity<NoticeDto> updateNotice(NoticeDto noticeDto) {
         try{
-            Notice notice = noticeRepository.findById(id).orElse(null);
+            Notice notice = noticeRepository.findById(noticeDto.getId()).orElse(null);
             notice.setTitle(noticeDto.getTitle());
             notice.setContent(noticeDto.getContent());
             NoticeDto updateNoticeDto = NoticeDto.from(notice);
@@ -86,6 +88,32 @@ public class NoticeService {
             noticeRepository.deleteById(notice.getId());
             return new ResponseEntity<>(HttpStatus.OK);
         }catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public ResponseEntity<List<NoticeDto>> selectNoticeByTitle(String title) {
+        try{
+            List<Notice> noticeList = noticeQueryRepository.findByTitle(title);
+            List<NoticeDto> noticeDtoList = new ArrayList<>();
+            for (Notice notice : noticeList) {
+                noticeDtoList.add(NoticeDto.from(notice));
+            }
+            return new ResponseEntity<List<NoticeDto>>(noticeDtoList, HttpStatus.OK);
+        }catch(Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public ResponseEntity<List<NoticeDto>> selectNoticeByEmail(String email) {
+        try{
+            List<Notice> noticeList = noticeQueryRepository.findByEmail(email);
+            List<NoticeDto> noticeDtoList = new ArrayList<>();
+            for(Notice notice : noticeList) {
+                noticeDtoList.add(NoticeDto.from(notice));
+            }
+            return new ResponseEntity<>(noticeDtoList, HttpStatus.OK);
+        }catch(Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

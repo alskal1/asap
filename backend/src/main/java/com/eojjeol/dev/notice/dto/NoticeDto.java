@@ -1,6 +1,7 @@
 package com.eojjeol.dev.notice.dto;
 
 import com.eojjeol.dev.entity.Notice;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 @Getter

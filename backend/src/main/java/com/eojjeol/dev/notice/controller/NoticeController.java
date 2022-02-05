@@ -30,13 +30,23 @@ public class NoticeController {
         return noticeService.createNotice(noticeDto);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<NoticeDto> updateNotice(@PathVariable Long id, @RequestBody NoticeDto noticeDto) {
-        return noticeService.updateNotice(id, noticeDto);
+    @PatchMapping("/")
+    public ResponseEntity<NoticeDto> updateNotice(@RequestBody NoticeDto noticeDto) {
+        return noticeService.updateNotice(noticeDto);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<NoticeDto> deleteNotice(@PathVariable Long id) {
         return noticeService.deleteNotice(id);
+    }
+
+    @GetMapping("/title/{title}")
+    public ResponseEntity<List<NoticeDto>> selectByTitle(@PathVariable String title){
+        return noticeService.selectNoticeByTitle(title);
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<List<NoticeDto>> selectByEmail(@PathVariable String email) {
+        return noticeService.selectNoticeByEmail(email);
     }
 }
