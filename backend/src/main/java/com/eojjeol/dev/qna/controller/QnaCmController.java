@@ -15,9 +15,16 @@ public class QnaCmController {
 
     private final QnaCmService qnaCmService;
 
+    // 하나의 댓글 조회
     @GetMapping("/{id}")
-    public ResponseEntity<List<QnaCmDto>> selectComment(@PathVariable Long id) {
-        return null;
+    public ResponseEntity<QnaCmDto> selectComment(@PathVariable Long id) {
+        return qnaCmService.selectOne(id);
+    }
+
+    // 한 개의 Qna에 달린 여러 개의 Comments 조회
+    @GetMapping("/list/{qnaId}")
+    public ResponseEntity<List<QnaCmDto>> selectComments(@PathVariable Long qnaId) {
+        return qnaCmService.selectComments(qnaId);
     }
 
     @PostMapping("/")
@@ -27,11 +34,11 @@ public class QnaCmController {
 
     @PatchMapping("/")
     public ResponseEntity<QnaCmDto> updateComment(@RequestBody QnaCmDto qnaCmDto) {
-        return null;
+        return qnaCmService.updateQna(qnaCmDto);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<QnaCmDto> deleteComment(@PathVariable Long id) {
-        return null;
+        return qnaCmService.deleteQna(id);
     }
 }

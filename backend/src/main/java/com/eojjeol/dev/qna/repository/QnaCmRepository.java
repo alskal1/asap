@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface QnaCmRepository extends JpaRepository<QnaComment, Long> {
 
-    @Override
-    Optional<QnaComment> findById(Long aLong);
+    Optional<QnaComment> findById(Long id);
+
+    void deleteById(Long id);
 }

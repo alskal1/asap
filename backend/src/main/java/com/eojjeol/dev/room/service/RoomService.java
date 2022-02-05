@@ -70,7 +70,6 @@ public class RoomService {
     public ResponseEntity<List<RoomDto>> selectAll() {
         try {
             List<Room> roomList = roomRepository.findAll();
-
             List<RoomDto> roomDtoList = new ArrayList<>();
             for (Room room : roomList) {
                 roomDtoList.add(RoomDto.from(room));
