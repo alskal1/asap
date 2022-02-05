@@ -9,6 +9,7 @@ npm install
 ```
 
 ### Install quasar cli to build
+
 ```bash
 npm install -g @quasar/cli
 ```
