@@ -1,14 +1,18 @@
 package com.eojjeol.dev.entity;
 
 import com.eojjeol.dev.entity.member.Member;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Qna {
 
     @Id @GeneratedValue
