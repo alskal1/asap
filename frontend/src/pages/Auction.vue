@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <p>Auction page</p>
+    <p>경매등록 page</p>
   </q-page>
 </template>
 
