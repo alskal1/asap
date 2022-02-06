@@ -10,7 +10,7 @@
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
-        <q-btn flat no-caps no-wrap class="q-ml-xs">
+        <q-btn to="/" flat no-caps no-wrap class="q-ml-xs">
           <q-toolbar-title class="text-h4"> ASAP </q-toolbar-title>
         </q-btn>
         <q-space />
