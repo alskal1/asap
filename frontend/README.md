@@ -41,3 +41,11 @@ quasar build
 ### Customize the configuration
 
 See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
+
+## OpenVidu
+
+### Running openvidu-server(you will need [Docker CE](https://hub.docker.com/search?type=edition&offering=community))
+
+```bash
+docker run -p 4443:4443 --rm -e OPENVIDU_SECRET=MY_SECRET openvidu/openvidu-server-kms:2.20.0
+```
