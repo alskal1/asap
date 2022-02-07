@@ -55,11 +55,9 @@
 </template>
 
 <script>
-import axios from "axios";
+import { ovapi } from "boot/axios";
 import { OpenVidu } from "openvidu-browser";
 import UserVideo from "components/live/UserVideo";
-
-axios.defaults.headers.post["Content-Type"] = "application/json";
 
 const OPENVIDU_SERVER_URL = `https://${global.location.hostname}:4443`;
 const OPENVIDU_SERVER_SECRET = "MY_SECRET";
@@ -180,9 +178,9 @@ export default {
     // See https://docs.openvidu.io/en/stable/reference-docs/REST-API/#post-openviduapisessions
     createSession(sessionId) {
       return new Promise((resolve, reject) => {
-        axios
+        ovapi
           .post(
-            `${OPENVIDU_SERVER_URL}/openvidu/api/sessions`,
+            "/openvidu/api/sessions",
             JSON.stringify({
               customSessionId: sessionId,
             }),
@@ -220,9 +218,9 @@ export default {
     // See https://docs.openvidu.io/en/stable/reference-docs/REST-API/#post-openviduapisessionsltsession_idgtconnection
     createToken(sessionId) {
       return new Promise((resolve, reject) => {
-        axios
+        ovapi
           .post(
-            `${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`,
+            `/openvidu/api/sessions/${sessionId}/connection`,
             {},
             {
               auth: {
