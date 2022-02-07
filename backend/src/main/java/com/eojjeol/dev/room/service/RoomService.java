@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -27,7 +28,8 @@ public class RoomService {
         try {
             Member member = SecurityUtil.getCurrentEmail().flatMap(memberRepository::findOneWithAuthoritiesByEmail).orElse(null);
             Room room = Room.builder()
-                    .url(roomDto.getUrl())
+                    .sessionId(roomDto.getSessionId())
+                    .token(roomDto.getToken())
                     .member(member)
                     .title(roomDto.getTitle())
                     .description(roomDto.getDescription())
