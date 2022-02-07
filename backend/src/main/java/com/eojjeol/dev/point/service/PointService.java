@@ -45,7 +45,7 @@ public class PointService {
             Point savePoint = pointRepository.save(point);
             PointDto savePointDto = PointDto.from(savePoint);
             return new ResponseEntity<>(savePointDto, HttpStatus.OK);
-        } catch(Exception e){
+        } catch(Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -61,7 +61,7 @@ public class PointService {
             }
 
             return new ResponseEntity<>(pointDtoList, HttpStatus.OK);
-        } catch(Exception e){
+        } catch(Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -77,7 +77,7 @@ public class PointService {
             }
 
             return new ResponseEntity<>(pointDtoList, HttpStatus.OK);
-        } catch(Exception e){
+        } catch(Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
