@@ -9,13 +9,22 @@
 
 <script>
 import AuctionListItem from "./AuctionListItem.vue";
+import { useStore } from "vuex";
+
 export default {
   name: "AuctionList",
   components: {
     AuctionListItem,
   },
+  created() {
+    this.updateList();
+  },
   setup() {
-    return {};
+    const updateList = () => {
+      useStore().dispatch("moduleExample/updateList");
+    };
+
+    return { updateList };
   },
 };
 </script>
