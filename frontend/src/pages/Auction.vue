@@ -1,5 +1,7 @@
 <template>
-  <q-page padding> </q-page>
+  <q-page padding>
+    <p>Auction page</p>
+  </q-page>
 </template>
 
 <script>
