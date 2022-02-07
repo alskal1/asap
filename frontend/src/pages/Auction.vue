@@ -1,7 +1,5 @@
 <template>
-  <q-page padding>
-    <p>경매등록 page</p>
-  </q-page>
+  <q-page padding> </q-page>
 </template>
 
 <script>
