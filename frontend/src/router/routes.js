@@ -27,6 +27,10 @@ const routes = [
         path: "/live",
         component: () => import("pages/Live.vue"),
       },
+      {
+        path: "/room",
+        component: () => import("pages/Room.vue"),
+      },
     ],
   },
 

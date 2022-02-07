@@ -22,7 +22,9 @@ public class Room extends BaseTimeEntity{
     @Column(name = "room_id")
     private Long id;
 
-    private String url;
+    private String sessionId;
+
+    private String token;
 
     private String title;
 
