@@ -1,6 +1,9 @@
 <template>
-  <q-page>
-    <p>메인</p>
+  <q-page padding>
+    <div class="row">
+      <div class="text-h5 text-bold q-px-md q-pt-sm">현재 진행중인 경매</div>
+    </div>
+    <q-separator class="q-my-md" />
     <auction-list></auction-list>
   </q-page>
 </template>
