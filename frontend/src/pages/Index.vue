@@ -1,17 +1,20 @@
 <template>
-  <q-page class="flex flex-center">
-    <img
-      alt="Quasar logo"
-      src="~assets/quasar-logo-vertical.svg"
-      style="width: 200px; height: 200px"
-    >
+  <q-page padding>
+    <div class="row">
+      <div class="text-h5 text-bold q-px-md q-pt-sm">현재 진행중인 경매</div>
+    </div>
+    <q-separator class="q-my-md" />
+    <auction-list></auction-list>
   </q-page>
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import AuctionList from "components/auction/AuctionList";
 
-export default defineComponent({
-  name: 'PageIndex',
-});
+export default {
+  name: "PageIndex",
+  components: {
+    AuctionList,
+  },
+};
 </script>

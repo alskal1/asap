@@ -15,4 +15,5 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
 
     @Override
     void deleteById(Long id);
+
 }
