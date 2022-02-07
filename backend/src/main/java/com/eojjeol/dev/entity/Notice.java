@@ -1,12 +1,16 @@
 package com.eojjeol.dev.entity;
 
 import com.eojjeol.dev.entity.member.Member;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Notice {
     @Id @GeneratedValue
     @Column(name = "notice_id")
