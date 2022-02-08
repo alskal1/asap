@@ -1,29 +1,40 @@
 <template>
   <q-page>
     <q-list class="row">
-      <room-list-item class="col-md" v-for="i in 5" :key="i"> </room-list-item>
+      <room-list-item
+        class="col-md"
+        v-for="(room, key) in roomList"
+        :key="key"
+        :room="room"
+      >
+      </room-list-item>
     </q-list>
   </q-page>
 </template>
 
 <script>
 import RoomListItem from "./RoomListItem";
+import { computed } from "vue";
 import { useStore } from "vuex";
 
 export default {
-  name: "AuctionList",
+  name: "RoomList",
+
   components: {
     RoomListItem,
   },
-  created() {
-    this.updateList();
-  },
   setup() {
-    const updateList = () => {
-      useStore().dispatch("moduleExample/updateList");
-    };
+    const $store = useStore();
 
-    return { updateList };
+    $store.dispatch("moduleExample/updateList");
+
+    const roomList = computed({
+      get: () => $store.state.moduleExample.roomList,
+    });
+
+    return {
+      roomList,
+    };
   },
 };
 </script>
