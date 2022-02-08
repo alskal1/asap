@@ -45,7 +45,6 @@ import { computed, ref } from "vue";
 import { useStore } from "vuex";
 import { api } from "boot/axios";
 
-// import { createAuction } from "src/store/module-auction/mutations";
 export default {
   name: "AuctionForm",
   data() {
@@ -67,7 +66,6 @@ export default {
           console.log(response);
         })
         .catch(function (error) {
-          // 에러인 경우 실행
           console.log(error);
         });
     },
