@@ -33,6 +33,20 @@ const routes = [
       },
     ],
   },
+  {
+    path: "/login",
+    component: () => import("layouts/OauthLayout.vue"),
+    children: [
+      {
+        path: "/signup",
+        component: () => import("pages/oauth/Signup.vue"),
+      },
+      {
+        path: "/login",
+        component: () => import("pages/oauth/Login.vue"),
+      },
+    ],
+  },
 
   // Always leave this as last one,
   // but you can also remove it
