@@ -6,6 +6,7 @@
         v-for="(room, key) in roomList"
         :key="key"
         :room="room"
+        @click="info(room)"
       >
       </room-list-item>
     </q-list>
@@ -32,8 +33,13 @@ export default {
       get: () => $store.state.moduleExample.roomList,
     });
 
+    const info = (room) => {
+      console.log("Room : ", room);
+    };
+
     return {
       roomList,
+      info,
     };
   },
 };

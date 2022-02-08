@@ -10,7 +10,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoomDto {
-    @ApiModelProperty(example = "https://test.test.test")
+
+    private Long id;
+
     private String sessionId;
 
     private String token;
@@ -22,6 +24,7 @@ public class RoomDto {
     public static RoomDto from(Room room) {
         if(room == null) return null;
         return RoomDto.builder()
+                .id(room.getId())
                 .sessionId(room.getSessionId())
                 .token(room.getToken())
                 .title(room.getTitle())

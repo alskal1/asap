@@ -1,60 +1,19 @@
 <template>
   <q-page class="flex flex-center">
-    <div v-if="!session">
-      <div class="q-pa-md">
-        <h2>Join a video session</h2>
-        <q-form class="q-gutter-md">
-          <p>
-            <label>Participant </label>
-            <q-input
-              outlined
-              v-model="myUserName"
-              class="form-control"
-              type="text"
-              required
-            />
-          </p>
-          <p>
-            <label>Session </label>
-            <q-input
-              outlined
-              v-model="mySessionId"
-              class="form-control"
-              type="text"
-              required
-            />
-          </p>
-          <p class="text-center">
-            <q-btn color="green" @click="joinSession()">Join!</q-btn>
-          </p>
-        </q-form>
-      </div>
-    </div>
     <div v-if="session">
       <div>
-        <h2>{{ mySessionId }}</h2>
-        <q-btn color="red" @click="leaveSession">Leave session</q-btn>
+        <h2>{{ title }}</h2>
+        <q-btn color="red" @click="leaveSession">방송 종료하기</q-btn>
       </div>
       <div class="row">
         <user-video :stream-manager="mainStreamManager"></user-video>
-      </div>
-      <div class="row">
-        <user-video
-          :stream-manager="publisher"
-          @click="updateMainVideoStreamManager(publisher)"
-        />
-        <user-video
-          v-for="sub in subscribers"
-          :key="sub.stream.connection.connectionId"
-          :stream-manager="sub"
-          @click="updateMainVideoStreamManager(sub)"
-        />
       </div>
     </div>
   </q-page>
 </template>
 
 <script>
+import { api } from "boot/axios";
 import { ovapi } from "boot/axios";
 import { OpenVidu } from "openvidu-browser";
 import UserVideo from "components/live/UserVideo";
@@ -71,6 +30,8 @@ export default {
 
   data() {
     return {
+      roomId: "",
+      title: "",
       OV: undefined,
       session: undefined,
       mainStreamManager: undefined,
@@ -81,7 +42,13 @@ export default {
       myUserName: `Participant${Math.floor(Math.random() * 100)}`,
     };
   },
+  mounted() {
+    this.title = this.$route.query.title;
+    this.mySessionId = this.$route.query.mySessionId;
+    this.myUserName = this.$route.query.myUserName;
 
+    this.joinSession();
+  },
   methods: {
     joinSession() {
       // --- Get an OpenVidu object ---
@@ -136,8 +103,24 @@ export default {
             this.publisher = publisher;
 
             // --- Publish your stream ---
-
             this.session.publish(this.publisher);
+
+            const newData = {
+              token: token,
+              description: this.description,
+              title: this.title,
+              sessionId: this.sessionId,
+            };
+
+            api
+              .post("/api/room/", newData)
+              .then((response) => {
+                this.roomId = response.data.id;
+                console.log(response);
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
           })
           .catch((error) => {
             console.log(
@@ -162,11 +145,15 @@ export default {
       this.OV = undefined;
 
       window.removeEventListener("beforeunload", this.leaveSession);
-    },
 
-    updateMainVideoStreamManager(stream) {
-      if (this.mainStreamManager === stream) return;
-      this.mainStreamManager = stream;
+      api
+        .delete("/api/room/" + this.roomId)
+        .then((response) => {
+          this.$router.push("/");
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
 
     getToken(mySessionId) {
