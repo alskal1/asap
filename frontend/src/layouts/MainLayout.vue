@@ -38,8 +38,8 @@
 
         <q-space />
         <div class="q-gutter-sm row items-center no-wrap">
-          <q-btn round dense flat color="grey-8" icon="video_call">
-            <q-tooltip>Create a video or post</q-tooltip>
+          <q-btn to="/room" round dense flat color="grey-8" icon="video_call">
+            <q-tooltip>라이브 경매 생성</q-tooltip>
           </q-btn>
 
           <q-btn round flat>
