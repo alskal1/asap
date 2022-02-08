@@ -54,10 +54,16 @@
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered :width="240">
       <q-list padding>
+        <q-item v-ripple active-class="my-menu-link" to="/" exact clickable>
+          <q-item-section avatar>
+            <q-icon name="home" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Home</q-item-label>
+          </q-item-section>
+        </q-item>
         <q-item
           v-ripple
-          :active="link === 'notice'"
-          @click="link = 'notice'"
           active-class="my-menu-link"
           to="/notice"
           exact
@@ -72,8 +78,6 @@
         </q-item>
         <q-item
           v-ripple
-          :active="link === 'point'"
-          @click="link = 'point'"
           active-class="my-menu-link"
           to="/point"
           exact
@@ -86,15 +90,7 @@
             <q-item-label>충전하기</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item
-          v-ripple
-          :active="link === 'live_tv'"
-          @click="link = 'live_tv'"
-          active-class="my-menu-link"
-          to="/auction"
-          exact
-          clickable
-        >
+        <q-item v-ripple active-class="my-menu-link" to="/room" exact clickable>
           <q-item-section avatar>
             <q-icon name="live_tv" />
           </q-item-section>
@@ -104,8 +100,6 @@
         </q-item>
         <q-item
           v-ripple
-          :active="link === 'mypage'"
-          @click="link = 'mypage'"
           active-class="my-menu-link"
           to="/member"
           exact

@@ -13,7 +13,7 @@ const routes = [
       },
       {
         path: "/auction",
-        component: () => import("pages/Auction.vue"),
+        component: () => import("pages/live/LiveTest.vue"),
       },
       {
         path: "/point",
@@ -25,11 +25,11 @@ const routes = [
       },
       {
         path: "/live",
-        component: () => import("pages/Live.vue"),
+        component: () => import("pages/live/Live.vue"),
       },
       {
         path: "/room",
-        component: () => import("pages/Room.vue"),
+        component: () => import("pages/CreateRoom.vue"),
       },
     ],
   },
@@ -38,7 +38,7 @@ const routes = [
   // but you can also remove it
   {
     path: "/:catchAll(.*)*",
-    component: () => import("pages/Error404.vue"),
+    component: () => import("pages/error/Error404.vue"),
   },
 ];
 

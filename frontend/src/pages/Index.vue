@@ -4,17 +4,17 @@
       <div class="text-h5 text-bold q-px-md q-pt-sm">현재 진행중인 경매</div>
     </div>
     <q-separator class="q-my-md" />
-    <auction-list></auction-list>
+    <room-list></room-list>
   </q-page>
 </template>
 
 <script>
-import AuctionList from "components/auction/AuctionList";
+import RoomList from "components/room/RoomList";
 
 export default {
   name: "PageIndex",
   components: {
-    AuctionList,
+    RoomList,
   },
 };
 </script>

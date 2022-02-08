@@ -5,17 +5,17 @@
     </div>
     <q-separator class="q-my-md" />
 
-    <auction-form></auction-form>
+    <room-form></room-form>
   </q-page>
 </template>
 
 <script>
-import AuctionForm from "components/auction/AuctionForm";
+import RoomForm from "components/room/RoomForm";
 
 export default {
   name: "Room",
   components: {
-    AuctionForm,
+    RoomForm,
   },
 };
 </script>

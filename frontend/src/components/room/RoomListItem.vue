@@ -12,7 +12,7 @@
 
 <script>
 export default {
-  name: "AuctionListItem",
+  name: "RoomListItem",
 
   setup() {
     return {};

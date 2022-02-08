@@ -44,7 +44,7 @@
 import { api } from "boot/axios";
 
 export default {
-  name: "AuctionForm",
+  name: "RoomForm",
   data() {
     return {
       description: "",
