@@ -55,10 +55,6 @@ export default {
     };
   },
   methods: {
-    async onTest() {
-      const test = await testCall();
-      console.log(test);
-    },
     onSubmit() {
       const newData = {
         description: this.description,
