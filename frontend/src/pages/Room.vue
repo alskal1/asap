@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import AuctionForm from "src/components/auction/AuctionForm.vue";
+import AuctionForm from "components/auction/AuctionForm";
 
 export default {
   name: "Room",
