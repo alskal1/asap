@@ -3,8 +3,8 @@
     <q-card>
       <img src="https://cdn.quasar.dev/img/mountains.jpg" />
       <q-card-section>
-        <div class="text-h6">Our Changing Planet</div>
-        <div class="text-subtitle2">by John Doe</div>
+        <div class="text-h6">{{ room.title }}</div>
+        <div class="text-subtitle2">{{ room.description }}</div>
       </q-card-section>
     </q-card>
   </div>
@@ -13,8 +13,12 @@
 <script>
 export default {
   name: "RoomListItem",
-
-  setup() {
+  props: {
+    room: {
+      type: Object,
+    },
+  },
+  setup(props) {
     return {};
   },
 };
