@@ -41,8 +41,6 @@
 </template>
 
 <script>
-import { computed, ref } from "vue";
-import { useStore } from "vuex";
 import { api } from "boot/axios";
 
 export default {
