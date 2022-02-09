@@ -141,6 +141,7 @@
 <script>
 import { defineComponent, ref } from "vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "MainLayout",
@@ -149,12 +150,15 @@ export default defineComponent({
 
   setup() {
     const $store = useStore();
+    const router = useRouter();
 
-    const isLogin = sessionStorage.getItem("jwt");
+    const isLogin = ref(sessionStorage.getItem("jwt"));
 
     const logout = () => {
       sessionStorage.removeItem("jwt");
       $store.commit("user/setUserInfo", { userInfo: null });
+      isLogin.value = sessionStorage.getItem("jwt");
+      router.push("/");
     };
 
     const leftDrawerOpen = ref(false);
