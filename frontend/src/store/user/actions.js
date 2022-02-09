@@ -45,7 +45,21 @@ export function getWinHistory({ commit }) {
   return api
     .get("/api/history/win-list")
     .then((response) => {
-      commit("getWinHistory", response.data);
+      let winList = [];
+      response.data.forEach((item) => {
+        const winHistory = {
+          date: item.date,
+          productName: item.productName,
+          count: item.count,
+          sellerId: item.sellerId,
+          price: item.finalPrice,
+          state: item.deliveryState,
+        };
+
+        winList.push(winHistory);
+      });
+      console.log("winList : ", winList);
+      commit("getWinHistory", winList);
     })
     .catch((error) => {
       console.log(error);

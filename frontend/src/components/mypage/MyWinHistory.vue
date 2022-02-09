@@ -79,6 +79,7 @@
 <script>
 import MyWinList from "./child/MyWinList";
 import { ref } from "vue";
+import { useStore } from "vuex";
 
 export default {
   name: "MyWinHistory",
@@ -92,6 +93,10 @@ export default {
     };
   },
   setup() {
+    const $store = useStore();
+
+    $store.dispatch("user/getWinHistory");
+
     return {
       group: ref("op1"),
 
