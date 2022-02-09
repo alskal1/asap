@@ -4,6 +4,6 @@
 
 <script>
 export default {
-  name: "MyPoinList",
+  name: "MyPointList",
 };
 </script>
