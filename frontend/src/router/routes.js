@@ -34,16 +34,16 @@ const routes = [
     ],
   },
   {
-    path: "/login",
-    component: () => import("layouts/OauthLayout.vue"),
+    path: "/auth",
+    component: () => import("layouts/AuthLayout.vue"),
     children: [
       {
-        path: "/signup",
-        component: () => import("pages/oauth/Signup.vue"),
+        path: "/auth/signup",
+        component: () => import("pages/auth/Signup.vue"),
       },
       {
-        path: "/login",
-        component: () => import("pages/oauth/Login.vue"),
+        path: "/auth/login",
+        component: () => import("pages/auth/Login.vue"),
       },
     ],
   },

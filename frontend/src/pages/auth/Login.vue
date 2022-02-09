@@ -32,7 +32,7 @@
       </q-card-actions>
       <q-card-actions class="q-px-md">
         <q-btn
-          to="/signup"
+          to="/auth/signup"
           unelevated
           color="grey"
           size="lg"

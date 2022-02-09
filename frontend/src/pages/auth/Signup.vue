@@ -2,7 +2,7 @@
   <q-page>
     <q-card square bordered class="q-pa-lg shadow-1">
       <q-card-section>
-        <q-form class="q-gutter-md">
+        <q-form @submit.prevent="submitForm" class="q-gutter-md">
           <div class="text-bold text-green">회원가입</div>
           <q-input
             color="green"
@@ -15,7 +15,7 @@
           <q-input
             color="green"
             filled
-            v-model="password"
+            v-model="name"
             type="text"
             label="이름"
           />
@@ -38,10 +38,11 @@
           <q-input
             color="green"
             filled
-            v-model="phonnumber"
+            v-model="phone"
             type="phone"
             label="전화 번호"
           />
+          <q-select v-model="authorityName" :options="roleOptions"></q-select>
 
           <div>
             <q-btn label="Submit" type="submit" color="green" />
@@ -60,7 +61,59 @@
 </template>
 
 <script>
+import { api } from "boot/axios";
+import { useRouter } from "vue-router";
 export default {
   name: "Signup",
+  data() {
+    return {
+      email: "",
+      name: "",
+      confirmation: "",
+      password: "",
+      phone: "",
+      point: 0,
+      authorityName: "",
+      roleOptions: [
+        {
+          label: "경매자",
+          value: "sales",
+        },
+        {
+          label: "구매자",
+          value: "buyer",
+        },
+      ],
+    };
+  },
+  setup() {
+    const router = useRouter();
+    return {
+      router,
+    };
+  },
+  methods: {
+    submitForm() {
+      const authorityDtoSet = [];
+      const userData = {
+        email: this.email,
+        name: this.name,
+        password: this.password,
+        phone: this.phone,
+        point: this.point,
+      };
+      console.log(authorityDtoSet);
+      api
+        .post("/api/member/signup", userData, authorityDto)
+        .then((response) => {
+          if (response.status === 200) {
+            router.push({ name: "login" });
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+  },
 };
 </script>
