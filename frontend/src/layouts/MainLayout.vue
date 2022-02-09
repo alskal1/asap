@@ -41,6 +41,9 @@
           <q-btn to="/room" round dense flat color="grey-8" icon="video_call">
             <q-tooltip>라이브 경매 생성</q-tooltip>
           </q-btn>
+          <q-btn to="/auth/login" round dense flat color="grey-8" icon="login">
+            <q-tooltip>로그인</q-tooltip>
+          </q-btn>
 
           <q-btn round flat>
             <q-avatar size="26px">
