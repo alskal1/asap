@@ -24,6 +24,7 @@
       <q-card-actions class="q-px-md">
         <q-btn
           unelevated
+          @click="login(email, password)"
           color="light-green-7"
           size="lg"
           class="full-width"
@@ -45,7 +46,45 @@
 </template>
 
 <script>
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+
 export default {
   name: "Login",
+  data() {
+    return {
+      email: "",
+      password: "",
+    };
+  },
+  setup() {
+    const $store = useStore();
+    const router = useRouter();
+
+    const login = (email, password) => {
+      const loginData = {
+        email: email,
+        password: password,
+      };
+      $store
+        .dispatch("user/login", loginData)
+        .then((response) => {
+          const token = response.data.token;
+          sessionStorage.setItem("jwt", token);
+        })
+        .then(() => {
+          $store.dispatch("user/getUserInfo");
+        })
+        .then(() => {
+          router.push("/");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+    return {
+      login,
+    };
+  },
 };
 </script>

@@ -37,19 +37,33 @@
         </q-input>
 
         <q-space />
-        <div class="q-gutter-sm row items-center no-wrap">
+        <div v-if="isLogin" class="q-gutter-sm row items-center no-wrap">
           <q-btn to="/room" round dense flat color="grey-8" icon="video_call">
             <q-tooltip>라이브 경매 생성</q-tooltip>
           </q-btn>
-          <q-btn to="/auth/login" round dense flat color="grey-8" icon="login">
-            <q-tooltip>로그인</q-tooltip>
+          <q-btn @click="logout" round dense flat color="grey-8" icon="logout">
+            <q-tooltip>로그아웃</q-tooltip>
           </q-btn>
-
           <q-btn round flat>
             <q-avatar size="26px">
               <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
             </q-avatar>
             <q-tooltip>Account</q-tooltip>
+          </q-btn>
+        </div>
+        <div v-else class="q-gutter-sm row items-center no-wrap">
+          <q-btn
+            to="/auth/login"
+            round
+            dense
+            flat
+            color="grey-8"
+            icon="video_call"
+          >
+            <q-tooltip>라이브 경매 생성</q-tooltip>
+          </q-btn>
+          <q-btn to="/auth/login" round dense flat color="grey-8" icon="login">
+            <q-tooltip>로그인</q-tooltip>
           </q-btn>
         </div>
       </q-toolbar>
@@ -126,6 +140,7 @@
 
 <script>
 import { defineComponent, ref } from "vue";
+import { useStore } from "vuex";
 
 export default defineComponent({
   name: "MainLayout",
@@ -133,9 +148,20 @@ export default defineComponent({
   components: {},
 
   setup() {
+    const $store = useStore();
+
+    const isLogin = sessionStorage.getItem("jwt");
+
+    const logout = () => {
+      sessionStorage.removeItem("jwt");
+      $store.commit("user/setUserInfo", { userInfo: null });
+    };
+
     const leftDrawerOpen = ref(false);
     const search = ref("");
     return {
+      isLogin,
+      logout,
       leftDrawerOpen,
       search,
       toggleLeftDrawer() {
