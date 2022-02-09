@@ -4,6 +4,6 @@
 
 <script>
 export default {
-  name: "MySellList",
+  name: "MyPointList",
 };
 </script>

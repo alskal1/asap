@@ -1,6 +1,5 @@
 <template>
   <q-page padding>
-    <!-- <p>마이페이지</p> -->
     <q-tabs
       v-model="mypageTab"
       dense
@@ -33,7 +32,6 @@
 </template>
 
 <script>
-// import MyProfileInfo from "src/components/mypage/MyProfileInfo";
 import MyInfoUpdate from "src/components/mypage/MyInfoUpdate";
 import MySellHistory from "src/components/mypage/MySellHistory";
 import MyWinHistory from "src/components/mypage/MyWinHistory";
@@ -41,17 +39,16 @@ import MyPointHistory from "src/components/mypage/MyPointHistory";
 import { ref } from "vue";
 export default {
   name: "Mypage",
-  setup() {
-    return {
-      mypageTab: ref("myInfo"),
-    };
-  },
   components: {
-    // MyProfileInfo,
     MyInfoUpdate,
     MySellHistory,
     MyWinHistory,
     MyPointHistory,
+  },
+  setup() {
+    return {
+      mypageTab: ref("myInfo"),
+    };
   },
 };
 </script>
