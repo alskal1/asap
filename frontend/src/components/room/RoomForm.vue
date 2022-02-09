@@ -32,6 +32,32 @@
             clearable
           />
         </div>
+
+        <div>
+          <q-form class="q-gutter-md">
+            <div class="text-green text-weight-bolder">Participant</div>
+            <p>
+              <q-input
+                outlined
+                v-model="myUserName"
+                class="form-control"
+                type="text"
+                required
+              />
+            </p>
+            <div class="text-green text-weight-bolder">Session</div>
+            <p>
+              <q-input
+                outlined
+                v-model="sessionId"
+                class="form-control"
+                type="text"
+                required
+              />
+            </p>
+          </q-form>
+        </div>
+
         <div>
           <q-btn label="Submit" type="submit" color="green" />
         </div>
@@ -41,31 +67,34 @@
 </template>
 
 <script>
-import { api } from "boot/axios";
-
 export default {
   name: "RoomForm",
   data() {
     return {
       description: "",
       title: "",
+      status: "PUBLISHER",
+      sessionId: "SessionA",
+      myUserName: `Participant${Math.floor(Math.random() * 100)}`,
     };
   },
   methods: {
     onSubmit() {
-      const newData = {
-        description: this.description,
-        title: this.title,
-      };
+      this.goLive();
+    },
 
-      api
-        .post("/api/room/", newData)
-        .then((response) => {
-          console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+    goLive() {
+      console.log(this.sessionId);
+      this.$router.push(
+        "/live?sessionId=" +
+          this.sessionId +
+          "&myUserName=" +
+          this.myUserName +
+          "&title=" +
+          this.title +
+          "&status=" +
+          this.status
+      );
     },
   },
 };
