@@ -39,7 +39,7 @@ public class Auction extends BaseTimeEntity {
     private Member member;
 
     @OneToOne(mappedBy = "auction", cascade = CascadeType.ALL)
-    private History winHistory;
+    private History history;
 
     @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL)
     private List<AuctionViewer> auctionViewerList = new ArrayList<>();
