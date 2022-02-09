@@ -1,60 +1,68 @@
 <template>
   <q-page>
-    <q-card class="q-pa-md">
-      <q-form>
-        <p>회원 정보 변경</p>
+    <q-card class="q-pa-lg">
+      <h6>회원정보변경</h6>
+      <q-form class="q-pa-md">
+        <q-input label="아이디" v-model="email"
+          ><template v-slot:before>
+            <q-avatar>
+              <img src="https://cdn.quasar.dev/img/avatar5.jpg" />
+            </q-avatar>
+            <q-input label="이름" v-model="name" />
+          </template>
+        </q-input>
+        <q-input
+          type="password"
+          color="green"
+          label="비밀번호"
+          v-model="password"
+        />
+
+        <q-input
+          type="password"
+          color="green"
+          label="비밀번호 재입력"
+          v-model="repassword"
+        />
+
         <div>
-          <label>아이디</label>
-          <q-input
-            square
-            outlined
-            type="text"
-            v-model="userid"
-            label="이메일을 입력하세요"
-            required
-          />
-        </div>
-        <div>
-          <label>비밀번호</label>
-          <q-input
-            square
-            outlined
-            type="password"
-            v-model="password"
-            required
-          />
-        </div>
-        <div>
-          <label>비밀번호 확인</label>
-          <q-input
-            square
-            outlined
-            type="password"
-            v-model="repassword"
-            required
-          />
-        </div>
-        <div>
-          <label>이름</label>
-          <q-input square outlined type="text" v-model="name" required />
-        </div>
-        <div>
-          <label>주소</label>
-          <q-input square outlined type="text" v-model="address" />
-        </div>
-        <div>
-          <label>전화번호</label>
           <q-input
             type="text"
-            square
-            outlined
-            v-model="phone"
-            label="010-1234-5678"
-            required
+            class="q-mt-sm"
+            color="green"
+            v-model="postcode"
+            label="우편번호"
+            @click="search()"
+          >
+            <template v-slot:prepend>
+              <q-icon color="green" name="search" />
+            </template>
+          </q-input>
+          <br />
+
+          <q-input
+            type="text"
+            v-model="roadAddress"
+            label="도로명주소"
+            disable
+          />
+          <span id="guide" style="color: #000; display: none"></span>
+          <q-input
+            type="text"
+            color="green"
+            v-model="detailAddress"
+            label="상세주소"
           />
         </div>
-        <div>
-          <q-btn @click="updateBtn()" label="변경" />
+        <q-input type="text" color="green" label="전화번호" v-model="phone" />
+        <div class="text-center q-mt-lg">
+          <q-btn
+            class="q-mr-md"
+            outline
+            color="green"
+            label="변경"
+            @click="updateInfo()"
+          />
         </div>
       </q-form>
     </q-card>
@@ -62,24 +70,53 @@
 </template>
 
 <script>
+import { computed } from "vue";
+import { useStore } from "vuex";
+
 export default {
   name: "MyInfoUpdate",
   data() {
     return {
-      userid: "",
+      email: "",
       password: "",
       repassword: "",
       name: "",
-      address: "",
+      postcode: "",
+      roadAddress: "",
+      detailAddress: "",
       phone: "",
     };
   },
+  setup() {
+    const $store = useStore();
 
+    const getUserInfo = computed({
+      get: () => $store.state.user.getUserInfo,
+    });
+
+    return {
+      getUserInfo,
+    };
+  },
   methods: {
-    async updateBtn() {
-      if (this.password != this.repassword) {
-        alert("비밀번호를 다시 입력해주세요");
-      }
+    search() {
+      new window.daum.Postcode({
+        oncomplete: (data) => {
+          let roadAddr = data.roadAddress;
+          this.postcode = data.zonecode;
+          this.roadAddress = roadAddr;
+
+          let guideTextBox = document.getElementById("guide");
+          if (data.autoRoadAddress) {
+            let expRoadAddr = data.autoRoadAddress;
+            guideTextBox.innerHTML = "도로명 주소 : " + expRoadAddr;
+            guideTextBox.style.display = "block";
+          } else {
+            guideTextBox.innerHTML = "";
+            guideTextBox.style.display = "none";
+          }
+        },
+      }).open();
     },
   },
 };
