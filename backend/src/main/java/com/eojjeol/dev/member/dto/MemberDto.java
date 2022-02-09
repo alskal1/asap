@@ -1,6 +1,7 @@
 package com.eojjeol.dev.member.dto;
 
 import com.eojjeol.dev.authority.dto.AuthorityDto;
+import com.eojjeol.dev.entity.Address;
 import com.eojjeol.dev.entity.member.Member;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
@@ -21,25 +22,28 @@ import java.util.stream.Collectors;
 public class MemberDto {
 
     @NotNull
-    @Size(min = 3, max = 50)
+    @Size(max = 50)
     @ApiModelProperty(example = "test@test.com")
     private String email;
 
     @ApiModelProperty(example = "test")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotNull
-    @Size(min = 3, max = 100)
+    @Size(max = 100)
     private String password;
 
     @NotNull
-    @Size(min = 3, max = 50)
+    @Size(max = 50)
     @ApiModelProperty(example = "bing")
     private String name;
 
     @NotNull
-    @Size(min = 10, max = 20)
+    @Size(max = 20)
     @ApiModelProperty(example = "010-1234-5678")
     private String phone;
+
+    @NotNull
+    private Address address;
 
     @ApiModelProperty(example = "0")
     private Integer point;
@@ -55,6 +59,7 @@ public class MemberDto {
                 .name(member.getName())
                 .phone(member.getPhone())
                 .point(member.getPoint())
+                .address(member.getAddress())
                 .authorityDtoSet(member.getMemberAuthorities().stream()
                         .map(authority -> AuthorityDto.builder().authorityName(authority.getAuthority().getAuthorityName()).build())
                         .collect(Collectors.toSet()))

@@ -52,25 +52,25 @@ public class MemberController {
     }
 
     @PatchMapping("/")
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+//    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<?> updateMember(@RequestBody MemberDto memberDto) {
         return new ResponseEntity<MemberDto>(memberService.updateMember(memberDto),HttpStatus.OK);
     }
 
     @DeleteMapping("/")
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+//    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<?> deleteMember(HttpServletRequest request) {
         return new ResponseEntity<MemberDto>(memberService.deleteMember(),HttpStatus.OK);
     }
 
     @GetMapping("/user")
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+//    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<MemberDto> getMyUserInfo(HttpServletRequest request) {
         return ResponseEntity.ok(memberService.getMyUserWithAuthorities());
     }
 
     @GetMapping("/accreditation/{username}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+//    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<MemberDto> getUserInfo(@PathVariable String username) {
         return ResponseEntity.ok(memberService.getUserWithAuthorities(username));
     }
