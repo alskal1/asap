@@ -18,3 +18,11 @@ export function setIsDelete(state, isDelete) {
 export function setIsUpdate(state, isUpdate) {
   state.isUpdate = isUpdate;
 }
+
+export function getSellHistory(state, sellHistory) {
+  state.sellHistory = sellHistory;
+}
+
+export function getWinHistory(state, winHistory) {
+  state.winHistory = winHistory;
+}

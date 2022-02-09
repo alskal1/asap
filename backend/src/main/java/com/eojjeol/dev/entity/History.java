@@ -14,9 +14,9 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class History {
+public class History extends BaseTimeEntity{
     @Id @GeneratedValue
-    @Column(name = "win_history_id")
+    @Column(name = "history_id")
     private Long id;
 
     private String productName;

@@ -25,3 +25,25 @@ export function updateConfirm({ commit }, user) {
       console.log(error);
     });
 }
+
+export function getSellHistory({ commit }) {
+  return api
+    .get("/api/history/sell-list")
+    .then((response) => {
+      commit("getSellHistory", response.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export function getWinHistory({ commit }) {
+  return api
+    .get("/api/history/win-list")
+    .then((response) => {
+      commit("getWinHistory", response.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}

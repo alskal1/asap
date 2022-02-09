@@ -1,57 +1,58 @@
 <template>
-  <q-table class="q-mt-md" :rows="rows" :columns="columns" row-key="name" />
+  <q-page>
+    <div>
+      <q-table>
+        <q-tr>
+          <q-th>경매일자</q-th>
+          <q-th>품목명</q-th>
+          <q-th>판매자명</q-th>
+          <q-th>수량</q-th>
+          <q-th>금액</q-th>
+          <q-th>상태</q-th>
+        </q-tr>
+        <q-tr
+          v-for="(winItem, index) in winHistoryList"
+          :key="index"
+          v-bind="winItem"
+        >
+          <q-td>{{ winItem.createdDate }}</q-td>
+          <q-td>{{ winItem.productName }}</q-td>
+          <q-td>{{ winItem.sellerId }}</q-td>
+          <q-td>{{ winItem.count }}</q-td>
+          <q-td>{{ winItem.finalPrice }}</q-td>
+          <q-td>{{ winItem.deliveryState }}</q-td>
+        </q-tr>
+      </q-table>
+    </div>
+  </q-page>
 </template>
 
 <script>
-const columns = [
-  {
-    name: "auctionDate",
-    align: "center",
-    label: "경매일자",
-    field: "auctionDate",
-  },
-  { name: "productName", align: "center", label: "품목명", field: "name" },
-  { name: "seller", align: "center", label: "판매자명", field: "seller" },
-  { name: "quantity", align: "center", label: "수량", field: "sodium" },
-  { name: "state", align: "center", label: "상태", field: "sodium" },
-];
+import { computed, onMounted } from "@vue/runtime-core";
+import { useStore } from "vuex";
 
-const rows = [
-  {
-    name: "Frozen Yogurt",
-    auctionDate: 20220208,
-    name: 7.0,
-    carbs: 24,
-    protein: 4.0,
-  },
-  {
-    name: "Ice cream sandwich",
-    auctionDate: 20220208,
-    name: 9.0,
-    carbs: 37,
-    protein: 4.3,
-  },
-  {
-    name: "Eclair",
-    auctionDate: 20220208,
-    name: 16.0,
-    carbs: 23,
-    protein: 6.0,
-  },
-  {
-    name: "Cupcake",
-    auctionDate: 20220208,
-    name: 3.7,
-    carbs: 67,
-    protein: 4.3,
-  },
-];
 export default {
   name: "MyWinList",
   setup() {
+    const $store = useStore();
+
+    onMounted(() => {
+      getWinHistory();
+    });
+
+    const winHistoryList = computed({
+      get: () => $store.state.user.winHistory,
+    });
+
+    const getWinHistory = () => {
+      $store.dispatch("user/getWinHistory");
+    };
+
+    console.log(winHistoryList);
+
     return {
-      columns,
-      rows,
+      $store,
+      winHistoryList,
     };
   },
 };
