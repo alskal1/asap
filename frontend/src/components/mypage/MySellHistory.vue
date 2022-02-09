@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <q-card>
-      <div class="row q-pa-md">
+      <!-- <div class="row q-pa-md">
         <div class="q-pa-md q-mr-lg">
           <q-avatar rounded size="200px" color="teal" icon="none" />
         </div>
@@ -12,13 +12,29 @@
 
           <p>구매자 정보 : 김아삽</p>
         </div>
+      </div> -->
+      <div>
+        <my-sell-list></my-sell-list>
       </div>
     </q-card>
   </q-page>
 </template>
 
 <script>
+import MySellList from "./child/MySellList";
+import { useStore } from "vuex";
+
 export default {
   name: "MySellHistory",
+  components: {
+    MySellList,
+  },
+  setup() {
+    const $store = useStore();
+
+    $store.dispatch("user/getSellHistory");
+
+    return {};
+  },
 };
 </script>

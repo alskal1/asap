@@ -48,16 +48,6 @@ public class HistoryService {
         }
     }
 
-    /*public ResponseEntity<HistoryDto> selectAll() {
-        try {
-
-        } catch (Exception e) {
-
-        }
-
-        return null;
-    }*/
-
     public ResponseEntity<List<HistoryDto>> selectSell() {
         try {
             Member member = SecurityUtil.getCurrentEmail().flatMap(memberRepository::findOneWithAuthoritiesByEmail).orElse(null);

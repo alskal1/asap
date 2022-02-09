@@ -19,8 +19,8 @@
           <td>{{ winItem.productName }}</td>
           <td>{{ winItem.sellerId }}</td>
           <td>{{ winItem.count }}</td>
-          <td>{{ winItem.price }}</td>
-          <td>{{ winItem.state }}</td>
+          <td>{{ winItem.finalPrice }}</td>
+          <td>{{ winItem.deliveryState }}</td>
         </tr>
       </table>
     </div>
