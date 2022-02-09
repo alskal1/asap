@@ -36,6 +36,9 @@ public class Member {
     @Column(length = 50)
     private String name;
 
+    @Embedded
+    private Address address;
+
     private Integer point;
 
     @OneToOne(mappedBy = "member")

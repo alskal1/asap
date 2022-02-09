@@ -20,15 +20,10 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-//    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-//        this.userRepository = userRepository;
-//        this.passwordEncoder = passwordEncoder;
-//    }
-
     @Transactional
     public MemberDto signup(MemberDto memberDto) throws Exception {
-        Member member1 = memberRepository.findOneWithAuthoritiesByEmail(memberDto.getEmail()).orElse(null);
-        if (memberRepository.findOneWithAuthoritiesByEmail(memberDto.getEmail()).orElse(null) != null) {
+        Member existMember = memberRepository.findOneWithAuthoritiesByEmail(memberDto.getEmail()).orElse(null);
+        if (existMember != null) {
             throw new Exception("이미 가입되어 있는 유저입니다.");
         }
 
@@ -43,6 +38,7 @@ public class MemberService {
                 .name(memberDto.getName())
                 .point(0)
                 .phone(memberDto.getPhone())
+                .address(memberDto.getAddress())
                 .memberAuthorities(new HashSet<>())
                 .build();
 
@@ -58,6 +54,7 @@ public class MemberService {
             findMember.setName(memberDto.getName());
             findMember.setPassword(passwordEncoder.encode(memberDto.getPassword()));
             findMember.setPhone(memberDto.getPhone());
+            findMember.setAddress(memberDto.getAddress());
             MemberDto updateMemberDto = MemberDto.from(findMember);
             return updateMemberDto;
         }catch(Exception e){
