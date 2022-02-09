@@ -17,6 +17,7 @@
 import RoomListItem from "./RoomListItem";
 import { computed } from "vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 export default {
   name: "RoomList",
@@ -26,20 +27,27 @@ export default {
   },
   setup() {
     const $store = useStore();
+    const router = useRouter();
 
     $store.dispatch("moduleExample/updateList");
+
+    function goLive(sessionId) {
+      router.push("/live?sessionId=" + sessionId);
+    }
 
     const roomList = computed({
       get: () => $store.state.moduleExample.roomList,
     });
 
     const info = (room) => {
-      console.log("Room : ", room);
+      // console.log("room : ", room);
+      goLive(room.sessionId);
     };
 
     return {
       roomList,
       info,
+      goLive,
     };
   },
 };

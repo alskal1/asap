@@ -73,30 +73,27 @@ export default {
     return {
       description: "",
       title: "",
-
+      status: "PUBLISHER",
       sessionId: "SessionA",
       myUserName: `Participant${Math.floor(Math.random() * 100)}`,
     };
   },
   methods: {
     onSubmit() {
-      const newData = {
-        description: this.description,
-        title: this.title,
-        sessionId: this.sessionId,
-      };
-
       this.goLive();
     },
 
     goLive() {
+      console.log(this.sessionId);
       this.$router.push(
-        "/live?mySessionId=" +
-          this.mySessionId +
+        "/live?sessionId=" +
+          this.sessionId +
           "&myUserName=" +
           this.myUserName +
           "&title=" +
-          this.title
+          this.title +
+          "&status=" +
+          this.status
       );
     },
   },
