@@ -7,7 +7,12 @@ import axios from "axios";
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
-const api = axios.create({ baseURL: "https://localhost:8443" });
+const api = axios.create({
+  baseURL: "https://localhost:8443",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
 const ovapi = axios.create({
   baseURL: `https://${global.location.hostname}:4443`,
@@ -15,6 +20,9 @@ const ovapi = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+const jwt = sessionStorage.getItem("jwt");
+api.defaults.headers.common["Authorization"] = jwt ? `Bearer ${jwt}` : ``;
 
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api

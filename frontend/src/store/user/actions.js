@@ -1,15 +1,19 @@
 import { api } from "boot/axios";
 
-export function getUserInfo({ commit }, token) {
-  let decode_token = jwt_decode(token);
-  console.dir(decode_token);
-  api
-    .get("/api/member/user", decode_token)
+export function login({ commit }, loginInfo) {
+  return api.post("/api/member/login", loginInfo);
+}
+
+export function getUserInfo({ commit }) {
+  const jwt = sessionStorage.getItem("jwt");
+  api.defaults.headers.common["Authorization"] = jwt ? `Bearer ${jwt}` : ``;
+
+  return api
+    .get("/api/member/user")
     .then((response) => {
       commit("setUserInfo", response.data);
     })
     .catch(function (error) {
-      console.log("회원 정보 없음");
       console.log(error);
     });
 }
