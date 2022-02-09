@@ -1,28 +1,28 @@
 <template>
   <q-page>
     <div>
-      <q-table>
-        <q-tr>
-          <q-th>경매일자</q-th>
-          <q-th>품목명</q-th>
-          <q-th>판매자명</q-th>
-          <q-th>수량</q-th>
-          <q-th>금액</q-th>
-          <q-th>상태</q-th>
-        </q-tr>
-        <q-tr
-          v-for="(winItem, index) in winHistoryList"
-          :key="index"
+      <table>
+        <tr>
+          <th>경매일자</th>
+          <th>품목명</th>
+          <th>판매자명</th>
+          <th>수량</th>
+          <th>금액</th>
+          <th>상태</th>
+        </tr>
+        <tr
+          v-for="(winItem, key) in winHistoryList"
+          :key="key"
           v-bind="winItem"
         >
-          <q-td>{{ winItem.createdDate }}</q-td>
-          <q-td>{{ winItem.productName }}</q-td>
-          <q-td>{{ winItem.sellerId }}</q-td>
-          <q-td>{{ winItem.count }}</q-td>
-          <q-td>{{ winItem.finalPrice }}</q-td>
-          <q-td>{{ winItem.deliveryState }}</q-td>
-        </q-tr>
-      </q-table>
+          <td>{{ winItem.date }}</td>
+          <td>{{ winItem.productName }}</td>
+          <td>{{ winItem.sellerId }}</td>
+          <td>{{ winItem.count }}</td>
+          <td>{{ winItem.price }}</td>
+          <td>{{ winItem.state }}</td>
+        </tr>
+      </table>
     </div>
   </q-page>
 </template>
@@ -36,10 +36,6 @@ export default {
   setup() {
     const $store = useStore();
 
-    onMounted(() => {
-      getWinHistory();
-    });
-
     const winHistoryList = computed({
       get: () => $store.state.user.winHistory,
     });
@@ -47,8 +43,6 @@ export default {
     const getWinHistory = () => {
       $store.dispatch("user/getWinHistory");
     };
-
-    console.log(winHistoryList);
 
     return {
       $store,

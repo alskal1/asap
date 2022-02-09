@@ -6,6 +6,8 @@ import com.eojjeol.dev.entity.DeliveryState;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Builder
@@ -29,10 +31,13 @@ public class HistoryDto extends BaseTimeEntity {
 
     private String sellerId;
 
+    private LocalDateTime date;
+
     public static HistoryDto from(History history) {
         if(history == null) return null;
         return HistoryDto.builder()
                 .id(history.getId())
+                .date(history.getCreatedDate())
                 .auctionId(history.getAuction().getId())
                 .productName(history.getProductName())
                 .count(history.getCount())

@@ -1,6 +1,6 @@
 export default function () {
   return {
-    userInfo: null,
+    userInfo: {},
     sellHistory: [],
     winHistory: [],
     isLogin: false,
