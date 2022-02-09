@@ -2,7 +2,10 @@
   <q-page>
     <q-card square bordered class="q-pa-lg shadow-1">
       <q-card-section>
-        <q-form @submit.prevent="submitForm" class="q-gutter-md">
+        <q-form
+          @submit.prevent="submitForm(email, name, password, phone)"
+          class="q-gutter-md"
+        >
           <div class="text-bold text-green">회원가입</div>
           <q-input
             color="green"
@@ -42,7 +45,6 @@
             type="phone"
             label="전화 번호"
           />
-          <q-select v-model="authorityName" :options="roleOptions"></q-select>
 
           <div>
             <q-btn label="Submit" type="submit" color="green" />
@@ -72,48 +74,41 @@ export default {
       confirmation: "",
       password: "",
       phone: "",
-      point: 0,
-      authorityName: "",
-      roleOptions: [
-        {
-          label: "경매자",
-          value: "sales",
-        },
-        {
-          label: "구매자",
-          value: "buyer",
-        },
-      ],
     };
   },
   setup() {
     const router = useRouter();
-    return {
-      router,
+
+    const signupSuccess = () => {
+      router.push("/auth/login");
     };
-  },
-  methods: {
-    submitForm() {
-      const authorityDtoSet = [];
+
+    function submitForm(email, name, password, phone) {
       const userData = {
-        email: this.email,
-        name: this.name,
-        password: this.password,
-        phone: this.phone,
-        point: this.point,
+        email: email,
+        name: name,
+        password: password,
+        phone: phone,
       };
-      console.log(authorityDtoSet);
+
       api
-        .post("/api/member/signup", userData, authorityDto)
+        .post("/api/member/signup", userData)
         .then((response) => {
           if (response.status === 200) {
-            router.push({ name: "login" });
+            signupSuccess();
           }
         })
         .catch(function (error) {
           console.log(error);
         });
-    },
+    }
+
+    return {
+      router,
+      signupSuccess,
+      submitForm,
+    };
   },
+  methods: {},
 };
 </script>
