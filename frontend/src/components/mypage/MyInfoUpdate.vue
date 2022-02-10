@@ -3,27 +3,14 @@
     <q-card class="q-pa-lg">
       <h6>회원정보변경</h6>
       <q-form class="q-pa-md">
-        <q-input label="아이디" v-model="userInfo.email"
+        <q-input label="닉네임" v-model="userInfo.name"
           ><template v-slot:before>
             <q-avatar>
               <img src="https://cdn.quasar.dev/img/avatar5.jpg" />
             </q-avatar>
-            <q-input label="이름" v-model="userInfo.name" />
+            <q-input label="아이디" v-model="userInfo.email" disable />
           </template>
         </q-input>
-        <!-- <q-input
-          type="password"
-          color="green"
-          label="비밀번호"
-          v-model="user.password"
-        />
-
-        <q-input
-          type="password"
-          color="green"
-          label="비밀번호 재입력"
-          v-model="user.phone"
-        /> -->
 
         <div>
           <q-input
@@ -66,7 +53,7 @@
             outline
             color="green"
             label="변경"
-            @click="updateInfo()"
+            @click="changeInfo()"
           />
         </div>
       </q-form>
@@ -76,6 +63,7 @@
 
 <script>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
 export default {
@@ -87,6 +75,7 @@ export default {
     const $store = useStore();
     const userInfo = ref({});
     const addressInfo = ref({});
+    const router = useRouter();
 
     $store.dispatch("user/getUserInfo").then(() => {
       const stateUserInfo = {
@@ -127,12 +116,31 @@ export default {
       }).open();
     }
 
+    function changeInfo() {
+      const userDto = {
+        name: userInfo.value.name,
+        email: userInfo.value.email,
+        phone: userInfo.value.phone,
+        address: {
+          zipCode: addressInfo.value.zipCode,
+          roadAddress: addressInfo.value.roadAddress,
+          detailAddress: addressInfo.value.detailAddress,
+        },
+      };
+
+      console.log("업데이트 정보 : ", userDto);
+
+      $store.dispatch("user/updateConfirm", userDto).then(() => {
+        router.push("/");
+      });
+    }
+
     return {
       userInfo,
       addressInfo,
       search,
+      changeInfo,
     };
   },
-  methods: {},
 };
 </script>

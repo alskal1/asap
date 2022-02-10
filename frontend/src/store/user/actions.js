@@ -19,8 +19,8 @@ export function getUserInfo({ commit }) {
 }
 
 export function updateConfirm({ commit }, user) {
-  api
-    .patch("/api/member/", user)
+  return api
+    .put("/api/member/", user)
     .then((response) => {
       commit("setIsUpdate", true);
     })

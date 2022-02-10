@@ -52,7 +52,7 @@ public class MemberService {
         try{
             Member findMember = SecurityUtil.getCurrentEmail().flatMap(memberRepository::findOneWithAuthoritiesByEmail).orElse(null);
             findMember.setName(memberDto.getName());
-            findMember.setPassword(passwordEncoder.encode(memberDto.getPassword()));
+//            findMember.setPassword(passwordEncoder.encode(memberDto.getPassword()));
             findMember.setPhone(memberDto.getPhone());
             findMember.setAddress(memberDto.getAddress());
             MemberDto updateMemberDto = MemberDto.from(findMember);
