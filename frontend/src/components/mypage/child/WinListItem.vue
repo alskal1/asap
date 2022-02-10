@@ -1,6 +1,6 @@
 <template>
   <q-page outline class="text-center q-mt-xl">
-    <q-item class="bg-green-3">
+    <q-item class="text-white bg-green-3">
       <q-item-section>경매일자</q-item-section>
       <q-item-section>품목명</q-item-section>
       <q-item-section>판매자명</q-item-section>
