@@ -48,7 +48,7 @@
 <script>
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-
+import { useQuasar } from "quasar";
 export default {
   name: "Login",
   data() {
@@ -61,7 +61,14 @@ export default {
     const $store = useStore();
     const router = useRouter();
 
+    const $q = useQuasar();
+
     const login = (email, password) => {
+      const notifyerror = $q.notify({
+        message: "로그인이 실패하였습니다.",
+        color: "green",
+        icon: "announcement",
+      });
       const loginData = {
         email: email,
         password: password,
@@ -78,11 +85,18 @@ export default {
         .then(() => {
           router.push("/");
         })
+        .then(() => {
+          if (response.status === 401) {
+            notifyerror();
+          }
+        })
         .catch((error) => {
           console.log(error);
         });
     };
+
     return {
+      router,
       login,
     };
   },
