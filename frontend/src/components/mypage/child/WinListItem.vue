@@ -1,6 +1,6 @@
 <template>
   <q-page outline class="text-center q-mt-xl">
-    <q-item>
+    <q-item class="bg-green-3">
       <q-item-section>경매일자</q-item-section>
       <q-item-section>품목명</q-item-section>
       <q-item-section>판매자명</q-item-section>
@@ -17,6 +17,7 @@
       <q-item-section>{{ winItem.finalPrice }}</q-item-section>
       <q-item-section>{{ winItem.deliveryState }}</q-item-section>
     </q-item>
+    <q-separator />
   </q-page>
 </template>
 
