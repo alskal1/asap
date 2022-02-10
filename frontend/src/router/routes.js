@@ -6,30 +6,37 @@ const routes = [
       {
         path: "",
         component: () => import("pages/Index.vue"),
+        meta: { authRequired: false },
       },
       {
         path: "/notice",
         component: () => import("pages/Notice.vue"),
+        meta: { authRequired: false },
       },
       {
         path: "/auction",
         component: () => import("pages/live/LiveTest.vue"),
+        meta: { authRequired: true },
       },
       {
         path: "/point",
         component: () => import("pages/ChargePoint.vue"),
+        meta: { authRequired: true },
       },
       {
         path: "/member",
         component: () => import("pages/Mypage.vue"),
+        meta: { authRequired: true },
       },
       {
         path: "/live",
         component: () => import("pages/live/Live.vue"),
+        meta: { authRequired: true },
       },
       {
         path: "/room",
         component: () => import("pages/CreateRoom.vue"),
+        meta: { authRequired: true },
       },
     ],
   },
