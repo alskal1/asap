@@ -71,20 +71,31 @@
       </div>
     </q-card>
     <div>
-      <my-win-list />
+      <q-list class="row" v-if="winHistoryList.length">
+        <win-list-item
+          class="col-md"
+          v-for="(winItem, key) in winHistoryList"
+          :key="key"
+          :winItem="winItem"
+        >
+        </win-list-item>
+      </q-list>
+      <q-list class="text-center" v-else>
+        <h6>낙찰내역이 없습니다.</h6>
+      </q-list>
     </div>
   </q-page>
 </template>
 
 <script>
-import MyWinList from "./child/MyWinList";
-import { ref } from "vue";
+import WinListItem from "./child/WinListItem";
+import { ref, computed } from "vue";
 import { useStore } from "vuex";
 
 export default {
   name: "MyWinHistory",
   components: {
-    MyWinList,
+    WinListItem,
   },
   data() {
     return {
@@ -97,7 +108,15 @@ export default {
 
     $store.dispatch("user/getWinHistory");
 
+    $store.dispatch("user/getWinHistory");
+
+    const winHistoryList = computed({
+      get: () => $store.state.user.winHistory,
+    });
+
     return {
+      winHistoryList,
+
       group: ref("op1"),
 
       options: [
