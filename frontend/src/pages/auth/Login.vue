@@ -49,6 +49,7 @@
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { useQuasar } from "quasar";
+
 export default {
   name: "Login",
   data() {
@@ -60,15 +61,16 @@ export default {
   setup() {
     const $store = useStore();
     const router = useRouter();
-
     const $q = useQuasar();
 
     const login = (email, password) => {
-      const notifyerror = $q.notify({
-        message: "로그인이 실패하였습니다.",
-        color: "green",
-        icon: "announcement",
-      });
+      const notifyerror = () => {
+        $q.notify({
+          message: "로그인이 실패하였습니다.",
+          color: "red",
+          icon: "announcement",
+        });
+      };
       const loginData = {
         email: email,
         password: password,
@@ -80,17 +82,20 @@ export default {
           sessionStorage.setItem("jwt", token);
         })
         .then(() => {
-          $store.dispatch("user/getUserInfo");
+          $store.dispatch("user/getUserInfo").then(() => {
+            const name = $store.state.user.userInfo.name;
+            $q.notify({
+              message: `안녕하세요 ${name}님!`,
+              color: "green",
+              position: "center",
+            });
+          });
         })
         .then(() => {
           router.push("/");
         })
-        .then(() => {
-          if (response.status === 401) {
-            notifyerror();
-          }
-        })
         .catch((error) => {
+          notifyerror();
           console.log(error);
         });
     };
