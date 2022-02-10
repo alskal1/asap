@@ -164,6 +164,7 @@ export default defineComponent({
       sessionStorage.removeItem("jwt");
       $store.commit("user/setUserInfo", { userInfo: {} });
       isLogin.value = sessionStorage.getItem("jwt");
+      location.reload();
       router.push("/");
     };
 

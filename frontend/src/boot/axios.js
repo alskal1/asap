@@ -25,7 +25,7 @@ const ovapi = axios.create({
 const jwt = sessionStorage.getItem("jwt");
 api.defaults.headers.common["Authorization"] = jwt ? `Bearer ${jwt}` : ``;
 
-export default boot(({ router, app }) => {
+export default boot(({ router, store, app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 
   app.config.globalProperties.$axios = axios;
@@ -39,10 +39,12 @@ export default boot(({ router, app }) => {
   app.config.globalProperties.$ovapi = ovapi;
 
   router.beforeEach(async (to, from, next) => {
+    const userInfo = store.state.user.userInfo;
     if (
       to.matched.some(function (routeInfo) {
         return routeInfo.meta.authRequired;
-      })
+      }) &&
+      !userInfo
     ) {
       Dialog.create({
         title: "권한",
