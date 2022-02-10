@@ -63,8 +63,6 @@ export default {
     const router = useRouter();
     const $q = useQuasar();
 
-    const $q = useQuasar();
-
     const login = (email, password) => {
       const notifyerror = $q.notify({
         message: "로그인이 실패하였습니다.",
