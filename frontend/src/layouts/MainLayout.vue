@@ -44,11 +44,11 @@
           <q-btn @click="logout" round dense flat color="grey-8" icon="logout">
             <q-tooltip>로그아웃</q-tooltip>
           </q-btn>
-          <q-btn round flat>
+          <q-btn to="/member" round flat>
             <q-avatar size="26px">
               <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
             </q-avatar>
-            <q-tooltip>Account</q-tooltip>
+            <q-tooltip>{{ userInfo.name }}</q-tooltip>
           </q-btn>
         </div>
         <div v-else class="q-gutter-sm row items-center no-wrap">
@@ -153,10 +153,16 @@ export default defineComponent({
     const router = useRouter();
 
     const isLogin = ref(sessionStorage.getItem("jwt"));
+    const userInfo = ref({});
+
+    $store.dispatch("user/getUserInfo").then(() => {
+      const _userInfo = $store.state.user.userInfo;
+      userInfo.value = _userInfo;
+    });
 
     const logout = () => {
       sessionStorage.removeItem("jwt");
-      $store.commit("user/setUserInfo", { userInfo: null });
+      $store.commit("user/setUserInfo", { userInfo: {} });
       isLogin.value = sessionStorage.getItem("jwt");
       router.push("/");
     };
@@ -165,6 +171,7 @@ export default defineComponent({
     const search = ref("");
     return {
       isLogin,
+      userInfo,
       logout,
       leftDrawerOpen,
       search,
