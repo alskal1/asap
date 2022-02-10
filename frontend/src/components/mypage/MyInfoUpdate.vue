@@ -3,34 +3,34 @@
     <q-card class="q-pa-lg">
       <h6>회원정보변경</h6>
       <q-form class="q-pa-md">
-        <q-input label="아이디" v-model="email"
+        <q-input label="아이디" v-model="userInfo.email"
           ><template v-slot:before>
             <q-avatar>
               <img src="https://cdn.quasar.dev/img/avatar5.jpg" />
             </q-avatar>
-            <q-input label="이름" v-model="name" />
+            <q-input label="이름" v-model="userInfo.name" />
           </template>
         </q-input>
-        <q-input
+        <!-- <q-input
           type="password"
           color="green"
           label="비밀번호"
-          v-model="password"
+          v-model="user.password"
         />
 
         <q-input
           type="password"
           color="green"
           label="비밀번호 재입력"
-          v-model="repassword"
-        />
+          v-model="user.phone"
+        /> -->
 
         <div>
           <q-input
             type="text"
             class="q-mt-sm"
             color="green"
-            v-model="postcode"
+            v-model="addressInfo.zipCode"
             label="우편번호"
             @click="search()"
           >
@@ -42,7 +42,7 @@
 
           <q-input
             type="text"
-            v-model="roadAddress"
+            v-model="addressInfo.roadAddress"
             label="도로명주소"
             disable
           />
@@ -50,11 +50,16 @@
           <q-input
             type="text"
             color="green"
-            v-model="detailAddress"
+            v-model="addressInfo.detailAddress"
             label="상세주소"
           />
         </div>
-        <q-input type="text" color="green" label="전화번호" v-model="phone" />
+        <q-input
+          type="text"
+          color="green"
+          label="전화번호"
+          v-model="userInfo.phone"
+        />
         <div class="text-center q-mt-lg">
           <q-btn
             class="q-mr-md"
@@ -70,41 +75,44 @@
 </template>
 
 <script>
-import { computed } from "vue";
+import { ref } from "vue";
 import { useStore } from "vuex";
 
 export default {
   name: "MyInfoUpdate",
   data() {
-    return {
-      email: "",
-      password: "",
-      repassword: "",
-      name: "",
-      postcode: "",
-      roadAddress: "",
-      detailAddress: "",
-      phone: "",
-    };
+    return {};
   },
   setup() {
     const $store = useStore();
+    const userInfo = ref({});
+    const addressInfo = ref({});
 
-    const getUserInfo = computed({
-      get: () => $store.state.user.getUserInfo,
+    $store.dispatch("user/getUserInfo").then(() => {
+      const stateUserInfo = {
+        email: $store.state.user.userInfo.email,
+        name: $store.state.user.userInfo.name,
+        phone: $store.state.user.userInfo.phone,
+      };
+
+      const stateAddressInfo = $store.state.user.userInfo.address;
+
+      const stateAddressInfos = {
+        zipCode: stateAddressInfo.zipCode,
+        roadAddress: stateAddressInfo.roadAddress,
+        detailAddress: stateAddressInfo.detailAddress,
+      };
+
+      userInfo.value = stateUserInfo;
+      addressInfo.value = stateAddressInfos;
     });
 
-    return {
-      getUserInfo,
-    };
-  },
-  methods: {
-    search() {
+    function search() {
       new window.daum.Postcode({
         oncomplete: (data) => {
           let roadAddr = data.roadAddress;
-          this.postcode = data.zonecode;
-          this.roadAddress = roadAddr;
+          addressInfo.value.zipCode = data.zonecode;
+          addressInfo.value.roadAddress = roadAddr;
 
           let guideTextBox = document.getElementById("guide");
           if (data.autoRoadAddress) {
@@ -117,7 +125,14 @@ export default {
           }
         },
       }).open();
-    },
+    }
+
+    return {
+      userInfo,
+      addressInfo,
+      search,
+    };
   },
+  methods: {},
 };
 </script>
