@@ -48,6 +48,7 @@
 <script>
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import { useQuasar } from "quasar";
 
 export default {
   name: "Login",
@@ -60,6 +61,7 @@ export default {
   setup() {
     const $store = useStore();
     const router = useRouter();
+    const $q = useQuasar();
 
     const login = (email, password) => {
       const loginData = {
@@ -73,7 +75,15 @@ export default {
           sessionStorage.setItem("jwt", token);
         })
         .then(() => {
-          $store.dispatch("user/getUserInfo");
+          $store.dispatch("user/getUserInfo").then(() => {
+            const name = $store.state.user.userInfo.name;
+            $q.notify({
+              message: `안녕하세요 ${name}님!`,
+              color: "green",
+              position: "center",
+              timeout: 1000,
+            });
+          });
         })
         .then(() => {
           router.push("/");
