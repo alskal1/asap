@@ -1,4 +1,5 @@
 import { api } from "boot/axios";
+import { Notify } from "quasar";
 
 export function login({ commit }, loginInfo) {
   return api.post("/api/member/login", loginInfo);
@@ -15,6 +16,12 @@ export function getUserInfo({ commit }) {
     })
     .catch(function (error) {
       console.log(error);
+      if (error.response.status === 401) {
+        Notify.create({
+          message: "로그인 후 진행해 주세요",
+          color: "red",
+        });
+      }
     });
 }
 

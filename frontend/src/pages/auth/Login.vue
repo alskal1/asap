@@ -64,11 +64,13 @@ export default {
     const $q = useQuasar();
 
     const login = (email, password) => {
-      const notifyerror = $q.notify({
-        message: "로그인이 실패하였습니다.",
-        color: "green",
-        icon: "announcement",
-      });
+      const notifyerror = () => {
+        $q.notify({
+          message: "로그인이 실패하였습니다.",
+          color: "red",
+          icon: "announcement",
+        });
+      };
       const loginData = {
         email: email,
         password: password,
@@ -86,19 +88,14 @@ export default {
               message: `안녕하세요 ${name}님!`,
               color: "green",
               position: "center",
-              timeout: 1000,
             });
           });
         })
         .then(() => {
           router.push("/");
         })
-        .then(() => {
-          if (response.status === 401) {
-            notifyerror();
-          }
-        })
         .catch((error) => {
+          notifyerror();
           console.log(error);
         });
     };
