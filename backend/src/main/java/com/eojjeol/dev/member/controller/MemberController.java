@@ -51,10 +51,10 @@ public class MemberController {
         return new ResponseEntity<>(new TokenDto(jwt), httpHeaders, HttpStatus.OK);
     }
 
-    @PatchMapping("/")
+    @PutMapping("/")
 //    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<?> updateMember(@RequestBody MemberDto memberDto) {
-        return new ResponseEntity<MemberDto>(memberService.updateMember(memberDto),HttpStatus.OK);
+        return new ResponseEntity<MemberDto>(memberService.updateMember(memberDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/")
