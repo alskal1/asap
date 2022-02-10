@@ -14,6 +14,7 @@
             v-model="email"
             type="email"
             label="이메일"
+            :rules="[(val) => !!val || '이메일을 입력해주세요.']"
           />
           <q-input
             color="green"
@@ -21,6 +22,7 @@
             v-model="name"
             type="text"
             label="이름"
+            :rules="[(val) => !!val || '이름을 입력해주세요.']"
           />
 
           <q-input
@@ -29,6 +31,7 @@
             v-model="password"
             type="password"
             label="비밀번호"
+            :rules="[(val) => !!val || '비밀번호를 입력해주세요.']"
           />
 
           <q-input
@@ -37,6 +40,10 @@
             v-model="confirmation"
             type="password"
             label="비밀번호 확인"
+            :rules="[
+              ((val) => !!val || '비밀번호 확인를 입력해주세요.') ||
+                ((val) => val !== password || '제목이 너무 깁니다.'),
+            ]"
           />
           <q-input
             color="green"
@@ -44,6 +51,7 @@
             v-model="phone"
             type="phone"
             label="전화 번호"
+            :rules="[(val) => !!val || '전화번호를 입력해주세요.']"
           />
           <div>
             <q-input
@@ -53,6 +61,7 @@
               v-model="address.zipCode"
               label="우편번호"
               @click="search()"
+              :rules="[(val) => !!val || '우편번호를 입력해주세요.']"
             >
               <template v-slot:prepend>
                 <q-icon color="green" name="search" />
@@ -66,6 +75,7 @@
               label="도로명주소"
               color="green"
               filled
+              :rules="[(val) => !!val || '도로명주소를 입력해주세요.']"
             />
             <span id="guide" style="color: #000; display: none"></span>
             <q-input
@@ -78,13 +88,6 @@
           </div>
           <div>
             <q-btn label="Submit" type="submit" color="green" />
-            <q-btn
-              label="Reset"
-              type="reset"
-              color="green"
-              flat
-              class="q-ml-sm"
-            />
           </div>
         </q-form>
       </q-card-section>
@@ -95,6 +98,7 @@
 <script>
 import { api } from "boot/axios";
 import { useRouter } from "vue-router";
+import { useQuasar } from "quasar";
 export default {
   name: "Signup",
   data() {
@@ -113,6 +117,7 @@ export default {
   },
   setup() {
     const router = useRouter();
+    const $q = useQuasar();
 
     const signupSuccess = () => {
       router.push("/auth/login");
@@ -126,7 +131,11 @@ export default {
         phone: phone,
         address: address,
       };
-
+      const notifyerror = $q.notify({
+        message: "회원가입 성공 하였습니다.",
+        color: "green",
+        icon: "announcement",
+      });
       api
         .post("/api/member/signup", userData)
         .then((response) => {
@@ -135,6 +144,7 @@ export default {
           }
         })
         .catch(function (error) {
+          notifyerror();
           console.log(error);
         });
     }
