@@ -1,84 +1,123 @@
 <template>
-  <q-form
-    @submit.prevent="
-      sumbitAuction(
-        bidterm,
-        currentPricce,
-        finalPrice,
-        priceTerm,
-        productName,
-        startPrice
-      )
-    "
-  >
-    <div class="row">
-      <q-input filled type="number" v-model="bidterm" label="bidterm">
-      </q-input>
-      <q-input
-        filled
-        type="number"
-        v-model="currentPricce"
-        label="currentPricce"
-      >
-      </q-input>
-      <q-input filled type="number" v-model="finalPrice" label="finalPrice">
-      </q-input>
-      <q-input filled type="number" v-model="priceTerm" label="priceTerm">
-      </q-input>
-      <q-input filled type="text" v-model="productName" label="productName">
-      </q-input>
-      <q-input filled type="number" v-model="startPrice" label="startPrice">
-      </q-input>
+  <q-page padding>
+    <div class="q-pa-md">
+      <q-form @submit.prevent="onSubmit" class="q-gutter-md">
+        <div>
+          <div class="text-green text-weight-bolder">bidTerm</div>
+          <q-input
+            type="text"
+            v-model="bidTerm"
+            dense
+            outlined
+            color="green"
+            clearable
+            :rules="[(val) => !isNaN(val) || '숫자를 입력해주세요']"
+          />
+        </div>
+        <div>
+          <div class="text-green text-weight-bolder">currentPrice</div>
+          <q-input
+            type="text"
+            v-model="currentPrice"
+            dense
+            outlined
+            color="green"
+            clearable
+            :rules="[(val) => !isNaN(val) || '숫자를 입력해주세요']"
+          />
+        </div>
+        <div>
+          <div class="text-green text-weight-bolder">finalPrice</div>
+          <q-input
+            type="text"
+            v-model="finalPrice"
+            dense
+            outlined
+            color="green"
+            clearable
+            :rules="[(val) => !isNaN(val) || '숫자를 입력해주세요']"
+          />
+        </div>
+        <div>
+          <div class="text-green text-weight-bolder">priceTerm</div>
+          <q-input
+            type="text"
+            v-model="priceTerm"
+            dense
+            outlined
+            color="green"
+            clearable
+            :rules="[(val) => !isNaN(val) || '숫자를 입력해주세요']"
+          />
+        </div>
+        <div>
+          <div class="text-green text-weight-bolder">productName</div>
+          <q-input
+            type="textarea"
+            v-model="productName"
+            dense
+            outlined
+            color="green"
+            clearable
+          />
+        </div>
+        <div>
+          <div class="text-green text-weight-bolder">startPrice</div>
+          <q-input
+            type="text"
+            v-model="startPrice"
+            dense
+            outlined
+            color="green"
+            clearable
+            :rules="[(val) => !isNaN(val) || '숫자를 입력해주세요']"
+          />
+        </div>
+        <div>
+          <q-btn label="경매등록" type="submit" color="green" />
+        </div>
+      </q-form>
     </div>
-    <div>
-      <q-btn label="Submit" type="submit" color="primary" />
-    </div>
-  </q-form>
+  </q-page>
 </template>
 
 <script>
 import { api } from "boot/axios";
-import { useRouter } from "vue-router";
-import { useQuasar } from "quasar";
 
 export default {
-  name: AuctionForm,
+  name: "AuctionForm",
   data() {
     return {
-      bidterm: 0,
-      currentPricce: 0,
-      finalPrice: 0,
-      priceTerm: 0,
+      bidTerm: "",
+      currentPrice: "",
+      finalPrice: "",
+      priceTerm: "",
       productName: "",
-      startPrice: 0,
+      roomId: 0,
+      startPrice: "",
     };
   },
-  setup() {
-    const router = useRouter();
-    const $q = useQuasar();
-    function sumbitAuction(
-      bidterm,
-      currentPricce,
-      finalPrice,
-      priceTerm,
-      productName,
-      startPrice
-    ) {
-      const auctionData = {
-        bidterm: bidterm,
-        currentPricce: currentPricce,
-        finalPrice: finalPrice,
-        priceTerm: priceTerm,
-        productName: productName,
-        startPrice: startPrice,
+  methods: {
+    onSubmit() {
+      const newData = {
+        bidTerm: this.bidTerm,
+        currentPrice: this.currentPrice,
+        finalPrice: this.finalPrice,
+        priceTerm: this.priceTerm,
+        productName: this.productName,
+        roomId: this.roomId,
+        startPrice: this.startPrice,
       };
-      api.post("api/auction", auctionData);
-    }
 
-    return {
-      router,
-      sumbitAuction,
-    };
+      api
+        .post("api/auction/", newData)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
   },
 };
 </script>
