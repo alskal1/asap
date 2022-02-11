@@ -49,7 +49,7 @@ export default boot(({ router, store, app }) => {
       Dialog.create({
         title: "권한",
         style: "shadow-box",
-        message: "<span class=''>로그인 하시겠습니까?</span>",
+        message: "<span class=''>로그인 후 이용해주세요.</span>",
         color: "red",
         html: true,
         cancel: true,
