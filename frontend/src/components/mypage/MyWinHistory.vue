@@ -70,10 +70,17 @@
         </div>
       </div>
     </q-card>
-    <div>
-      <q-list class="row" v-if="winHistoryList.length">
+    <div class="q-mt-xl">
+      <q-list class="text-center" v-if="winHistoryList.length">
+        <q-item class="text-white bg-green-3">
+          <q-item-section class="col-2">경매 일자</q-item-section>
+          <q-item-section class="col-3">상품명</q-item-section>
+          <q-item-section class="col-2">판매자</q-item-section>
+          <q-item-section class="col-1">수량</q-item-section>
+          <q-item-section class="col-2">낙찰 금액</q-item-section>
+          <q-item-section class="col-1">주문 상태</q-item-section>
+        </q-item>
         <win-list-item
-          class="col-md"
           v-for="(winItem, key) in winHistoryList"
           :key="key"
           :winItem="winItem"
@@ -81,7 +88,7 @@
         </win-list-item>
       </q-list>
       <q-list class="text-center" v-else>
-        <h6>낙찰내역이 없습니다.</h6>
+        <h6 class="text-grey">낙찰내역이 없습니다.</h6>
       </q-list>
     </div>
   </q-page>
@@ -105,8 +112,6 @@ export default {
   },
   setup() {
     const $store = useStore();
-
-    $store.dispatch("user/getWinHistory");
 
     $store.dispatch("user/getWinHistory");
 
