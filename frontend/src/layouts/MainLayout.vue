@@ -10,7 +10,7 @@
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
-        <q-btn to="/" flat no-caps no-wrap class="q-ml-xs">
+        <q-btn @click="reLoad" flat no-caps no-wrap class="q-ml-xs">
           <q-toolbar-title class="text-h4"> ASAP </q-toolbar-title>
         </q-btn>
         <q-space />
@@ -167,6 +167,9 @@ export default defineComponent({
       location.reload();
       router.push("/");
     };
+    const reLoad = () => {
+      location.replace("/");
+    };
 
     const leftDrawerOpen = ref(false);
     const search = ref("");
@@ -176,6 +179,7 @@ export default defineComponent({
       logout,
       leftDrawerOpen,
       search,
+      reLoad,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },

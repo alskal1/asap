@@ -4,7 +4,7 @@
       <div class="column items-center">
         <q-responsive :ratio="6 / 4" style="width: 500px" class="col">
           <div>
-            <h1 class="text-bold text-center text-green">ASAP</h1>
+            <h1 @click="Home" class="text-bold text-center text-green">ASAP</h1>
 
             <q-page-container>
               <router-view />
@@ -18,15 +18,21 @@
 
 <script>
 import { ref } from "vue";
-
+import { useRouter } from "vue-router";
 export default {
   // name: 'LayoutName',
 
   setup() {
     const leftDrawerOpen = ref(false);
+    const router = useRouter();
+
+    const Home = () => {
+      router.push("/");
+    };
 
     return {
       leftDrawerOpen,
+      Home,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
