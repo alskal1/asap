@@ -31,10 +31,6 @@ const routes = [
         path: "/room",
         component: () => import("pages/CreateRoom.vue"),
       },
-      {
-        path: "/auctioncreate",
-        component: () => import("pages/Auction.vue"),
-      },
     ],
   },
   {
