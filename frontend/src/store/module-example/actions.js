@@ -11,7 +11,7 @@ export function updateList({ commit }) {
 
 export function selectAllAuctions({ commit }, roomId) {
   return api
-    .get(`/api/auction/list/${roomId}/`)
+    .get(`/api/auction/list/${roomId}`)
     .then((response) => {
       console.log(response.data);
       commit("selectAllAuctions", response.data);
@@ -23,7 +23,7 @@ export function selectAllAuctions({ commit }, roomId) {
 
 export function deleteAuctions({ commit }, roomId) {
   return api
-    .delete(`/api/auction/list/${roomId}/`)
+    .delete(`/api/auction/list/${roomId}`)
     .then((response) => {
       console.log(response);
     })

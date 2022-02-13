@@ -9,7 +9,7 @@ import { Dialog } from "quasar";
 // for each client)
 
 const api = axios.create({
-  baseURL: "https://localhost:8443",
+  baseURL: "http://localhost:8090",
   headers: {
     "Content-Type": "application/json",
   },
