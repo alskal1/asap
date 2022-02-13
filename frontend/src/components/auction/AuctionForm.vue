@@ -86,6 +86,7 @@ import { api } from "boot/axios";
 
 export default {
   name: "AuctionForm",
+  props: ["roomId"],
   data() {
     return {
       bidTerm: "",
@@ -93,7 +94,7 @@ export default {
       finalPrice: "",
       priceTerm: "",
       productName: "",
-      roomId: 0,
+
       startPrice: "",
     };
   },
@@ -108,7 +109,7 @@ export default {
         roomId: this.roomId,
         startPrice: this.startPrice,
       };
-
+      console.log(newData);
       api
         .post("api/auction/", newData)
         .then((response) => {
