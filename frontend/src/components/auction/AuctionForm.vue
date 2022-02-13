@@ -3,7 +3,7 @@
     <div class="q-pa-md">
       <q-form @submit.prevent="onSubmit" class="q-gutter-md">
         <div>
-          <div class="text-green text-weight-bolder">bidTerm</div>
+          <div class="text-green text-weight-bolder">하향 주기</div>
           <q-input
             type="text"
             v-model="bidTerm"
@@ -15,7 +15,7 @@
           />
         </div>
         <div>
-          <div class="text-green text-weight-bolder">currentPrice</div>
+          <div class="text-green text-weight-bolder">현재 가격</div>
           <q-input
             type="text"
             v-model="currentPrice"
@@ -27,7 +27,7 @@
           />
         </div>
         <div>
-          <div class="text-green text-weight-bolder">finalPrice</div>
+          <div class="text-green text-weight-bolder">최종 낙찰가</div>
           <q-input
             type="text"
             v-model="finalPrice"
@@ -39,7 +39,7 @@
           />
         </div>
         <div>
-          <div class="text-green text-weight-bolder">priceTerm</div>
+          <div class="text-green text-weight-bolder">하향 금액</div>
           <q-input
             type="text"
             v-model="priceTerm"
@@ -51,7 +51,7 @@
           />
         </div>
         <div>
-          <div class="text-green text-weight-bolder">productName</div>
+          <div class="text-green text-weight-bolder">상품 이름</div>
           <q-input
             type="textarea"
             v-model="productName"
@@ -62,7 +62,7 @@
           />
         </div>
         <div>
-          <div class="text-green text-weight-bolder">startPrice</div>
+          <div class="text-green text-weight-bolder">시작가</div>
           <q-input
             type="text"
             v-model="startPrice"
@@ -109,7 +109,7 @@ export default {
         roomId: this.roomId,
         startPrice: this.startPrice,
       };
-      console.log(newData);
+
       api
         .post("api/auction/", newData)
         .then((response) => {

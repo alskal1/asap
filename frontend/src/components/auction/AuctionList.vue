@@ -1,25 +1,32 @@
 <template>
   <q-page>
-    <q-list v-for="(auction, key) in auctionList" :key="key">
-      <q-item>{{ auction }}</q-item>
-    </q-list>
+    <auction-list-item
+      v-for="(auction, key) in auctionList"
+      :key="key"
+      :auction="auction"
+    >
+    </auction-list-item>
   </q-page>
 </template>
 
 <script>
-import { computed } from "vue";
+// import { computed } from "vue";
+import AuctionListItem from "./AuctionListItem";
 import { useStore } from "vuex";
 export default {
   name: "AuctionList",
+  components: {
+    AuctionListItem,
+  },
   props: ["roomId"],
-  setup() {
+
+  mounted() {
     const $store = useStore();
+    // console.log(roomId);
 
-    $store.dispatch("moduleExample/getAuctionList");
+    $store.dispatch("moduleExample/selectAllAuctions", this.roomId);
+    const auctionList = $store.state.moduleExample.auctionList;
 
-    const auctionList = computed({
-      get: () => $store.state.moduleExample.auctionList,
-    });
     return {
       auctionList,
     };

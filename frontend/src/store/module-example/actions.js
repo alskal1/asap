@@ -8,8 +8,14 @@ export function updateList({ commit }) {
     commit("updateList", response.data);
   });
 }
-export function getAuctionList({ commit }) {
-  return api.get("/api/auction/list/").then((response) => {
-    commit("getAuctionList", response.data);
-  });
+
+export function selectAllAuctions({ commit }, roomId) {
+  return api
+    .get(`/api/auction/list/${roomId}/`)
+    .then((response) => {
+      commit("selectAllAuctions", response.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 }
