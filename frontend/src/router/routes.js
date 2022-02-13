@@ -19,8 +19,8 @@ const routes = [
         meta: { authRequired: true },
       },
       {
-        path: "/point",
-        component: () => import("pages/ChargePoint.vue"),
+        path: "/payment",
+        component: () => import("src/pages/Payment.vue"),
         meta: { authRequired: true },
       },
       {
@@ -54,7 +54,6 @@ const routes = [
       },
     ],
   },
-
   // Always leave this as last one,
   // but you can also remove it
   {

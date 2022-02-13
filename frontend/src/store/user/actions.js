@@ -37,6 +37,17 @@ export function updateConfirm({ commit }, user) {
     });
 }
 
+export function chargePoint({ commit }, point) {
+  return api
+    .post("/api/point/", point)
+    .then((response) => {
+      commit("isCharge", true);
+    })
+    .catch(function (error) {
+      commit("isCharge", false);
+      console.log(error);
+    });
+}
 export function getSellHistory({ commit }) {
   return api
     .get("/api/history/sell-list")
@@ -53,6 +64,17 @@ export function getWinHistory({ commit }) {
     .get("/api/history/win-list")
     .then((response) => {
       commit("getWinHistory", response.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export function getPointHistory({ commit }) {
+  return api
+    .get("/api/point/")
+    .then((response) => {
+      commit("getPointHistory", response.data);
     })
     .catch((error) => {
       console.log(error);

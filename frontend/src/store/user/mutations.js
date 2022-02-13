@@ -19,10 +19,18 @@ export function setIsUpdate(state, isUpdate) {
   state.isUpdate = isUpdate;
 }
 
+export function setPoint(state, isCharge) {
+  state.isCharge = isCharge;
+}
+
 export function getSellHistory(state, sellHistory) {
   state.sellHistory = sellHistory;
 }
 
 export function getWinHistory(state, winHistory) {
   state.winHistory = winHistory;
+}
+
+export function getPointHistory(state, pointHistory) {
+  state.pointHistory = pointHistory;
 }
