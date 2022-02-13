@@ -1,13 +1,13 @@
 server:
-  port: 8443
-  ssl:
-    enabled: true
-    key-store-type: PKCS12
-    key-store: classpath:keystore/ssafy.p12
-    key-store-password: 123456
-    key-alias: ssafy
-    trust-store: classpath:keystore/ssafy.ts
-    trust-store-password: 123456
+  port: 8090
+#  ssl:
+#    enabled: true
+#    key-store-type: PKCS12
+#    key-store: classpath:keystore/ssafy.p12
+#    key-store-password: 123456
+#    key-alias: ssafy
+#    trust-store: classpath:keystore/ssafy.ts
+#    trust-store-password: 123456
 
 spring:
   jpa:
@@ -21,7 +21,7 @@ spring:
 
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
+        dialect: org.hibernate.dialect.MySQL8Dialect
 
   data:
     web:
@@ -29,15 +29,15 @@ spring:
         one-indexed-parameters: true
 
   datasource:
-#    url: jdbc:mysql://localhost:3306/ssafy_web_db?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    hikari:
-#      username: ssafy
-#      password: ssafy
-    url: jdbc:h2:tcp://localhost/~/backend
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+    url: jdbc:mysql://localhost:3306/ssafy_web_db?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      username: ssafy
+      password: root
+#    url: jdbc:h2:tcp://localhost/~/backend
+#    username: sa
+#    password:
+#    driver-class-name: org.h2.Driver
   web:
     resources:
       static-locations: classpath:/dist
