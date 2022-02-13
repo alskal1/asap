@@ -96,7 +96,7 @@
         <q-item
           v-ripple
           active-class="my-menu-link"
-          to="/point"
+          to="/payment"
           exact
           clickable
         >

@@ -22,6 +22,7 @@ public class PointQueryRepository extends QuerydslRepositorySupport {
     public List<Point> findAllPoints(Long id) {
         return jpaQueryFactory.selectFrom(point)
                 .where(point.member.id.eq(id))
+                .orderBy(point.createdDate.desc())
                 .fetch();
     }
 
