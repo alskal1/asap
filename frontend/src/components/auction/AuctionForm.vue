@@ -118,6 +118,13 @@ export default {
         .catch(function (error) {
           console.log(error);
         });
+      this.bidTerm = "";
+      this.currentPrice = "";
+      this.finalPrice = "";
+      this.priceTerm = "";
+      this.productName = "";
+
+      this.startPrice = "";
     },
   },
 };
