@@ -10,6 +10,8 @@
       <div class="row">
         <user-video :stream-manager="mainStreamManager"></user-video>
       </div>
+      <auction-form :roomId="roomId"></auction-form>
+      <auction-list :roomId="roomId"></auction-list>
     </div>
   </q-page>
 </template>
@@ -19,7 +21,8 @@ import { api } from "boot/axios";
 import { ovapi } from "boot/axios";
 import { OpenVidu } from "openvidu-browser";
 import UserVideo from "components/live/UserVideo";
-
+import AuctionForm from "components/auction/AuctionForm";
+import AuctionList from "components/auction/AuctionList";
 const OPENVIDU_SERVER_URL = `https://${global.location.hostname}:4443`;
 const OPENVIDU_SERVER_SECRET = "MY_SECRET";
 
@@ -28,6 +31,8 @@ export default {
 
   components: {
     UserVideo,
+    AuctionForm,
+    AuctionList,
   },
 
   data() {
