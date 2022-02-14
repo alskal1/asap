@@ -18,22 +18,11 @@ export default {
   components: {
     AuctionListItem,
   },
-  // data() {
-  //   return { auctionList: [] };
-  // },
-  props: ["roomId"],
   computed: {
     auctionList: function () {
       const $store = useStore();
       return $store.state.moduleExample.auctionList;
     },
-  },
-
-  created() {
-    const $store = useStore();
-    // console.log(roomId);
-
-    $store.dispatch("moduleExample/selectAllAuctions", this.roomId);
   },
 };
 </script>

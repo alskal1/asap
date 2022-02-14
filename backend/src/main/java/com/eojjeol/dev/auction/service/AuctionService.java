@@ -7,6 +7,7 @@ import com.eojjeol.dev.entity.Room;
 import com.eojjeol.dev.entity.Auction;
 import com.eojjeol.dev.entity.member.Member;
 import com.eojjeol.dev.member.repository.MemberRepository;
+import com.eojjeol.dev.room.repository.RoomQueryRepository;
 import com.eojjeol.dev.room.repository.RoomRepository;
 import com.eojjeol.dev.security.util.SecurityUtil;
 import lombok.AllArgsConstructor;
@@ -26,12 +27,12 @@ public class AuctionService {
 
     private final AuctionRepository auctionRepository;
     private final AuctionQueryRepository auctionQueryRepository;
-    private final RoomRepository roomRepository;
+    private final RoomQueryRepository roomQueryRepository;
     private final MemberRepository memberRepository;
 
     public ResponseEntity<AuctionDto> createAuction(AuctionDto auctionDto) {
         Member member = SecurityUtil.getCurrentEmail().flatMap(memberRepository::findOneWithAuthoritiesByEmail).orElse(null);
-        Room room = roomRepository.findBySessionId(member.getEmail()).orElse(null);
+        Room room = roomQueryRepository.findRoomBySessionId(member.getEmail().replaceAll("[@.]", ""));
 
         if(room == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -72,10 +73,21 @@ public class AuctionService {
         }
     }
 
+    public ResponseEntity<AuctionDto> deleteAllAuction(String sessionId) {
+        try {
+            Room room = roomQueryRepository.findRoomBySessionId(sessionId.replaceAll("[@.]", ""));
+            auctionQueryRepository.deleteAllAuctionByRoomId(room.getId());
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
     public ResponseEntity<List<AuctionDto>> selectAllAuction(String sessionId) {
         try {
-            Member member = SecurityUtil.getCurrentEmail().flatMap(memberRepository::findOneWithAuthoritiesByEmail).orElse(null);
-            Room room = roomRepository.findBySessionId(member.getEmail()).orElse(null);
+            String encSessionId = sessionId.replaceAll("[@.]", "");
+            Room room = roomQueryRepository.findRoomBySessionId(encSessionId);
 
             if(room == null) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

@@ -9,9 +9,9 @@ export function updateList({ commit }) {
   });
 }
 
-export function selectAllAuctions({ commit }, roomId) {
+export function selectAllAuctions({ commit }, sessionId) {
   return api
-    .get(`/api/auction/list/${roomId}`)
+    .get("/api/auction/list/" + sessionId)
     .then((response) => {
       console.log(response.data);
       commit("selectAllAuctions", response.data);
@@ -21,9 +21,9 @@ export function selectAllAuctions({ commit }, roomId) {
     });
 }
 
-export function deleteAuctions({ commit }, roomId) {
+export function deleteAuctions({ commit }, sessionId) {
   return api
-    .delete(`/api/auction/list/${roomId}`)
+    .delete("/api/auction/list/" + sessionId)
     .then((response) => {
       console.log(response);
     })

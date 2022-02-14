@@ -31,8 +31,8 @@
         </q-card>
       </q-dialog>
 
-      <auction-form :roomId="roomId"></auction-form>
-      <auction-list :roomId="roomId"></auction-list>
+      <auction-form v-if="manage"></auction-form>
+      <auction-list v-if="manage"></auction-list>
     </div>
   </q-page>
 </template>
@@ -58,7 +58,6 @@ export default {
 
   data() {
     return {
-      roomId: "",
       title: "",
       messageList: "",
       position: "center",
@@ -70,15 +69,18 @@ export default {
       subscribers: [],
       message: "",
       manage: false,
-      sessionId: "SessionA",
-      myUserName: `Participant${Math.floor(Math.random() * 100)}`,
+      sessionId: "",
+      myUserName: "",
     };
   },
-  mounted() {
+  created() {
     this.title = this.$route.query.title;
-    this.sessionId = this.$route.query.sessionId;
+    this.sessionId = this.$route.query.sessionId
+      .replace("@", "")
+      .replace(".", "");
     this.myUserName = this.$route.query.myUserName;
-
+  },
+  mounted() {
     if (this.$route.query.status == "PUBLISHER") {
       this.manage = true;
       this.joinSession();
@@ -131,18 +133,23 @@ export default {
         this.session
           .connect(token, { clientData: this.myUserName })
           .then(() => {
+            console.log("세션 아이디 : ", this.sessionId);
             const newData = {
-              token: token,
               description: this.description,
               title: this.title,
-              sessionId: this.sessionId,
+              sessionId: this.sessionId.replace("@", "").replace(".", ""),
             };
 
             api
               .post("/api/room/", newData)
               .then((response) => {
-                this.roomId = response.data.id;
                 console.log(response);
+              })
+              .then(() => {
+                this.$store.dispatch(
+                  "moduleExample/selectAllAuctions",
+                  this.sessionId
+                );
               })
               .catch(function (error) {
                 console.log(error);
@@ -271,15 +278,16 @@ export default {
       this.OV = undefined;
 
       window.removeEventListener("beforeunload", this.leaveSession);
-
-      api
-        .delete("/api/room/" + this.roomId)
-        .then(() => {
-          this.$router.push("/");
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      if (this.manage) {
+        api
+          .delete("/api/room/" + this.sessionId)
+          .then(() => {
+            this.$router.push("/");
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      }
     },
 
     getSubToken(mySessionId) {
