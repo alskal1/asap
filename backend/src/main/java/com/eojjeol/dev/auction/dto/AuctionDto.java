@@ -1,6 +1,6 @@
 package com.eojjeol.dev.auction.dto;
 
-import com.eojjeol.dev.entity.auction.Auction;
+import com.eojjeol.dev.entity.Auction;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 

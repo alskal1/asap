@@ -1,4 +1,4 @@
-package com.eojjeol.dev.entity.auction;
+package com.eojjeol.dev.entity;
 
 import com.eojjeol.dev.entity.BaseTimeEntity;
 import com.eojjeol.dev.entity.History;
@@ -40,9 +40,6 @@ public class Auction extends BaseTimeEntity {
 
     @OneToOne(mappedBy = "auction", cascade = CascadeType.ALL)
     private History history;
-
-    @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL)
-    private List<AuctionViewer> auctionViewerList = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")

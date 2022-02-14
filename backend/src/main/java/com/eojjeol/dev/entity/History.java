@@ -1,6 +1,5 @@
 package com.eojjeol.dev.entity;
 
-import com.eojjeol.dev.entity.auction.Auction;
 import com.eojjeol.dev.entity.member.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

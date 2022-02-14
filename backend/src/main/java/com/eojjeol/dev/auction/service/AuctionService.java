@@ -3,8 +3,12 @@ package com.eojjeol.dev.auction.service;
 import com.eojjeol.dev.auction.dto.AuctionDto;
 import com.eojjeol.dev.auction.repository.AuctionQueryRepository;
 import com.eojjeol.dev.auction.repository.AuctionRepository;
-import com.eojjeol.dev.entity.auction.Auction;
+import com.eojjeol.dev.entity.Room;
+import com.eojjeol.dev.entity.Auction;
+import com.eojjeol.dev.entity.member.Member;
+import com.eojjeol.dev.member.repository.MemberRepository;
 import com.eojjeol.dev.room.repository.RoomRepository;
+import com.eojjeol.dev.security.util.SecurityUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -24,11 +27,19 @@ public class AuctionService {
     private final AuctionRepository auctionRepository;
     private final AuctionQueryRepository auctionQueryRepository;
     private final RoomRepository roomRepository;
+    private final MemberRepository memberRepository;
 
     public ResponseEntity<AuctionDto> createAuction(AuctionDto auctionDto) {
+        Member member = SecurityUtil.getCurrentEmail().flatMap(memberRepository::findOneWithAuthoritiesByEmail).orElse(null);
+        Room room = roomRepository.findBySessionId(member.getEmail()).orElse(null);
+
+        if(room == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         Auction auction = Auction.builder()
                 .productName(auctionDto.getProductName())
-                .room(roomRepository.getById(auctionDto.getRoomId()))
+                .room(room)
                 .finalPrice(auctionDto.getFinalPrice())
                 .startPrice(auctionDto.getStartPrice())
                 .bidTerm(auctionDto.getBidTerm())
@@ -61,9 +72,16 @@ public class AuctionService {
         }
     }
 
-    public ResponseEntity<List<AuctionDto>> selectAllAuction(Long id) {
+    public ResponseEntity<List<AuctionDto>> selectAllAuction(String sessionId) {
         try {
-            List<Auction> auctionList = auctionQueryRepository.findAllAuctionsByRoomId(id);
+            Member member = SecurityUtil.getCurrentEmail().flatMap(memberRepository::findOneWithAuthoritiesByEmail).orElse(null);
+            Room room = roomRepository.findBySessionId(member.getEmail()).orElse(null);
+
+            if(room == null) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+            List<Auction> auctionList = auctionQueryRepository.findAllAuctionsByRoomId(room.getId());
 
             if(auctionList.size() == 0) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 

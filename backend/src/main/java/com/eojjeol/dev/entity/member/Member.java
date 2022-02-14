@@ -1,8 +1,7 @@
 package com.eojjeol.dev.entity.member;
 
 import com.eojjeol.dev.entity.*;
-import com.eojjeol.dev.entity.auction.Auction;
-import com.eojjeol.dev.entity.auction.AuctionViewer;
+import com.eojjeol.dev.entity.Auction;
 import lombok.*;
 
 import javax.persistence.*;
@@ -41,9 +40,6 @@ public class Member {
 
     private Integer point;
 
-    @OneToOne(mappedBy = "member")
-    private Room room;
-
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<History> historyList = new ArrayList<>();
 
@@ -52,9 +48,6 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private Set<MemberAuthority> memberAuthorities = new HashSet<>();
-
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<AuctionViewer> auctionViewerList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<ChargeHistory> chargeHistoryList = new ArrayList<>();
