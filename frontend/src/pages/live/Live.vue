@@ -12,7 +12,7 @@
             <q-toolbar-title> {{ myUserName }}</q-toolbar-title>
             <q-toolbar-title>{{ title }}</q-toolbar-title>
             <q-toolbar-title>시청자수</q-toolbar-title>
-            <q-btn v-if="manage" color="red" @click="leaveSession"
+            <q-btn v-if="manage" color="red" @click="leaveSession()"
               >방송 종료</q-btn
             >
           </q-toolbar>
@@ -29,7 +29,7 @@
           <q-card-section class="row items-center no-wrap">
             <div>
               <div class="text-weight-bold">방송이 종료되었습니다.</div>
-              <q-btn @click="goMain()">OK</q-btn>
+              <q-btn @click="leaveSession()">OK</q-btn>
             </div>
           </q-card-section>
         </q-card>
@@ -119,7 +119,6 @@ export default {
       this.subscribers = [];
       this.OV = undefined;
 
-      window.removeEventListener("beforeunload", this.leaveSession);
       if (this.manage) {
         api
           .delete("/api/room/" + this.sessionId)
@@ -136,17 +135,13 @@ export default {
   },
 
   methods: {
-    unLoadEvent: function (event) {
-      alert("12345");
-      event.preventDefault();
-    },
-
-    goMain() {
-      this.$router.push("/");
-    },
-
     addAuction() {
       this.auctionDialog = true;
+    },
+
+    fetchAuctionList: function () {
+      this.auctionDialog = false;
+      this.sendUpdateMessage();
     },
 
     joinSession() {
@@ -161,16 +156,11 @@ export default {
 
       this.session.on("signal:user-chat", (event) => {
         if (this.session.connection.connectionId != event.from.connectionId) {
-          // let newMessage = document.createElement("q-chat-message");
-          // newMessage.setAttribute("v-bind:text", "[" + event.data + "]");
-          // newMessage.setAttribute("name", "viewer");
-
           let newMessage = document.createElement("div");
           newMessage.innerText = event.data;
           newMessage.classList.add("message-blue");
 
           document.getElementById("chattings").appendChild(newMessage);
-          // this.messageList += event.data;
         }
       });
 
@@ -236,13 +226,6 @@ export default {
             );
           });
       });
-
-      window.addEventListener("beforeunload", this.leaveSession);
-    },
-
-    fetchAuctionList: function () {
-      this.auctionDialog = false;
-      this.sendUpdateMessage();
     },
 
     justJoinSession() {
@@ -306,8 +289,6 @@ export default {
             );
           });
       });
-
-      window.addEventListener("beforeunload", this.leaveSession);
     },
 
     sendMessage() {
@@ -337,12 +318,22 @@ export default {
       if (this.session) {
         this.session
           .signal({
-            data: this.message,
             to: [],
             type: "update-auction",
           })
-          .then(() => {
-            console.log("Message Sent");
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+    },
+
+    sendPriceChangeMessage(newPrice) {
+      if (this.session) {
+        this.session
+          .signal({
+            data: newPrice,
+            to: [],
+            type: "update-auction",
           })
           .catch((error) => {
             console.error(error);
@@ -351,25 +342,7 @@ export default {
     },
 
     leaveSession() {
-      // --- Leave the session by calling 'disconnect' method over the Session object --
-      if (this.session) this.session.disconnect();
-      this.session = undefined;
-      this.mainStreamManager = undefined;
-      this.publisher = undefined;
-      this.subscribers = [];
-      this.OV = undefined;
-
-      window.removeEventListener("beforeunload", this.leaveSession);
-      if (this.manage) {
-        api
-          .delete("/api/room/" + this.sessionId)
-          .then(() => {
-            this.$router.push("/");
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      }
+      this.$router.push("/");
     },
 
     getSubToken(mySessionId) {
