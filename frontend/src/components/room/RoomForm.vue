@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <div class="q-pa-md">
-      <q-form @submit.prevent="onSubmit" class="q-gutter-md">
+      <q-form @submit.prevent="goLive()" class="q-gutter-md">
         <div>
           <div class="text-green text-weight-bolder">방송 제목</div>
           <q-input
@@ -35,24 +35,26 @@
 
         <div>
           <q-form class="q-gutter-md">
-            <div class="text-green text-weight-bolder">Participant</div>
+            <div class="text-green text-weight-bolder">판매자 명</div>
             <p>
               <q-input
                 outlined
-                v-model="myUserName"
+                v-model="userInfo.name"
                 class="form-control"
                 type="text"
                 required
+                disable
               />
             </p>
             <div class="text-green text-weight-bolder">Session</div>
             <p>
               <q-input
                 outlined
-                v-model="sessionId"
+                v-model="userInfo.email"
                 class="form-control"
                 type="text"
                 required
+                disable
               />
             </p>
           </q-form>
@@ -67,35 +69,48 @@
 </template>
 
 <script>
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+
 export default {
   name: "RoomForm",
-  data() {
-    return {
-      description: "",
-      title: "",
-      status: "PUBLISHER",
-      sessionId: "SessionA",
-      myUserName: `Participant${Math.floor(Math.random() * 100)}`,
-    };
-  },
-  methods: {
-    onSubmit() {
-      this.goLive();
-    },
 
-    goLive() {
-      console.log(this.sessionId);
-      this.$router.push(
+  setup() {
+    const $store = useStore();
+    const router = useRouter();
+    const userInfo = ref({});
+    const title = ref("");
+    const description = ref("");
+
+    $store.dispatch("user/getUserInfo").then(() => {
+      const stateUserInfo = {
+        email: $store.state.user.userInfo.email,
+        name: $store.state.user.userInfo.name,
+        phone: $store.state.user.userInfo.phone,
+      };
+
+      userInfo.value = stateUserInfo;
+    });
+
+    function goLive() {
+      router.push(
         "/live?sessionId=" +
-          this.sessionId +
+          userInfo.value.email +
           "&myUserName=" +
-          this.myUserName +
+          userInfo.value.name +
           "&title=" +
-          this.title +
-          "&status=" +
-          this.status
+          title.value +
+          "&status=PUBLISHER"
       );
-    },
+    }
+
+    return {
+      userInfo,
+      title,
+      description,
+      goLive,
+    };
   },
 };
 </script>

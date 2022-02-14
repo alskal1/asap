@@ -24,4 +24,10 @@ public class AuctionQueryRepository extends QuerydslRepositorySupport {
                 .where(auction.room.id.eq(id))
                 .fetch();
     }
+
+    public void deleteAllAuctionByRoomId(Long id) {
+        jpaQueryFactory.delete(auction)
+                .where(auction.room.id.eq(id))
+                .notifyAll();
+    }
 }

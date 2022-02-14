@@ -4,6 +4,7 @@ import com.eojjeol.dev.entity.Room;
 import com.eojjeol.dev.entity.member.Member;
 import com.eojjeol.dev.member.repository.MemberRepository;
 import com.eojjeol.dev.room.dto.RoomDto;
+import com.eojjeol.dev.room.repository.RoomQueryRepository;
 import com.eojjeol.dev.room.repository.RoomRepository;
 import com.eojjeol.dev.security.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
@@ -21,20 +22,21 @@ public class RoomService {
 
     private final MemberRepository memberRepository;
     private final RoomRepository roomRepository;
+    private final RoomQueryRepository roomQueryRepository;
 
     @Transactional
     public ResponseEntity<RoomDto> createRoom(RoomDto roomDto) {
         try {
             Member member = SecurityUtil.getCurrentEmail().flatMap(memberRepository::findOneWithAuthoritiesByEmail).orElse(null);
 
-            Room isRoomExist = roomRepository.findBySessionId(member.getEmail()).orElse(null);
+            Room isRoomExist = roomQueryRepository.findRoomBySessionId(member.getEmail().replaceAll("[@.]", ""));
 
             if(isRoomExist != null) {
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
             }
 
             Room room = Room.builder()
-                    .sessionId(member.getEmail())
+                    .sessionId(member.getEmail().replaceAll("[@.]", ""))
                     .title(roomDto.getTitle())
                     .description(roomDto.getDescription())
                     .build();
@@ -50,7 +52,7 @@ public class RoomService {
     @Transactional
     public ResponseEntity<RoomDto> deleteRoom(String sessionId) {
         try {
-            Room room = roomRepository.findBySessionId(sessionId).orElse(null);
+            Room room = roomQueryRepository.findRoomBySessionId(sessionId);
             roomRepository.deleteById(room.getId());
 
             return new ResponseEntity<>(HttpStatus.OK);
@@ -61,7 +63,7 @@ public class RoomService {
 
     public ResponseEntity<RoomDto> selectRoom(String sessionId) {
         try {
-            Room room = roomRepository.findBySessionId(sessionId).orElse(null);
+            Room room = roomQueryRepository.findRoomBySessionId(sessionId);
             RoomDto roomDto = RoomDto.from(room);
 
             return new ResponseEntity<>(roomDto, HttpStatus.OK);

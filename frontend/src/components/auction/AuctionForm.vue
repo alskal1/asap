@@ -83,31 +83,35 @@
 
 <script>
 import { api } from "boot/axios";
+import { useStore } from "vuex";
+import { computed, ref } from "@vue/runtime-core";
 
 export default {
   name: "AuctionForm",
-  props: ["roomId"],
-  data() {
-    return {
-      bidTerm: "",
-      currentPrice: "",
-      finalPrice: "",
-      priceTerm: "",
-      productName: "",
+  setup() {
+    const $store = useStore();
+    const bidTerm = ref("");
+    const currentPrice = ref("");
+    const finalPrice = ref("");
+    const priceTerm = ref("");
+    const productName = ref("");
+    const roomId = ref("");
+    const startPrice = ref("");
 
-      startPrice: "",
-    };
-  },
-  methods: {
-    onSubmit() {
+    const email = computed({
+      get: () =>
+        $store.state.user.userInfo.email.replace("@", "").replace(".", ""),
+    });
+
+    function onSubmit() {
       const newData = {
-        bidTerm: this.bidTerm,
-        currentPrice: this.currentPrice,
-        finalPrice: this.finalPrice,
-        priceTerm: this.priceTerm,
-        productName: this.productName,
-        roomId: this.roomId,
-        startPrice: this.startPrice,
+        bidTerm: bidTerm.value,
+        currentPrice: currentPrice.value,
+        finalPrice: finalPrice.value,
+        priceTerm: priceTerm.value,
+        productName: productName.value,
+        roomId: roomId.value,
+        startPrice: startPrice.value,
       };
 
       api
@@ -115,17 +119,30 @@ export default {
         .then((response) => {
           console.log(response);
         })
+        .then(() => {
+          $store.dispatch("moduleExample/selectAllAuctions", email.value);
+        })
         .catch(function (error) {
           console.log(error);
         });
-      this.bidTerm = "";
-      this.currentPrice = "";
-      this.finalPrice = "";
-      this.priceTerm = "";
-      this.productName = "";
+      bidTerm.value = "";
+      currentPrice.value = "";
+      finalPrice.value = "";
+      priceTerm.value = "";
+      productName.value = "";
+      startPrice.value = "";
+    }
 
-      this.startPrice = "";
-    },
+    return {
+      bidTerm,
+      currentPrice,
+      finalPrice,
+      priceTerm,
+      productName,
+      roomId,
+      startPrice,
+      onSubmit,
+    };
   },
 };
 </script>

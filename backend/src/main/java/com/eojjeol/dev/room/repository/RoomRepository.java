@@ -15,6 +15,4 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
 
     @Override
     void deleteById(Long id);
-
-    Optional<Room> findBySessionId(String sessionId);
 }

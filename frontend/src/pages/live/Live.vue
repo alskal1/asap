@@ -1,40 +1,38 @@
 <template>
-  <q-page>
-    <div class="q-pa-md">
-      <q-layout
-        view="lHh Lpr lFf"
-        container
-        style="height: 630px"
-        class="shadow-2 rounded-borders"
-      >
-        <q-header elevated class="bg-green">
-          <q-toolbar>
-            <q-toolbar-title>판매자</q-toolbar-title>
-            <q-toolbar-title>라이브 경매 시작!</q-toolbar-title>
-            <q-toolbar-title>시청자수</q-toolbar-title>
-          </q-toolbar>
-        </q-header>
+  <q-page class="flex flex-center">
+    <div v-if="session">
+      <div>
+        <h2>{{ title }}</h2>
+        <q-btn v-if="manage" color="red" @click="leaveSession"
+          >방송 종료하기</q-btn
+        >
+      </div>
+      <div class="row">
+        <user-video :stream-manager="mainStreamManager"></user-video>
+      </div>
 
-        <q-drawer side="right" v-model="drawerRight" show-if-above :width="200">
-          <q-scroll-area
-            style="
-              height: calc(100% - 100px);
-              margin-top: 150px;
-              border-right: 1px solid #ddd;
-            "
-          >
-            <div>msg</div>
-          </q-scroll-area>
-          <div>
-            <q-input placeholder="메시지를 입력하세요.">
-              <q-btn>전송</q-btn>
-            </q-input>
-          </div>
-        </q-drawer>
-        <q-page-container>
-          <q-page padding> 라이브 경매 화면 </q-page>
-        </q-page-container>
-      </q-layout>
+      <div>
+        <q-input v-model="message" />
+        <button type="button" @click="sendMessage()">전송</button>
+      </div>
+
+      <q-div id="chattings">
+        <h2>메시지 리스트</h2>
+      </q-div>
+
+      <q-dialog v-model="dialog">
+        <q-card>
+          <q-card-section class="row items-center no-wrap">
+            <div>
+              <div class="text-weight-bold">방송이 종료되었습니다.</div>
+              <q-btn @click="goMain()">OK</q-btn>
+            </div>
+          </q-card-section>
+        </q-card>
+      </q-dialog>
+
+      <auction-form v-if="manage"></auction-form>
+      <auction-list v-if="manage"></auction-list>
     </div>
   </q-page>
 </template>
@@ -60,7 +58,6 @@ export default {
 
   data() {
     return {
-      roomId: "",
       title: "",
       messageList: "",
       position: "center",
@@ -72,15 +69,18 @@ export default {
       subscribers: [],
       message: "",
       manage: false,
-      sessionId: "SessionA",
-      myUserName: `Participant${Math.floor(Math.random() * 100)}`,
+      sessionId: "",
+      myUserName: "",
     };
   },
-  mounted() {
+  created() {
     this.title = this.$route.query.title;
-    this.sessionId = this.$route.query.sessionId;
+    this.sessionId = this.$route.query.sessionId
+      .replace("@", "")
+      .replace(".", "");
     this.myUserName = this.$route.query.myUserName;
-
+  },
+  mounted() {
     if (this.$route.query.status == "PUBLISHER") {
       this.manage = true;
       this.joinSession();
@@ -133,18 +133,23 @@ export default {
         this.session
           .connect(token, { clientData: this.myUserName })
           .then(() => {
+            console.log("세션 아이디 : ", this.sessionId);
             const newData = {
-              token: token,
               description: this.description,
               title: this.title,
-              sessionId: this.sessionId,
+              sessionId: this.sessionId.replace("@", "").replace(".", ""),
             };
 
             api
               .post("/api/room/", newData)
               .then((response) => {
-                this.roomId = response.data.id;
                 console.log(response);
+              })
+              .then(() => {
+                this.$store.dispatch(
+                  "moduleExample/selectAllAuctions",
+                  this.sessionId
+                );
               })
               .catch(function (error) {
                 console.log(error);
@@ -273,15 +278,16 @@ export default {
       this.OV = undefined;
 
       window.removeEventListener("beforeunload", this.leaveSession);
-
-      api
-        .delete("/api/room/" + this.roomId)
-        .then(() => {
-          this.$router.push("/");
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      if (this.manage) {
+        api
+          .delete("/api/room/" + this.sessionId)
+          .then(() => {
+            this.$router.push("/");
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      }
     },
 
     getSubToken(mySessionId) {
