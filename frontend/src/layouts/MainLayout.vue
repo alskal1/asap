@@ -38,6 +38,9 @@
 
         <q-space />
         <div v-if="isLogin" class="q-gutter-sm row items-center no-wrap">
+          <q-btn to="/room" round dense flat color="grey-8" icon="attach_money">
+            <q-tooltip>현재 포인트: {{ currentPointInfo }}</q-tooltip>
+          </q-btn>
           <q-btn to="/room" round dense flat color="grey-8" icon="video_call">
             <q-tooltip>라이브 경매 생성</q-tooltip>
           </q-btn>
@@ -152,10 +155,13 @@ export default defineComponent({
 
     const isLogin = ref(sessionStorage.getItem("jwt"));
     const userInfo = ref({});
+    const currentPointInfo = ref({});
 
     $store.dispatch("user/getUserInfo").then(() => {
       const _userInfo = $store.state.user.userInfo;
+      const currentPoint = $store.state.user.userInfo.point;
       userInfo.value = _userInfo;
+      currentPointInfo.value = currentPoint;
     });
 
     const logout = () => {
@@ -176,6 +182,7 @@ export default defineComponent({
       userInfo,
       logout,
       leftDrawerOpen,
+      currentPointInfo,
       search,
       reLoad,
       toggleLeftDrawer() {
