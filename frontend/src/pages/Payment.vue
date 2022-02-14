@@ -51,13 +51,7 @@
         </div>
       </q-step>
 
-      <q-step
-        :name="2"
-        title="결제"
-        caption="Optional"
-        icon="paid"
-        :done="step > 2"
-      >
+      <q-step :name="2" title="결제" icon="paid" :done="step > 2">
         <div class="row flex justify-center items-center">
           <h2>결제 중 입니다.</h2>
           <div>
