@@ -77,8 +77,8 @@
             v-if="right"
             @click="
               () => {
-                PaymentBtn();
                 step = 2;
+                price == 0 ? alert() : PaymentBtn();
               }
             "
             color="green"
@@ -102,7 +102,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
-
+import { useQuasar } from "quasar";
 const { IMP } = window;
 
 export default {
@@ -119,7 +119,23 @@ export default {
     const addressInfo = ref({});
     const currentPointInfo = ref({});
     const router = useRouter();
+    const $q = useQuasar();
 
+    function alert() {
+      $q.dialog({
+        title: "결제오류",
+        message: "결제 금액이 너무 작습니다.",
+      })
+        .onOk(() => {
+          // console.log('OK')
+        })
+        .onCancel(() => {
+          // console.log('Cancel')
+        })
+        .onDismiss(() => {
+          // console.log('I am triggered on both OK and Cancel')
+        });
+    }
     $store.dispatch("user/getUserInfo").then(() => {
       const stateUserInfo = {
         email: $store.state.user.userInfo.email,
@@ -147,10 +163,12 @@ export default {
       };
 
       $store.dispatch("user/chargePoint", point).then(() => {
-        router.push("/");
+        location.reload();
+        router.push("/payment");
       });
     }
     return {
+      alert,
       userInfo,
       addressInfo,
       chargePoint,
