@@ -11,7 +11,7 @@ import { Dialog } from "quasar";
 const serverName = process.env.DEV ? "localhost" : "i6b103.p.ssafy.io";
 
 const api = axios.create({
-  baseURL: `http://${serverName}:8090`,
+  baseURL: `http://${serverName}:9090`,
   headers: {
     "Content-Type": "application/json",
   },
