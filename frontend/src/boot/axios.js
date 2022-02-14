@@ -8,15 +8,17 @@ import { Dialog } from "quasar";
 // "export default () => {}" function below (which runs individually
 // for each client)
 
+const serverName = process.env.DEV ? "localhost" : "i6b103.p.ssafy.io";
+
 const api = axios.create({
-  baseURL: "http://localhost:8090",
+  baseURL: `http://${serverName}:8090`,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
 const ovapi = axios.create({
-  baseURL: `https://${global.location.hostname}:4443`,
+  baseURL: `https://${serverName}:4443`,
   headers: {
     "Content-Type": "application/json",
   },
