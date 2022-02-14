@@ -1,14 +1,114 @@
 <template>
-  <section class="test">
-    <input type="number" placeholder="금액 입력" v-model="price" />
-    <div @click="PaymentBtn">충전</div>
-  </section>
+  <q-page>
+    <q-stepper
+      v-model="step"
+      ref="stepper"
+      alternative-labels
+      color="primary"
+      animated
+    >
+      <q-step
+        :name="1"
+        title="포인트 충전"
+        icon="shopping_cart"
+        :done="step > 1"
+      >
+        <div class="flex justify-center items-center">
+          <q-card style="width: 800px; padding: 20px">
+            <q-card-section>
+              <div class="text-weight-bold text-h6">현재 잔액 포인트</div>
+              <!-- <q-input class="text-left" v-model="currentPointInfo" disable /> -->
+              <div class="text-right text-weight-bold text-h6 text-green">
+                {{ currentPointInfo }} 포인트
+              </div>
+            </q-card-section>
+            <q-card-section>
+              <q-form @submit.prevent="PaymentBtn" class="q-gutter-md">
+                <div class="text-weight-bold text-h6">충전 금액 입력</div>
+                <q-input
+                  filled
+                  color="green"
+                  v-model="price"
+                  :rules="[(val) => !isNaN(val) || '숫자를 입력해주세요']"
+                />
+                <div style="text-align: center">
+                  <q-checkbox
+                    v-model="right"
+                    label="상기 결제 내용을 동의합니다."
+                  />
+                </div>
+                <!-- <div style="text-align: center">
+                  <q-btn
+                    v-if="right"
+                    label="충전하기"
+                    type="submit"
+                    color="green"
+                  />
+                </div> -->
+              </q-form>
+            </q-card-section>
+          </q-card>
+        </div>
+      </q-step>
+
+      <q-step
+        :name="2"
+        title="결제"
+        caption="Optional"
+        icon="paid"
+        :done="step > 2"
+      >
+        <div class="row flex justify-center items-center">
+          <h2>결제 중 입니다.</h2>
+          <div>
+            <q-circular-progress
+              indeterminate
+              size="90px"
+              :thickness="0.2"
+              color="green"
+              center-color="white"
+              track-color="transparent"
+              class="q-ma-md"
+            />
+          </div>
+        </div>
+        <div style="text-align: center">
+          <p>결제가 안되신다면 다시 결제를 눌러주세요</p>
+        </div>
+      </q-step>
+
+      <template v-slot:navigation>
+        <q-stepper-navigation style="text-align: center">
+          <q-btn
+            v-if="right"
+            @click="
+              () => {
+                PaymentBtn();
+                step = 2;
+              }
+            "
+            color="green"
+            :label="step === 2 ? '다시 결제' : '결제'"
+          />
+          <q-btn
+            v-if="step > 1"
+            flat
+            color="primary"
+            @click="$refs.stepper.previous()"
+            label="결제취소"
+            class="q-ml-sm"
+          />
+        </q-stepper-navigation>
+      </template>
+    </q-stepper>
+  </q-page>
 </template>
 
 <script>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
+
 const { IMP } = window;
 
 export default {
@@ -23,6 +123,7 @@ export default {
     const $store = useStore();
     const userInfo = ref({});
     const addressInfo = ref({});
+    const currentPointInfo = ref({});
     const router = useRouter();
 
     $store.dispatch("user/getUserInfo").then(() => {
@@ -33,7 +134,7 @@ export default {
       };
 
       const stateAddressInfo = $store.state.user.userInfo.address;
-
+      const currentPoint = $store.state.user.userInfo.point;
       const stateAddressInfos = {
         zipCode: stateAddressInfo.zipCode,
         roadAddress: stateAddressInfo.roadAddress,
@@ -42,6 +143,7 @@ export default {
 
       userInfo.value = stateUserInfo;
       addressInfo.value = stateAddressInfos;
+      currentPointInfo.value = currentPoint;
     });
 
     function chargePoint() {
@@ -58,6 +160,9 @@ export default {
       userInfo,
       addressInfo,
       chargePoint,
+      currentPointInfo,
+      right: ref(false),
+      step: ref(1),
     };
   },
   created() {
@@ -98,7 +203,7 @@ export default {
 </script>
 
 <style scoped>
-input[type="number"]::-webkit-outer-spin-button,
+/* input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
@@ -112,8 +217,8 @@ input {
   height: 40px;
   line-height: 40px;
   outline: none;
-}
-.test {
+} */
+/* .test {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -129,5 +234,5 @@ div {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-}
+} */
 </style>
