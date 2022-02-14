@@ -3,12 +3,15 @@
     <div v-if="session">
       <div>
         <h2>{{ title }}</h2>
-        <q-btn v-if="manage" color="red" @click="leaveSession"
+        <q-btn v-if="manage" color="red" @click="leaveSession()"
           >방송 종료하기</q-btn
         >
       </div>
       <div class="row">
-        <user-video :stream-manager="mainStreamManager"></user-video>
+        <user-video
+          class="full-screen"
+          :stream-manager="mainStreamManager"
+        ></user-video>
       </div>
 
       <div>
@@ -31,8 +34,14 @@
         </q-card>
       </q-dialog>
 
-      <auction-form v-if="manage"></auction-form>
-      <auction-list v-if="manage"></auction-list>
+      <q-dialog v-if="manage" v-model="auctionDialog">
+        <q-card style="background-color: white">
+          <auction-form @new-auction-added="fetchAuctionList"></auction-form>
+        </q-card>
+      </q-dialog>
+
+      <q-btn v-if="manage" @click="addAuction()">경매 추가하기</q-btn>
+      <auction-list></auction-list>
     </div>
   </q-page>
 </template>
@@ -63,6 +72,7 @@ export default {
       position: "center",
       OV: undefined,
       dialog: false,
+      auctionDialog: false,
       session: undefined,
       mainStreamManager: undefined,
       publisher: undefined,
@@ -88,9 +98,43 @@ export default {
       this.justJoinSession();
     }
   },
+  beforeRouteLeave: function (to, from, next) {
+    if (window.confirm("want to quit?")) {
+      this.session.disconnect();
+      this.session = undefined;
+      this.mainStreamManager = undefined;
+      this.publisher = undefined;
+      this.subscribers = [];
+      this.OV = undefined;
+
+      window.removeEventListener("beforeunload", this.leaveSession);
+      if (this.manage) {
+        api
+          .delete("/api/room/" + this.sessionId)
+          .then(() => {
+            next();
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      }
+    } else {
+      next(false);
+    }
+  },
+
   methods: {
+    unLoadEvent: function (event) {
+      alert("12345");
+      event.preventDefault();
+    },
+
     goMain() {
       this.$router.push("/");
+    },
+
+    addAuction() {
+      this.auctionDialog = true;
     },
 
     joinSession() {
@@ -161,7 +205,7 @@ export default {
               videoSource: undefined, // The source of video. If undefined default webcam
               publishAudio: true,
               publishVideo: true,
-              resolution: "640x480", // The resolution of your video
+              resolution: "640x360", // The resolution of your video
               frameRate: 30, // The frame rate of your video
               insertMode: "APPEND",
               mirror: false, // Whether to mirror your local video or not
@@ -182,6 +226,11 @@ export default {
       });
 
       window.addEventListener("beforeunload", this.leaveSession);
+    },
+
+    fetchAuctionList: function () {
+      this.auctionDialog = false;
+      this.sendUpdateMessage();
     },
 
     justJoinSession() {
@@ -207,6 +256,15 @@ export default {
         }
       });
 
+      this.session.on("signal:update-auction", (event) => {
+        console.log("update list message received!!!");
+        this.$store
+          .dispatch("moduleExample/selectAllAuctions", this.sessionId)
+          .catch((error) => {
+            console.log(error);
+          });
+      });
+
       this.session.on("streamDestroyed", ({ stream }) => {
         const index = this.subscribers.indexOf(stream.streamManager, 0);
         if (index >= 0) {
@@ -223,6 +281,12 @@ export default {
       this.getSubToken(this.sessionId).then((token) => {
         this.session
           .connect(token)
+          .then(() => {
+            this.$store.dispatch(
+              "moduleExample/selectAllAuctions",
+              this.sessionId
+            );
+          })
           .then(() => {
             this.mainStreamManager = this.subscribers[0];
           })
@@ -266,11 +330,26 @@ export default {
           });
       }
     },
+    sendUpdateMessage() {
+      if (this.session) {
+        this.session
+          .signal({
+            data: this.message,
+            to: [],
+            type: "update-auction",
+          })
+          .then(() => {
+            console.log("Message Sent");
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+    },
 
     leaveSession() {
-      // --- Leave the session by calling 'disconnect' method over the Session object ---
+      // --- Leave the session by calling 'disconnect' method over the Session object --
       if (this.session) this.session.disconnect();
-
       this.session = undefined;
       this.mainStreamManager = undefined;
       this.publisher = undefined;

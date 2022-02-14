@@ -88,7 +88,7 @@ import { computed, ref } from "@vue/runtime-core";
 
 export default {
   name: "AuctionForm",
-  setup() {
+  setup(props, { emit }) {
     const $store = useStore();
     const bidTerm = ref("");
     const currentPrice = ref("");
@@ -121,6 +121,9 @@ export default {
         })
         .then(() => {
           $store.dispatch("moduleExample/selectAllAuctions", email.value);
+        })
+        .then(() => {
+          emit("newAuctionAdded");
         })
         .catch(function (error) {
           console.log(error);
