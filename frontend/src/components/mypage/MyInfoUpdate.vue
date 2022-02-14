@@ -3,12 +3,16 @@
     <q-card class="q-pa-lg">
       <h6>회원정보변경</h6>
       <q-form class="q-pa-md">
-        <q-input label="닉네임" v-model="userInfo.name"
+        <q-input label="닉네임" color="green" v-model="userInfo.name"
           ><template v-slot:before>
-            <q-avatar>
-              <img src="https://cdn.quasar.dev/img/avatar5.jpg" />
+            <q-avatar size="60px" text-color="green" icon="account_circle">
             </q-avatar>
-            <q-input label="아이디" v-model="userInfo.email" disable />
+            <q-input
+              label="아이디"
+              color="green"
+              v-model="userInfo.email"
+              disable
+            />
           </template>
         </q-input>
 

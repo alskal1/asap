@@ -45,9 +45,7 @@
             <q-tooltip>로그아웃</q-tooltip>
           </q-btn>
           <q-btn to="/member" round flat>
-            <q-avatar size="26px">
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-            </q-avatar>
+            <q-avatar size="md" icon="account_circle"> </q-avatar>
             <q-tooltip>{{ userInfo.name }}</q-tooltip>
           </q-btn>
         </div>
