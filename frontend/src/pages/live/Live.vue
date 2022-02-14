@@ -45,7 +45,7 @@ import UserVideo from "components/live/UserVideo";
 import AuctionForm from "components/auction/AuctionForm";
 import AuctionList from "components/auction/AuctionList";
 const OPENVIDU_SERVER_URL = `https://${global.location.hostname}:4443`;
-const OPENVIDU_SERVER_SECRET = "MY_SECRET";
+const OPENVIDU_SERVER_SECRET = "ASAP";
 
 export default {
   name: "Live",
