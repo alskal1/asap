@@ -35,5 +35,10 @@ public class AuctionController {
     public ResponseEntity<AuctionDto> deleteAuction(@PathVariable Long id) {
         return auctionService.deleteAuction(id);
     }
+
+    @DeleteMapping("/list/{sessionId}")
+    public ResponseEntity<AuctionDto> deleteAllAuction(@PathVariable String sessionId) {
+        return auctionService.deleteAllAuction(sessionId);
+    }
 }
 
