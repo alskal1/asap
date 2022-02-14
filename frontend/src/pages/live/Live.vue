@@ -1,27 +1,28 @@
 <template>
-  <q-page class="flex flex-center">
-    <div v-if="session">
-      <div>
-        <h2>{{ title }}</h2>
-        <q-btn v-if="manage" color="red" @click="leaveSession()"
-          >방송 종료하기</q-btn
-        >
-      </div>
-      <div class="row">
-        <user-video
-          class="full-screen"
-          :stream-manager="mainStreamManager"
-        ></user-video>
-      </div>
-
-      <div>
-        <q-input v-model="message" />
-        <button type="button" @click="sendMessage()">전송</button>
-      </div>
-
-      <q-div id="chattings">
-        <h2>메시지 리스트</h2>
-      </q-div>
+  <q-page>
+    <div class="q-pa-md">
+      <q-layout
+        view="lHh Lpr lFf"
+        container
+        style="height: calc((((100vh - 120px) * 16) / 9) + 297px)"
+        class="shadow-2 rounded-borders"
+      >
+        <q-header elevated class="bg-green">
+          <q-toolbar>
+            <q-toolbar-title> {{ myUserName }}</q-toolbar-title>
+            <q-toolbar-title>{{ title }}</q-toolbar-title>
+            <q-toolbar-title>시청자수</q-toolbar-title>
+            <q-btn v-if="manage" color="red" @click="leaveSession"
+              >방송 종료</q-btn
+            >
+          </q-toolbar>
+        </q-header>
+        <q-page-container>
+          <q-page class="q-pt-xs">
+            <user-video :stream-manager="mainStreamManager"></user-video>
+          </q-page>
+        </q-page-container>
+      </q-layout>
 
       <q-dialog v-model="dialog">
         <q-card>
@@ -33,6 +34,17 @@
           </q-card-section>
         </q-card>
       </q-dialog>
+
+      <q-drawer side="right" v-model="drawer" show-if-above :width="230">
+        <q-div id="chattings">
+          <h2>{{ newMessage }}</h2>
+        </q-div>
+        <q-div>
+          <q-input v-model="message">
+            <q-btn type="button" @click="sendMessage()">전송</q-btn>
+          </q-input>
+        </q-div>
+      </q-drawer>
 
       <q-dialog v-if="manage" v-model="auctionDialog">
         <q-card style="background-color: white">
@@ -244,10 +256,6 @@ export default {
 
       this.session.on("signal:user-chat", (event) => {
         if (this.session.connection.connectionId != event.from.connectionId) {
-          // let newMessage = document.createElement("q-chat-message");
-          // newMessage.setAttribute("v-bind:text", "[" + event.data + "]");
-          // newMessage.setAttribute("name", "viewer");
-
           let newMessage = document.createElement("div");
           newMessage.innerText = event.data;
           newMessage.classList.add("message-blue");
@@ -311,17 +319,12 @@ export default {
             type: "user-chat",
           })
           .then(() => {
-            // let newMessage = document.createElement("q-chat-message");
-            // newMessage.setAttribute("v-bind:text", "[" + this.message + "]");
-            // newMessage.setAttribute("name", "me");
-            // newMessage.setAttribute("sent");
-
             let newMessage = document.createElement("div");
             newMessage.innerText = this.message;
             newMessage.classList.add("message-orange");
 
             document.getElementById("chattings").appendChild(newMessage);
-            // this.messageList += this.message;
+
             this.message = "";
             console.log("Message successfully sent!!!");
           })
@@ -503,6 +506,11 @@ export default {
 .container {
   width: 400px;
   padding: 10px;
+}
+
+user-video {
+  width: 100%;
+  height: 100%;
 }
 
 .message-blue {
