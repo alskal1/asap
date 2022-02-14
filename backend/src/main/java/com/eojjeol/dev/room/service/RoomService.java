@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -27,10 +26,15 @@ public class RoomService {
     public ResponseEntity<RoomDto> createRoom(RoomDto roomDto) {
         try {
             Member member = SecurityUtil.getCurrentEmail().flatMap(memberRepository::findOneWithAuthoritiesByEmail).orElse(null);
+
+            Room isRoomExist = roomRepository.findBySessionId(member.getEmail()).orElse(null);
+
+            if(isRoomExist != null) {
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+            }
+
             Room room = Room.builder()
-                    .sessionId(roomDto.getSessionId())
-                    .token(roomDto.getToken())
-                    .member(member)
+                    .sessionId(member.getEmail())
                     .title(roomDto.getTitle())
                     .description(roomDto.getDescription())
                     .build();
@@ -44,9 +48,9 @@ public class RoomService {
     }
 
     @Transactional
-    public ResponseEntity<RoomDto> deleteRoom(Long id) {
+    public ResponseEntity<RoomDto> deleteRoom(String sessionId) {
         try {
-            Room room = roomRepository.findById(id).orElse(null);
+            Room room = roomRepository.findBySessionId(sessionId).orElse(null);
             roomRepository.deleteById(room.getId());
 
             return new ResponseEntity<>(HttpStatus.OK);
@@ -55,9 +59,9 @@ public class RoomService {
         }
     }
 
-    public ResponseEntity<RoomDto> selectRoom(Long id) {
+    public ResponseEntity<RoomDto> selectRoom(String sessionId) {
         try {
-            Room room = roomRepository.findById(id).orElse(null);
+            Room room = roomRepository.findBySessionId(sessionId).orElse(null);
             RoomDto roomDto = RoomDto.from(room);
 
             return new ResponseEntity<>(roomDto, HttpStatus.OK);

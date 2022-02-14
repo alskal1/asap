@@ -26,9 +26,9 @@ public class AuctionController {
         return auctionService.selectOneAuction(id);
     }
 
-    @GetMapping("/list/{roomId}")
-    public ResponseEntity<List<AuctionDto>> selectAllAuctions(@PathVariable Long roomId) {
-        return auctionService.selectAllAuction(roomId);
+    @GetMapping("/list/{sessionId}")
+    public ResponseEntity<List<AuctionDto>> selectAllAuctions(@PathVariable String sessionId) {
+        return auctionService.selectAllAuction(sessionId);
     }
 
     @DeleteMapping("/{id}")

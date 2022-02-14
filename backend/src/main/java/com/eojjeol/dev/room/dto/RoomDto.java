@@ -15,8 +15,6 @@ public class RoomDto {
 
     private String sessionId;
 
-    private String token;
-
     private String title;
 
     private String description;
@@ -26,7 +24,6 @@ public class RoomDto {
         return RoomDto.builder()
                 .id(room.getId())
                 .sessionId(room.getSessionId())
-                .token(room.getToken())
                 .title(room.getTitle())
                 .description(room.getDescription())
                 .build();
