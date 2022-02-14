@@ -38,7 +38,14 @@
 
         <q-space />
         <div v-if="isLogin" class="q-gutter-sm row items-center no-wrap">
-          <q-btn to="/room" round dense flat color="grey-8" icon="attach_money">
+          <q-btn
+            to="/payment"
+            round
+            dense
+            flat
+            color="grey-8"
+            icon="attach_money"
+          >
             <q-tooltip>현재 포인트: {{ currentPointInfo }}</q-tooltip>
           </q-btn>
           <q-btn to="/room" round dense flat color="grey-8" icon="video_call">
