@@ -1,38 +1,40 @@
 <template>
-  <q-page class="flex flex-center">
-    <div v-if="session">
-      <div>
-        <h2>{{ title }}</h2>
-        <q-btn v-if="manage" color="red" @click="leaveSession"
-          >방송 종료하기</q-btn
-        >
-      </div>
-      <div class="row">
-        <user-video :stream-manager="mainStreamManager"></user-video>
-      </div>
+  <q-page>
+    <div class="q-pa-md">
+      <q-layout
+        view="lHh Lpr lFf"
+        container
+        style="height: 630px"
+        class="shadow-2 rounded-borders"
+      >
+        <q-header elevated class="bg-green">
+          <q-toolbar>
+            <q-toolbar-title>판매자</q-toolbar-title>
+            <q-toolbar-title>라이브 경매 시작!</q-toolbar-title>
+            <q-toolbar-title>시청자수</q-toolbar-title>
+          </q-toolbar>
+        </q-header>
 
-      <div>
-        <q-input v-model="message" />
-        <button type="button" @click="sendMessage()">전송</button>
-      </div>
-
-      <q-div id="chattings">
-        <h2>메시지 리스트</h2>
-      </q-div>
-
-      <q-dialog v-model="dialog">
-        <q-card>
-          <q-card-section class="row items-center no-wrap">
-            <div>
-              <div class="text-weight-bold">방송이 종료되었습니다.</div>
-              <q-btn @click="goMain()">OK</q-btn>
-            </div>
-          </q-card-section>
-        </q-card>
-      </q-dialog>
-
-      <auction-form :roomId="roomId"></auction-form>
-      <auction-list :roomId="roomId"></auction-list>
+        <q-drawer side="right" v-model="drawerRight" show-if-above :width="200">
+          <q-scroll-area
+            style="
+              height: calc(100% - 100px);
+              margin-top: 150px;
+              border-right: 1px solid #ddd;
+            "
+          >
+            <div>msg</div>
+          </q-scroll-area>
+          <div>
+            <q-input placeholder="메시지를 입력하세요.">
+              <q-btn>전송</q-btn>
+            </q-input>
+          </div>
+        </q-drawer>
+        <q-page-container>
+          <q-page padding> 라이브 경매 화면 </q-page>
+        </q-page-container>
+      </q-layout>
     </div>
   </q-page>
 </template>
@@ -51,9 +53,9 @@ export default {
   name: "Live",
 
   components: {
-    UserVideo,
-    AuctionForm,
-    AuctionList,
+    // UserVideo,
+    // AuctionForm,
+    // AuctionList,
   },
 
   data() {
@@ -418,6 +420,15 @@ export default {
   padding: 10px;
 }
 
+.box1 {
+  width: 1000px;
+  background-color: lightgreen;
+}
+
+.box2 {
+  width: 300px;
+  background-color: lightgray;
+}
 .message-blue {
   position: relative;
   margin-left: 20px;
