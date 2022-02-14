@@ -17,34 +17,34 @@ public class InitDb {
     @PostConstruct
     public void init() {
         initService.dbInit1();
-//        initService.dbInit2();
     }
     @Component
     @Transactional
     @RequiredArgsConstructor
     static class InitService {
         private final EntityManager em;
-//        private final MemberDataRepository memberDataRepository;
-//        private final MemberService memberService;
         private final PasswordEncoder passwordEncoder;
 
 
         public void dbInit1() {
-
             initAuthoriy();
-
-
         }
 
         private void initAuthoriy() {
             Authority userAuthority = new Authority();
-            userAuthority.setAuthorityName("ROLE_USER");
+            Authority userExist = em.find(Authority.class, "ROLE_USER");
+            if(userExist == null) {
+                userAuthority.setAuthorityName("ROLE_USER");
+                em.persist(userAuthority);
+            }
 
             Authority adminAuthority = new Authority();
-            adminAuthority.setAuthorityName("ROLE_ADMIN");
+            Authority adminExist = em.find(Authority.class, "ROLE_ADMIN");
+            if(adminExist == null) {
+                adminAuthority.setAuthorityName("ROLE_ADMIN");
+                em.persist(adminAuthority);
+            }
 
-            em.persist(userAuthority);
-            em.persist(adminAuthority);
         }
     }
 }

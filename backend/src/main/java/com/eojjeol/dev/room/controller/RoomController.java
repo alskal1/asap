@@ -35,7 +35,6 @@ public class RoomController {
     }
 
     @GetMapping("/")
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<List<RoomDto>> selectList() {
         return roomService.selectAll();
     }
