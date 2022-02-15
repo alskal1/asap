@@ -32,7 +32,7 @@ export default {
     $store.dispatch("moduleExample/updateList");
 
     function goLive(sessionId) {
-      $store.commit("setIsManage", false);
+      $store.commit("user/setIsManage", false);
       router.push("/live/publisher?sessionId=" + sessionId);
     }
 
