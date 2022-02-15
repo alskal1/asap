@@ -199,6 +199,8 @@ export default {
   watch: {
     "$store.state.moduleExample.curAuction": function () {
       this.currentAuction = this.$store.state.moduleExample.curAuction;
+      console.log("물품 변경됨!!!!!");
+      this.sendAuctionSelected(this.currentAuction);
     },
   },
   beforeRouteLeave: function (to, from, next) {
@@ -253,15 +255,6 @@ export default {
   },
 
   methods: {
-    addAuction() {
-      this.auctionDialog = true;
-    },
-
-    fetchAuctionList: function () {
-      this.auctionDialog = false;
-      this.sendUpdateMessage();
-    },
-
     joinSession() {
       this.OV = new OpenVidu();
 
@@ -402,13 +395,13 @@ export default {
         document.getElementById("chattings").appendChild(newMessage);
       });
 
-      this.session.on("signal:update-auction", (event) => {
-        console.log("update list message received!!!");
-        this.$store
-          .dispatch("moduleExample/selectAllAuctions", this.sessionId)
-          .catch((error) => {
-            console.log(error);
-          });
+      this.session.on("signal:update-auction", (event) => {});
+
+      this.session.on("signal:auction-selected", (event) => {
+        console.log("경매 물품 정보가 업데이트되었습니다!!!");
+        const newAuction = JSON.parse(event.data);
+
+        this.$store.commit("moduleExample/selectCurrentAuction", newAuction);
       });
 
       this.session.on("streamDestroyed", ({ stream }) => {
@@ -467,10 +460,12 @@ export default {
           });
       }
     },
-    sendUpdateMessage() {
+
+    sendPriceChangeMessage(newPrice) {
       if (this.session) {
         this.session
           .signal({
+            data: newPrice,
             to: [],
             type: "update-auction",
           })
@@ -480,13 +475,13 @@ export default {
       }
     },
 
-    sendPriceChangeMessage(newPrice) {
+    sendAuctionSelected(auction) {
       if (this.session) {
         this.session
           .signal({
-            data: newPrice,
+            data: JSON.stringify(auction),
             to: [],
-            type: "update-auction",
+            type: "auction-selected",
           })
           .catch((error) => {
             console.error(error);
