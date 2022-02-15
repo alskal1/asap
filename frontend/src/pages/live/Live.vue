@@ -8,10 +8,10 @@
         </div>
         <div class="row">
           <div class="col-md-4">
-            <q-avatar size="md" icon="account_circle"> </q-avatar>판매자
-            <span> {{ title }} </span>
+            <q-avatar size="md" icon="account_circle"> </q-avatar>
+            <span>{{ sessionId }}</span>
+            <span class="q-ml-lg">{{ title }} {{ description }} </span>
           </div>
-          <!-- <span>시청자수</span> -->
           <div class="col-md-4 offset-md-3">
             <q-btn
               side="right"
@@ -47,9 +47,7 @@
                 <div v-show="expanded">
                   <q-separator />
                   <q-card-section class="text-subitle2">
-                    <!-- <auction-list></auction-list> -->
-                    <p></p>
-                    시작 가격, 상품명, 원산지
+                    <auction-list> </auction-list>
                   </q-card-section>
                 </div>
               </q-slide-transition>
@@ -57,12 +55,25 @@
           </div>
         </div>
         <q-card class="q-mt-sm q-mb-sm" style="width: 400px; padding: 10px">
-          <span>현재 가격 : </span><span>500000원 </span>
+          <span>현재 가격 : </span>
+
+          <span>{{ currentPrice }}</span>
           <span v-if="manage">
-            <input style="width: 50px" />
-            <q-btn outline style="color: green" label="가격내리기" />
+            <!-- <input v-model="price" style="width: 50px" /> -->
+            <q-btn
+              outline
+              style="color: green"
+              label="가격내리기"
+              @click="sendPriceChangeMessage(currentPrice)"
+            />
           </span>
-          <q-btn v-else outline style="color: green" label="낙찰하기" />
+          <q-btn
+            v-else
+            outline
+            style="color: green"
+            label="낙찰하기"
+            @click="winProduct()"
+          />
         </q-card>
 
         <q-dialog v-model="dialog">
@@ -86,12 +97,6 @@
                 <q-btn @click="leaveSession()">OK</q-btn>
               </div>
             </q-card-section>
-          </q-card>
-        </q-dialog>
-
-        <q-dialog v-if="manage" v-model="auctionDialog">
-          <q-card style="background-color: white">
-            <auction-form @new-auction-added="fetchAuctionList"></auction-form>
           </q-card>
         </q-dialog>
 
@@ -133,8 +138,8 @@ import { api } from "boot/axios";
 import { ovapi } from "boot/axios";
 import { OpenVidu } from "openvidu-browser";
 import { ref } from "vue";
+import { useStore } from "vuex";
 import UserVideo from "components/live/UserVideo";
-import AuctionForm from "components/auction/AuctionForm";
 import AuctionList from "components/auction/AuctionList";
 const OPENVIDU_SERVER_URL = `https://${global.location.hostname}:4443`;
 const OPENVIDU_SERVER_SECRET = "ASAP";
@@ -144,9 +149,9 @@ export default {
 
   components: {
     UserVideo,
-    AuctionForm,
-    // AuctionList,
+    AuctionList,
   },
+
   setup() {
     return {
       tab: ref("live"),
@@ -161,7 +166,6 @@ export default {
       position: "center",
       OV: undefined,
       dialog: false,
-      auctionDialog: false,
       session: undefined,
       mainStreamManager: undefined,
       publisher: undefined,
@@ -173,8 +177,11 @@ export default {
       description: "",
       videoNotFound: false,
       cameraDialog: false,
+      startPrice: "10000",
+      currentPrice: "",
     };
   },
+
   created() {
     this.title = this.$route.query.title;
     this.description = this.$route.query.description;
@@ -183,6 +190,9 @@ export default {
       .replace(".", "-");
     this.myUserName = this.$route.query.myUserName;
     console.log(this.sessionId);
+    if (this.$route.query.status == "PUBLISHER") {
+      this.$store.commit("user/setIsManage", true);
+    }
   },
   mounted() {
     if (this.$route.query.status == "PUBLISHER") {
@@ -244,13 +254,8 @@ export default {
   },
 
   methods: {
-    addAuction() {
-      this.auctionDialog = true;
-    },
-
-    fetchAuctionList: function () {
-      this.auctionDialog = false;
-      this.sendUpdateMessage();
+    downPrice() {
+      this.startPrice = this.currentPrice;
     },
 
     joinSession() {
@@ -394,6 +399,9 @@ export default {
       });
 
       this.session.on("signal:update-auction", (event) => {
+        const data = JSON.parse(event.data);
+        this.currentPrice = data.price;
+
         console.log("update list message received!!!");
         this.$store
           .dispatch("moduleExample/selectAllAuctions", this.sessionId)
@@ -473,9 +481,12 @@ export default {
 
     sendPriceChangeMessage(newPrice) {
       if (this.session) {
+        const data = {
+          price: this.startPrice,
+        };
         this.session
           .signal({
-            data: newPrice,
+            data: JSON.stringify(data),
             to: [],
             type: "update-auction",
           })
@@ -483,6 +494,24 @@ export default {
             console.error(error);
           });
       }
+    },
+
+    winProduct() {
+      const data = {
+        productName: "apple",
+        count: "1",
+        finalPrice: this.currentPrice,
+        deliveryState: "0",
+        sellerId: this.sessionId,
+      };
+      api
+        .post("/api/history/", data)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
 
     leaveSession() {

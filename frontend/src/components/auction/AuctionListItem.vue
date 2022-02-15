@@ -5,7 +5,6 @@
         <div>
           <div class="text-subtitle2">상품명 : {{ auction.productName }}</div>
           <div class="text-subtitle2">시작가 : {{ auction.startPrice }}원</div>
-          <div class="text-subtitle2">하향금액 : {{ auction.priceTerm }}원</div>
         </div>
         <div class="row">
           <q-space />
@@ -22,9 +21,6 @@ import { useStore } from "vuex";
 export default {
   name: "AuctionListItem",
   props: {
-    sessionId: {
-      type: String,
-    },
     auction: {
       type: Object,
     },
