@@ -4,13 +4,13 @@
       <q-card-section>
         <div>
           <div class="text-subtitle2">상품명 : {{ auction.productName }}</div>
-          <div class="text-subtitle2">
-            상품가격 : {{ auction.finalPrice }}원
-          </div>
+          <div class="text-subtitle2">시작가 : {{ auction.startPrice }}원</div>
+          <div class="text-subtitle2">하향금액 : {{ auction.priceTerm }}원</div>
         </div>
         <div class="row">
           <q-space />
-          <q-btn flat label="Cancel" color="primary" @click="deleteAuction()" />
+          <q-btn flat label="수정" color="primary" @click="deleteAuction()" />
+          <q-btn flat label="삭제" color="red" @click="deleteAuction()" />
         </div>
       </q-card-section>
     </q-card>
@@ -31,11 +31,13 @@ export default {
   },
   setup(props) {
     const $store = useStore();
+
     function deleteAuction() {
+      const deleteId = props.auction.id;
       $store
-        .dispatch("moduleExample/deleteAuction", props.auction.id)
+        .dispatch("moduleExample/deleteAuction", deleteId)
         .then(() => {
-          // this.$store.dispatch("moduleExample/selectAllAuctions", props.sessionId);
+          // $store.dispatch("moduleExample/selectAllAuctions", email.value);
         })
         .catch(function (error) {
           console.log(error);

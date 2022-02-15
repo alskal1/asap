@@ -95,7 +95,7 @@ export default {
 
     function goLive() {
       router.push(
-        "/live?sessionId=" +
+        "/live/publisher?sessionId=" +
           userInfo.value.email +
           "&myUserName=" +
           userInfo.value.name +
