@@ -3,57 +3,9 @@
     <div class="q-pa-md">
       <q-form @submit.prevent="onSubmit" class="q-gutter-md">
         <div>
-          <div class="text-green text-weight-bolder">하향 주기</div>
-          <q-input
-            type="text"
-            v-model="bidTerm"
-            dense
-            outlined
-            color="green"
-            clearable
-            :rules="[(val) => !isNaN(val) || '숫자를 입력해주세요']"
-          />
-        </div>
-        <div>
-          <div class="text-green text-weight-bolder">현재 가격</div>
-          <q-input
-            type="text"
-            v-model="currentPrice"
-            dense
-            outlined
-            color="green"
-            clearable
-            :rules="[(val) => !isNaN(val) || '숫자를 입력해주세요']"
-          />
-        </div>
-        <div>
-          <div class="text-green text-weight-bolder">최종 낙찰가</div>
-          <q-input
-            type="text"
-            v-model="finalPrice"
-            dense
-            outlined
-            color="green"
-            clearable
-            :rules="[(val) => !isNaN(val) || '숫자를 입력해주세요']"
-          />
-        </div>
-        <div>
-          <div class="text-green text-weight-bolder">하향 금액</div>
-          <q-input
-            type="text"
-            v-model="priceTerm"
-            dense
-            outlined
-            color="green"
-            clearable
-            :rules="[(val) => !isNaN(val) || '숫자를 입력해주세요']"
-          />
-        </div>
-        <div>
           <div class="text-green text-weight-bolder">상품 이름</div>
           <q-input
-            type="textarea"
+            type="text"
             v-model="productName"
             dense
             outlined
@@ -74,6 +26,17 @@
           />
         </div>
         <div>
+          <div class="text-green text-weight-bolder">상품 원산지</div>
+          <q-input
+            type="text"
+            v-model="origin"
+            dense
+            outlined
+            color="green"
+            clearable
+          />
+        </div>
+        <div>
           <q-btn label="경매등록" type="submit" color="green" />
         </div>
       </q-form>
@@ -90,13 +53,9 @@ export default {
   name: "AuctionForm",
   setup(props, { emit }) {
     const $store = useStore();
-    const bidTerm = ref("");
-    const currentPrice = ref("");
-    const finalPrice = ref("");
-    const priceTerm = ref("");
     const productName = ref("");
-    const roomId = ref("");
     const startPrice = ref("");
+    const origin = ref("");
 
     const email = computed({
       get: () =>
@@ -105,13 +64,9 @@ export default {
 
     function onSubmit() {
       const newData = {
-        bidTerm: bidTerm.value,
-        currentPrice: currentPrice.value,
-        finalPrice: finalPrice.value,
-        priceTerm: priceTerm.value,
         productName: productName.value,
-        roomId: roomId.value,
         startPrice: startPrice.value,
+        origin: origin.value,
       };
 
       api
@@ -123,27 +78,20 @@ export default {
           $store.dispatch("moduleExample/selectAllAuctions", email.value);
         })
         .then(() => {
+          productName.value = "";
+          startPrice.value = "";
+          origin.value = "";
           emit("newAuctionAdded");
         })
         .catch(function (error) {
           console.log(error);
         });
-      bidTerm.value = "";
-      currentPrice.value = "";
-      finalPrice.value = "";
-      priceTerm.value = "";
-      productName.value = "";
-      startPrice.value = "";
     }
 
     return {
-      bidTerm,
-      currentPrice,
-      finalPrice,
-      priceTerm,
       productName,
-      roomId,
       startPrice,
+      origin,
       onSubmit,
     };
   },

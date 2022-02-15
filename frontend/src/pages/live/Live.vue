@@ -98,8 +98,8 @@ export default {
   created() {
     this.title = this.$route.query.title;
     this.sessionId = this.$route.query.sessionId
-      .replace("@", "")
-      .replace(".", "");
+      .replace("@", "-")
+      .replace(".", "-");
     this.myUserName = this.$route.query.myUserName;
   },
   mounted() {
