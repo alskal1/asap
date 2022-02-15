@@ -79,34 +79,54 @@
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered :width="240">
       <q-list padding>
-        <q-item
-          v-ripple
-          active-class="my-menu-link"
-          @click="addAuction()"
-          exact
-          clickable
-        >
-          <q-item-section avatar>
-            <q-icon name="playlist_add" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>경매추가</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item
-          v-ripple
-          active-class="my-menu-link"
-          @click="addAuctionList()"
-          exact
-          clickable
-        >
-          <q-item-section avatar>
-            <q-icon name="playlist_add" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>경매리스트</q-item-label>
-          </q-item-section>
-        </q-item>
+        <div v-if="manageMode">
+          <q-item
+            v-ripple
+            active-class="my-menu-link"
+            @click="addAuction()"
+            exact
+            clickable
+          >
+            <q-item-section avatar>
+              <q-icon name="playlist_add" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>경매추가</q-item-label>
+            </q-item-section>
+          </q-item>
+
+          <q-item
+            v-ripple
+            active-class="my-menu-link"
+            @click="addAuctionList()"
+            exact
+            clickable
+          >
+            <q-item-section avatar>
+              <q-icon name="playlist_add" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>경매리스트</q-item-label>
+            </q-item-section>
+          </q-item>
+        </div>
+
+        <div v-else>
+          <q-item
+            v-ripple
+            active-class="my-menu-link"
+            @click="addAuction()"
+            exact
+            clickable
+          >
+            <q-item-section avatar>
+              <q-icon name="playlist_add" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>충전 기능 테스트</q-item-label>
+            </q-item-section>
+          </q-item>
+        </div>
       </q-list>
     </q-drawer>
 
@@ -123,7 +143,7 @@
 
 <script>
 import AuctionForm from "components/auction/AuctionForm";
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
@@ -144,6 +164,10 @@ export default defineComponent({
     const isLogin = ref(sessionStorage.getItem("jwt"));
     const userInfo = ref({});
     const currentPointInfo = ref({});
+
+    const manageMode = computed({
+      get: () => $store.state.user.isManage,
+    });
 
     $store.dispatch("user/getUserInfo").then(() => {
       const _userInfo = $store.state.user.userInfo;
@@ -168,6 +192,7 @@ export default defineComponent({
     return {
       isLogin,
       userInfo,
+      manageMode,
       logout,
       leftDrawerOpen,
       currentPointInfo,

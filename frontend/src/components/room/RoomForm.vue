@@ -94,6 +94,7 @@ export default {
     });
 
     function goLive() {
+      $store.commit("user/setIsManage", true);
       router.push(
         "/live/publisher?sessionId=" +
           userInfo.value.email +
