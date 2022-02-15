@@ -130,12 +130,12 @@
       </q-list>
     </q-drawer>
 
-    <q-dialog v-if="auctionDialog" v-model="auctionDialog">
-      <q-card style="background-color: white">
-        <auction-form @new-auction-added="fetchAuctionList"></auction-form>
-      </q-card>
-    </q-dialog>
     <q-page-container>
+      <q-dialog v-if="auctionDialog" v-model="auctionDialog">
+        <q-card style="background-color: white">
+          <auction-form @new-auction-added="fetchAuctionList"></auction-form>
+        </q-card>
+      </q-dialog>
       <router-view />
     </q-page-container>
   </q-layout>
