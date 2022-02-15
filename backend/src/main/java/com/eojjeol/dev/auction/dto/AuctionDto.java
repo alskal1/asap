@@ -22,11 +22,9 @@ public class AuctionDto {
 
     private Integer startPrice;
 
-    private Integer bidTerm;
-
-    private Integer priceTerm;
-
     private Integer currentPrice;
+
+    private String origin;
 
     public static AuctionDto from(Auction auction) {
         if(auction == null) return null;
@@ -36,10 +34,8 @@ public class AuctionDto {
                 .productName(auction.getProductName())
                 .finalPrice(auction.getFinalPrice())
                 .startPrice(auction.getStartPrice())
-                .bidTerm(auction.getBidTerm())
-                .priceTerm(auction.getPriceTerm())
                 .currentPrice(auction.getCurrentPrice())
+                .origin(auction.getOrigin())
                 .build();
     }
-
 }

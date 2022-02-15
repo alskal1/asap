@@ -29,14 +29,14 @@ public class RoomService {
         try {
             Member member = SecurityUtil.getCurrentEmail().flatMap(memberRepository::findOneWithAuthoritiesByEmail).orElse(null);
 
-            Room isRoomExist = roomQueryRepository.findRoomBySessionId(member.getEmail().replaceAll("[@.]", ""));
+            Room isRoomExist = roomQueryRepository.findRoomBySessionId(member.getEmail().replaceAll("[@.]", "-"));
 
             if(isRoomExist != null) {
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
             }
 
             Room room = Room.builder()
-                    .sessionId(member.getEmail().replaceAll("[@.]", ""))
+                    .sessionId(member.getEmail().replaceAll("[@.]", "-"))
                     .title(roomDto.getTitle())
                     .description(roomDto.getDescription())
                     .build();
@@ -53,8 +53,11 @@ public class RoomService {
     public ResponseEntity<RoomDto> deleteRoom(String sessionId) {
         try {
             Room room = roomQueryRepository.findRoomBySessionId(sessionId);
-            roomRepository.deleteById(room.getId());
+            if(room == null) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
 
+            roomRepository.deleteById(room.getId());
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

@@ -1,59 +1,129 @@
 <template>
-  <q-page>
-    <div class="q-pa-md">
-      <q-layout
-        view="lHh Lpr lFf"
-        container
-        style="height: calc((((100vh - 120px) * 16) / 9) + 297px)"
-        class="shadow-2 rounded-borders"
-      >
-        <q-header elevated class="bg-green">
-          <q-toolbar>
-            <q-toolbar-title> {{ myUserName }}</q-toolbar-title>
-            <q-toolbar-title>{{ title }}</q-toolbar-title>
-            <q-toolbar-title>시청자수</q-toolbar-title>
-            <q-btn v-if="manage" color="red" @click="leaveSession()"
+  <q-page padding>
+    <div class="row">
+      <div class="col-1" style="width: 50px"></div>
+      <div class="col-8">
+        <div class="col-6">
+          <user-video :stream-manager="mainStreamManager"></user-video>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <q-avatar size="md" icon="account_circle"> </q-avatar>판매자
+            <span> {{ title }} </span>
+          </div>
+          <!-- <span>시청자수</span> -->
+          <div class="col-md-4 offset-md-3">
+            <q-btn
+              side="right"
+              v-if="manage"
+              color="red"
+              @click="leaveSession()"
               >방송 종료</q-btn
             >
-          </q-toolbar>
-        </q-header>
-        <q-page-container>
-          <q-page class="q-pt-xs">
-            <user-video :stream-manager="mainStreamManager"></user-video>
-          </q-page>
-        </q-page-container>
-      </q-layout>
+          </div>
+        </div>
+      </div>
+      <div class="q-pa-sm q-ml-md col-3">
+        <div class="col-2">
+          <div>
+            <q-card
+              class="my-card"
+              bordered
+              style="max-height: 400px; width: 400px"
+            >
+              <q-card-actions>
+                <q-btn flat color="dark" label="경매 정보" />
+                <q-space />
+                <q-btn
+                  color="grey"
+                  round
+                  flat
+                  dense
+                  :icon="expanded ? 'keyboard_arrow_down' : 'keyboard_arrow_up'"
+                  @click="expanded = !expanded"
+                />
+              </q-card-actions>
+              <q-slide-transition>
+                <div v-show="expanded">
+                  <q-separator />
+                  <q-card-section class="text-subitle2">
+                    <!-- <auction-list></auction-list> -->
+                    <p></p>
+                    시작 가격, 상품명, 원산지
+                  </q-card-section>
+                </div>
+              </q-slide-transition>
+            </q-card>
+          </div>
+        </div>
+        <q-card class="q-mt-sm q-mb-sm" style="width: 400px; padding: 10px">
+          <span>현재 가격 : </span><span>500000원 </span>
+          <span v-if="manage">
+            <input style="width: 50px" />
+            <q-btn outline style="color: green" label="가격내리기" />
+          </span>
+          <q-btn v-else outline style="color: green" label="낙찰하기" />
+        </q-card>
 
-      <q-dialog v-model="dialog">
-        <q-card>
-          <q-card-section class="row items-center no-wrap">
-            <div>
-              <div class="text-weight-bold">방송이 종료되었습니다.</div>
-              <q-btn @click="leaveSession()">OK</q-btn>
+        <q-dialog v-model="dialog">
+          <q-card>
+            <q-card-section class="row items-center no-wrap">
+              <div>
+                <div class="text-weight-bold">방송이 종료되었습니다.</div>
+                <q-btn @click="leaveSession()">OK</q-btn>
+              </div>
+            </q-card-section>
+          </q-card>
+        </q-dialog>
+
+        <q-dialog v-model="cameraDialog" no-esc-dismiss no-backdrop-dismiss>
+          <q-card>
+            <q-card-section class="row items-center no-wrap">
+              <div>
+                <div class="text-weight-bold">
+                  카메라 리소스가 사용중이거나 존재하지 않습니다.
+                </div>
+                <q-btn @click="leaveSession()">OK</q-btn>
+              </div>
+            </q-card-section>
+          </q-card>
+        </q-dialog>
+
+        <q-dialog v-if="manage" v-model="auctionDialog">
+          <q-card style="background-color: white">
+            <auction-form @new-auction-added="fetchAuctionList"></auction-form>
+          </q-card>
+        </q-dialog>
+
+        <div>
+          <q-card style="width: 400px; height: 400px; padding: 10px">
+            <div name="chat">
+              <div>채팅</div>
+              <q-scroll-area style="height: 300px">
+                <div id="chattings">
+                  <h2>{{ newMessage }}</h2>
+                </div>
+              </q-scroll-area>
+              <div>
+                <q-input
+                  rounded
+                  outlined
+                  v-model="message"
+                  placeholder="메시지를 입력하세요."
+                >
+                  <q-btn
+                    flat
+                    round
+                    color="primary"
+                    icon="send"
+                    @click="sendMessage()"
+                  />
+                </q-input>
+              </div>
             </div>
-          </q-card-section>
-        </q-card>
-      </q-dialog>
-
-      <q-drawer side="right" v-model="drawer" show-if-above :width="230">
-        <q-div id="chattings">
-          <h2>{{ newMessage }}</h2>
-        </q-div>
-        <q-div>
-          <q-input v-model="message">
-            <q-btn type="button" @click="sendMessage()">전송</q-btn>
-          </q-input>
-        </q-div>
-      </q-drawer>
-
-      <q-dialog v-if="manage" v-model="auctionDialog">
-        <q-card style="background-color: white">
-          <auction-form @new-auction-added="fetchAuctionList"></auction-form>
-        </q-card>
-      </q-dialog>
-
-      <q-btn v-if="manage" @click="addAuction()">경매 추가하기</q-btn>
-      <auction-list></auction-list>
+          </q-card>
+        </div>
+      </div>
     </div>
   </q-page>
 </template>
@@ -62,6 +132,7 @@
 import { api } from "boot/axios";
 import { ovapi } from "boot/axios";
 import { OpenVidu } from "openvidu-browser";
+import { ref } from "vue";
 import UserVideo from "components/live/UserVideo";
 import AuctionForm from "components/auction/AuctionForm";
 import AuctionList from "components/auction/AuctionList";
@@ -74,9 +145,15 @@ export default {
   components: {
     UserVideo,
     AuctionForm,
-    AuctionList,
+    // AuctionList,
   },
-
+  setup() {
+    return {
+      tab: ref("live"),
+      visible: ref(true),
+      expanded: ref(true),
+    };
+  },
   data() {
     return {
       title: "",
@@ -93,14 +170,19 @@ export default {
       manage: false,
       sessionId: "",
       myUserName: "",
+      description: "",
+      videoNotFound: false,
+      cameraDialog: false,
     };
   },
   created() {
     this.title = this.$route.query.title;
+    this.description = this.$route.query.description;
     this.sessionId = this.$route.query.sessionId
-      .replace("@", "")
-      .replace(".", "");
+      .replace("@", "-")
+      .replace(".", "-");
     this.myUserName = this.$route.query.myUserName;
+    console.log(this.sessionId);
   },
   mounted() {
     if (this.$route.query.status == "PUBLISHER") {
@@ -111,26 +193,53 @@ export default {
     }
   },
   beforeRouteLeave: function (to, from, next) {
-    if (window.confirm("want to quit?")) {
+    if (!this.manage) {
       this.session.disconnect();
       this.session = undefined;
       this.mainStreamManager = undefined;
       this.publisher = undefined;
       this.subscribers = [];
       this.OV = undefined;
-
-      if (this.manage) {
+      next();
+    } else {
+      if (this.videoNotFound) {
         api
           .delete("/api/room/" + this.sessionId)
           .then(() => {
+            this.session.disconnect();
+            this.session = undefined;
+            this.mainStreamManager = undefined;
+            this.publisher = undefined;
+            this.subscribers = [];
+            this.OV = undefined;
             next();
+            return;
           })
           .catch(function (error) {
             console.log(error);
           });
+      } else {
+        if (window.confirm("want to quit?")) {
+          api
+            .delete("/api/room/" + this.sessionId)
+            .then(() => {
+              this.session.disconnect();
+              this.session = undefined;
+              this.mainStreamManager = undefined;
+              this.publisher = undefined;
+              this.subscribers = [];
+              this.OV = undefined;
+            })
+            .then(() => {
+              next();
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        } else {
+          next(false);
+        }
       }
-    } else {
-      next(false);
     }
   },
 
@@ -155,13 +264,24 @@ export default {
       });
 
       this.session.on("signal:user-chat", (event) => {
-        if (this.session.connection.connectionId != event.from.connectionId) {
-          let newMessage = document.createElement("div");
-          newMessage.innerText = event.data;
-          newMessage.classList.add("message-blue");
+        const data = JSON.parse(event.data);
 
-          document.getElementById("chattings").appendChild(newMessage);
+        let newMessage = document.createElement("div");
+        let sender = document.createElement("div");
+
+        sender.innerText = data.sender;
+        newMessage.innerText = data.message;
+
+        if (data.sender == this.$store.state.user.userInfo.name) {
+          newMessage.classList.add("message-orange");
+          sender.classList.add("message-sender");
+        } else {
+          newMessage.classList.add("message-blue");
+          sender.classList.add("message-receiver");
         }
+
+        document.getElementById("chattings").appendChild(sender);
+        document.getElementById("chattings").appendChild(newMessage);
       });
 
       this.session.on("streamDestroyed", ({ stream }) => {
@@ -198,20 +318,35 @@ export default {
                 );
               })
               .catch(function (error) {
-                console.log(error);
+                if (error.response.status == 409) {
+                  console.log("방송이 리로드 되었습니다.");
+                } else {
+                  console.log(error);
+                }
               });
           })
           .then(() => {
-            const publisher = this.OV.initPublisher(undefined, {
-              audioSource: undefined, // The source of audio. If undefined default microphone
-              videoSource: undefined, // The source of video. If undefined default webcam
-              publishAudio: true,
-              publishVideo: true,
-              resolution: "640x360", // The resolution of your video
-              frameRate: 30, // The frame rate of your video
-              insertMode: "APPEND",
-              mirror: false, // Whether to mirror your local video or not
-            });
+            const publisher = this.OV.initPublisher(
+              undefined,
+              {
+                audioSource: undefined, // The source of audio. If undefined default microphone
+                videoSource: undefined, // The source of video. If undefined default webcam
+                publishAudio: true,
+                publishVideo: true,
+                resolution: "640x360", // The resolution of your video
+                frameRate: 30, // The frame rate of your video
+                insertMode: "APPEND",
+                mirror: false, // Whether to mirror your local video or not
+              },
+              (error) => {
+                if (error) {
+                  this.videoNotFound = true;
+                  this.cameraDialog = true;
+                } else {
+                  console.log("Publisher successfully initialized");
+                }
+              }
+            );
 
             this.mainStreamManager = publisher;
             this.publisher = publisher;
@@ -238,13 +373,24 @@ export default {
       });
 
       this.session.on("signal:user-chat", (event) => {
-        if (this.session.connection.connectionId != event.from.connectionId) {
-          let newMessage = document.createElement("div");
-          newMessage.innerText = event.data;
-          newMessage.classList.add("message-blue");
+        const data = JSON.parse(event.data);
 
-          document.getElementById("chattings").appendChild(newMessage);
+        let newMessage = document.createElement("div");
+        let sender = document.createElement("div");
+
+        sender.innerText = data.sender;
+        newMessage.innerText = data.message;
+
+        if (data.sender == this.$store.state.user.userInfo.name) {
+          newMessage.classList.add("message-orange");
+          sender.classList.add("message-sender");
+        } else {
+          newMessage.classList.add("message-blue");
+          sender.classList.add("message-receiver");
         }
+
+        document.getElementById("chattings").appendChild(sender);
+        document.getElementById("chattings").appendChild(newMessage);
       });
 
       this.session.on("signal:update-auction", (event) => {
@@ -293,19 +439,17 @@ export default {
 
     sendMessage() {
       if (this.session) {
+        const data = {
+          message: this.message,
+          sender: this.$store.state.user.userInfo.name,
+        };
         this.session
           .signal({
-            data: this.message,
+            data: JSON.stringify(data),
             to: [],
             type: "user-chat",
           })
           .then(() => {
-            let newMessage = document.createElement("div");
-            newMessage.innerText = this.message;
-            newMessage.classList.add("message-orange");
-
-            document.getElementById("chattings").appendChild(newMessage);
-
             this.message = "";
             console.log("Message successfully sent!!!");
           })
@@ -512,6 +656,20 @@ user-video {
   font: 400 0.9em "Open Sans", sans-serif;
   border: 1px solid #dfd087;
   border-radius: 10px;
+}
+.message-sender {
+  position: relative;
+  margin-bottom: 5px;
+  padding: 5px;
+  text-align: right;
+  font: 400 0.9em "Open Sans", sans-serif;
+}
+.message-receiver {
+  position: relative;
+  margin-bottom: 5px;
+  padding: 5px;
+  text-align: left;
+  font: 400 0.9em "Open Sans", sans-serif;
 }
 
 .message-blue:after {
