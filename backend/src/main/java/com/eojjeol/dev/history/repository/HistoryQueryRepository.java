@@ -21,12 +21,14 @@ public class HistoryQueryRepository extends QuerydslRepositorySupport {
     public List<History> findAllSell(String sellerId) {
         return jpaQueryFactory.selectFrom(history)
                 .where(history.sellerId.eq(sellerId))
+                .orderBy(history.createdDate.desc())
                 .fetch();
     }
 
     public List<History> findAllWin(Long id) {
         return jpaQueryFactory.selectFrom(history)
                 .where(history.member.id.eq(id))
+                .orderBy(history.createdDate.desc())
                 .fetch();
     }
 }
