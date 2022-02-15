@@ -14,18 +14,27 @@ export async function selectAllAuctions({ commit }, sessionId) {
   }
 }
 
-export async function deleteAuction(id) {
+export async function deleteAuction({ commit }, id) {
   try {
     const response = await api.delete("/api/auction/" + id);
-    console.log(response);
   } catch (error) {
     console.log(error);
   }
 }
 
-export async function deleteAuctions(sessionId) {
+export async function selectAuction({ commit }, id) {
   try {
-    return await api.delete("/api/auction/list/" + sessionId);
+    const response = await api.get("/api/auction/" + id);
+    commit("selectCurrentAuction", response.data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function deleteAuctions({ commit }, sessionId) {
+  try {
+    const response = await api.delete("/api/auction/list/" + sessionId);
+    console.log(response);
   } catch (error) {
     console.log(error);
   }
