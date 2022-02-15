@@ -1,8 +1,8 @@
 <template>
-  <q-page>
+  <q-page padding>
     <q-list class="row">
       <room-list-item
-        class="col-md"
+        class="col-xs-12 col-sm-6 col-md-3"
         v-for="(room, key) in roomList"
         :key="key"
         :room="room"
