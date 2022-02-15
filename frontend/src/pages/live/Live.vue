@@ -48,8 +48,15 @@
                   <q-separator />
                   <q-card-section class="text-subitle2">
                     <!-- <auction-list></auction-list> -->
-                    <p></p>
-                    시작 가격, 상품명, 원산지
+                    <div v-if="currentAuction">
+                      상품명 : {{ currentAuction.productName }}
+                    </div>
+                    <div v-if="currentAuction">
+                      시작 가격 : {{ currentAuction.startPrice }}
+                    </div>
+                    <div v-if="currentAuction">
+                      원산지 : {{ currentAuction.origin }}
+                    </div>
                   </q-card-section>
                 </div>
               </q-slide-transition>
@@ -89,20 +96,12 @@
           </q-card>
         </q-dialog>
 
-        <q-dialog v-if="manage" v-model="auctionDialog">
-          <q-card style="background-color: white">
-            <auction-form @new-auction-added="fetchAuctionList"></auction-form>
-          </q-card>
-        </q-dialog>
-
         <div>
           <q-card style="width: 400px; height: 400px; padding: 10px">
             <div name="chat">
               <div>채팅</div>
               <q-scroll-area style="height: 300px">
-                <div id="chattings">
-                  <h2>{{ newMessage }}</h2>
-                </div>
+                <div id="chattings"></div>
               </q-scroll-area>
               <div>
                 <q-input
@@ -129,13 +128,11 @@
 </template>
 
 <script>
+import { ref } from "vue";
 import { api } from "boot/axios";
 import { ovapi } from "boot/axios";
 import { OpenVidu } from "openvidu-browser";
-import { ref } from "vue";
 import UserVideo from "components/live/UserVideo";
-import AuctionForm from "components/auction/AuctionForm";
-import AuctionList from "components/auction/AuctionList";
 const OPENVIDU_SERVER_URL = `https://${global.location.hostname}:4443`;
 const OPENVIDU_SERVER_SECRET = "ASAP";
 
@@ -144,8 +141,6 @@ export default {
 
   components: {
     UserVideo,
-    AuctionForm,
-    // AuctionList,
   },
   setup() {
     return {
@@ -173,6 +168,7 @@ export default {
       description: "",
       videoNotFound: false,
       cameraDialog: false,
+      currentAuction: {},
     };
   },
   created() {
@@ -194,6 +190,16 @@ export default {
     } else {
       this.justJoinSession();
     }
+  },
+  computed: {
+    curAuction() {
+      return this.$store.state.moduleExample.auction;
+    },
+  },
+  watch: {
+    "$store.state.moduleExample.curAuction": function () {
+      this.currentAuction = this.$store.state.moduleExample.curAuction;
+    },
   },
   beforeRouteLeave: function (to, from, next) {
     if (!this.manage) {

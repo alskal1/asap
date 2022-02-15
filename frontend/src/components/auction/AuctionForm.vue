@@ -36,21 +36,6 @@
           input-class="text-right"
           suffix="₩"
         />
-
-        <div>
-          <div class="text-green text-weight-bolder">하향 금액</div>
-          <q-input
-            type="text"
-            v-model="priceTerm"
-            dense
-            outlined
-            color="green"
-            :rules="[(val) => !isNaN(val) || '숫자를 입력해주세요']"
-            input-class="text-right"
-            suffix="₩"
-          />
-        </div>
-
         <q-btn label="경매등록" type="submit" color="green" />
       </q-form>
     </div>
@@ -72,7 +57,7 @@ export default {
 
     const email = computed({
       get: () =>
-        $store.state.user.userInfo.email.replace("@", "").replace(".", ""),
+        $store.state.user.userInfo.email.replace("@", "-").replace(".", "-"),
     });
 
     function onSubmit() {

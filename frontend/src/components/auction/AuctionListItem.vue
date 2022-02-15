@@ -1,16 +1,20 @@
 <template>
   <div class="q-pa-md">
-    <q-card>
+    <q-card style="width: 400px">
       <q-card-section>
         <div>
-          <div class="text-subtitle2">상품명 : {{ auction.productName }}</div>
-          <div class="text-subtitle2">시작가 : {{ auction.startPrice }}원</div>
-          <div class="text-subtitle2">하향금액 : {{ auction.priceTerm }}원</div>
+          <div class="text-subtitle2">
+            상품명 : {{ curAuction.productName }}
+          </div>
+          <div class="text-subtitle2">
+            시작가 : {{ curAuction.startPrice }}원
+          </div>
+          <div class="text-subtitle2">원산지 : {{ curAuction.origin }}</div>
         </div>
         <div class="row">
           <q-space />
-          <q-btn flat label="수정" color="primary" @click="deleteAuction()" />
-          <q-btn flat label="삭제" color="red" @click="deleteAuction()" />
+          <q-btn flat label="선택" color="primary" @click="selectAuction" />
+          <q-btn flat label="삭제" color="red" @click="deleteAuction" />
         </div>
       </q-card-section>
     </q-card>
@@ -18,35 +22,25 @@
 </template>
 
 <script>
-import { useStore } from "vuex";
 export default {
   name: "AuctionListItem",
   props: {
-    sessionId: {
-      type: String,
-    },
     auction: {
       type: Object,
     },
   },
-  setup(props) {
-    const $store = useStore();
-
-    function deleteAuction() {
-      const deleteId = props.auction.id;
-      $store
-        .dispatch("moduleExample/deleteAuction", deleteId)
-        .then(() => {
-          // $store.dispatch("moduleExample/selectAllAuctions", email.value);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }
-
+  data() {
     return {
-      deleteAuction,
+      curAuction: this.auction,
     };
+  },
+  methods: {
+    deleteAuction() {
+      this.$emit("deleteAuction");
+    },
+    selectAuction() {
+      this.$store.dispatch("moduleExample/selectAuction", this.curAuction.id);
+    },
   },
 };
 </script>

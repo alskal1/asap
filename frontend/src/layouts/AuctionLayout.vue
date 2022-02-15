@@ -136,6 +136,12 @@
           <auction-form @new-auction-added="fetchAuctionList"></auction-form>
         </q-card>
       </q-dialog>
+
+      <q-dialog v-if="auctionListDialog" v-model="auctionListDialog">
+        <q-card style="background-color: white">
+          <auction-list></auction-list>
+        </q-card>
+      </q-dialog>
       <router-view />
     </q-page-container>
   </q-layout>
@@ -143,6 +149,7 @@
 
 <script>
 import AuctionForm from "components/auction/AuctionForm";
+import AuctionList from "components/auction/AuctionList";
 import { computed, defineComponent, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
@@ -150,11 +157,11 @@ import { useRouter } from "vue-router";
 export default defineComponent({
   name: "MainLayout",
 
-  components: { AuctionForm },
+  components: { AuctionForm, AuctionList },
   data() {
     return {
       auctionDialog: false,
-      manage: false,
+      auctionListDialog: false,
     };
   },
   setup() {
@@ -206,6 +213,9 @@ export default defineComponent({
   methods: {
     addAuction() {
       this.auctionDialog = true;
+    },
+    addAuctionList() {
+      this.auctionListDialog = true;
     },
     fetchAuctionList: function () {
       this.auctionDialog = false;
