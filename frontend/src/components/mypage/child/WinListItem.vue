@@ -32,8 +32,6 @@ export default {
     },
   },
   setup(props) {
-    const testKey = "9E7QuaGXyIVWiccS3fNTJQ";
-
     function findProduct() {}
     return { findProduct };
   },
