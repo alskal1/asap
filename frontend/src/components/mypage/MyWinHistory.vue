@@ -2,7 +2,6 @@
   <div class="q-mt-xl">
     <q-list v-if="winHistoryList.length">
       <win-list-item
-        @intoWinItem="intoWinItem"
         v-for="(winItem, key) in winHistoryList"
         :key="key"
         :winItem="winItem"
@@ -33,36 +32,15 @@ export default {
   },
   setup() {
     const $store = useStore();
-    const $q = useQuasar();
+
     $store.dispatch("user/getWinHistory");
 
     const winHistoryList = computed({
       get: () => $store.state.user.winHistory,
     });
-    function intoWinItem(data) {
-      const dialog = $q
-        .dialog({
-          title: "운송장 번호 등록",
-          html: true,
-          message: "dd",
-          prompt: {
-            model: "",
-            isValid: (val) => val.length > 2, // << here is the magic
-            type: "text", // optional
-          },
-          cancel: true,
-          persistent: true,
-        })
-        .onOk((data) => {
-          // console.log('>>>> OK, received', data)
-        });
-      console.log(data);
-      return dialog;
-    }
 
     return {
       winHistoryList,
-      intoWinItem,
     };
   },
 };
