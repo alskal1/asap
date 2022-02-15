@@ -136,26 +136,8 @@ export default {
       this.subscribers = [];
       this.OV = undefined;
       next();
-    }
-
-    if (this.videoNotFound) {
-      api
-        .delete("/api/room/" + this.sessionId)
-        .then(() => {
-          this.session.disconnect();
-          this.session = undefined;
-          this.mainStreamManager = undefined;
-          this.publisher = undefined;
-          this.subscribers = [];
-          this.OV = undefined;
-          next();
-          return;
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
     } else {
-      if (window.confirm("want to quit?")) {
+      if (this.videoNotFound) {
         api
           .delete("/api/room/" + this.sessionId)
           .then(() => {
@@ -165,15 +147,33 @@ export default {
             this.publisher = undefined;
             this.subscribers = [];
             this.OV = undefined;
-          })
-          .then(() => {
             next();
+            return;
           })
           .catch(function (error) {
             console.log(error);
           });
       } else {
-        next(false);
+        if (window.confirm("want to quit?")) {
+          api
+            .delete("/api/room/" + this.sessionId)
+            .then(() => {
+              this.session.disconnect();
+              this.session = undefined;
+              this.mainStreamManager = undefined;
+              this.publisher = undefined;
+              this.subscribers = [];
+              this.OV = undefined;
+            })
+            .then(() => {
+              next();
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        } else {
+          next(false);
+        }
       }
     }
   },
@@ -199,13 +199,24 @@ export default {
       });
 
       this.session.on("signal:user-chat", (event) => {
-        if (this.session.connection.connectionId != event.from.connectionId) {
-          let newMessage = document.createElement("div");
-          newMessage.innerText = event.data;
-          newMessage.classList.add("message-blue");
+        const data = JSON.parse(event.data);
 
-          document.getElementById("chattings").appendChild(newMessage);
+        let newMessage = document.createElement("div");
+        let sender = document.createElement("div");
+
+        sender.innerText = data.sender;
+        newMessage.innerText = data.message;
+
+        if (data.sender == this.$store.state.user.userInfo.name) {
+          newMessage.classList.add("message-orange");
+          sender.classList.add("message-sender");
+        } else {
+          newMessage.classList.add("message-blue");
+          sender.classList.add("message-receiver");
         }
+
+        document.getElementById("chattings").appendChild(sender);
+        document.getElementById("chattings").appendChild(newMessage);
       });
 
       this.session.on("streamDestroyed", ({ stream }) => {
@@ -242,7 +253,11 @@ export default {
                 );
               })
               .catch(function (error) {
-                console.log(error);
+                if (error.response.status == 409) {
+                  console.log("방송이 리로드 되었습니다.");
+                } else {
+                  console.log(error);
+                }
               });
           })
           .then(() => {
@@ -293,19 +308,24 @@ export default {
       });
 
       this.session.on("signal:user-chat", (event) => {
-        if (this.session.connection.connectionId != event.from.connectionId) {
-          let newMessage = document.createElement("div");
-          let sender = document.createElement("div");
-          let content = document.createElement("div");
-          sender.innerText = event.data.sender;
-          content.innerText = event.data.message;
+        const data = JSON.parse(event.data);
 
-          newMessage.appendChild(sender);
-          newMessage.appendChild(content);
+        let newMessage = document.createElement("div");
+        let sender = document.createElement("div");
+
+        sender.innerText = data.sender;
+        newMessage.innerText = data.message;
+
+        if (data.sender == this.$store.state.user.userInfo.name) {
+          newMessage.classList.add("message-orange");
+          sender.classList.add("message-sender");
+        } else {
           newMessage.classList.add("message-blue");
-
-          document.getElementById("chattings").appendChild(newMessage);
+          sender.classList.add("message-receiver");
         }
+
+        document.getElementById("chattings").appendChild(sender);
+        document.getElementById("chattings").appendChild(newMessage);
       });
 
       this.session.on("signal:update-auction", (event) => {
@@ -354,29 +374,17 @@ export default {
 
     sendMessage() {
       if (this.session) {
+        const data = {
+          message: this.message,
+          sender: this.$store.state.user.userInfo.name,
+        };
         this.session
           .signal({
-            data: {
-              message: this.message,
-              sender: this.$store.state.user.userInfo.email,
-            },
+            data: JSON.stringify(data),
             to: [],
             type: "user-chat",
           })
           .then(() => {
-            let newMessage = document.createElement("div");
-            let sender = document.createElement("div");
-            let content = document.createElement("div");
-
-            sender.innerText = event.data.sender;
-            content.innerText = event.data.message;
-
-            newMessage.appendChild(sender);
-            newMessage.appendChild(content);
-            newMessage.classList.add("message-orange");
-
-            document.getElementById("chattings").appendChild(newMessage);
-
             this.message = "";
             console.log("Message successfully sent!!!");
           })
@@ -583,6 +591,20 @@ user-video {
   font: 400 0.9em "Open Sans", sans-serif;
   border: 1px solid #dfd087;
   border-radius: 10px;
+}
+.message-sender {
+  position: relative;
+  margin-bottom: 5px;
+  padding: 5px;
+  text-align: right;
+  font: 400 0.9em "Open Sans", sans-serif;
+}
+.message-receiver {
+  position: relative;
+  margin-bottom: 5px;
+  padding: 5px;
+  text-align: left;
+  font: 400 0.9em "Open Sans", sans-serif;
 }
 
 .message-blue:after {
