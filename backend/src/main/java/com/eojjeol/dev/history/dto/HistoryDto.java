@@ -18,8 +18,6 @@ public class HistoryDto extends BaseTimeEntity {
     @ApiModelProperty(hidden = true)
     private Long id;
 
-    private Long auctionId;
-
     private String productName;
 
     private Integer count;
@@ -38,7 +36,6 @@ public class HistoryDto extends BaseTimeEntity {
         return HistoryDto.builder()
                 .id(history.getId())
                 .date(history.getCreatedDate())
-                .auctionId(history.getAuction().getId())
                 .productName(history.getProductName())
                 .count(history.getCount())
                 .finalPrice(history.getFinalPrice())

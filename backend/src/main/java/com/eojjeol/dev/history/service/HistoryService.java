@@ -1,6 +1,6 @@
 package com.eojjeol.dev.history.service;
 
-import com.eojjeol.dev.auction.repository.AuctionRepository;
+import com.eojjeol.dev.entity.DeliveryState;
 import com.eojjeol.dev.entity.History;
 import com.eojjeol.dev.entity.member.Member;
 import com.eojjeol.dev.history.dto.HistoryDto;
@@ -23,7 +23,6 @@ public class HistoryService {
 
     private final MemberRepository memberRepository;
     private final HistoryRepository historyRepository;
-    private final AuctionRepository auctionRepository;
     private final HistoryQueryRepository historyCustomRepository;
 
     @Transactional
@@ -34,10 +33,9 @@ public class HistoryService {
                     .productName(historyDto.getProductName())
                     .count(historyDto.getCount())
                     .finalPrice(historyDto.getFinalPrice())
-                    .deliveryState(historyDto.getDeliveryState())
+                    .deliveryState(DeliveryState.READY)
                     .sellerId(historyDto.getSellerId())
                     .member(member)
-                    .auction(auctionRepository.getById(historyDto.getAuctionId()))
                     .build();
 
             History savedHistory = historyRepository.save(history);

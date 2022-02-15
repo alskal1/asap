@@ -183,6 +183,9 @@ export default {
       .replace(".", "-");
     this.myUserName = this.$route.query.myUserName;
     console.log(this.sessionId);
+    if (this.$route.query.status == "PUBLISHER") {
+      this.$store.commit("user/setIsManage", true);
+    }
   },
   mounted() {
     if (this.$route.query.status == "PUBLISHER") {
