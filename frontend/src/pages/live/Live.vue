@@ -35,6 +35,19 @@
         </q-card>
       </q-dialog>
 
+      <q-dialog v-model="cameraDialog" no-esc-dismiss no-backdrop-dismiss>
+        <q-card>
+          <q-card-section class="row items-center no-wrap">
+            <div>
+              <div class="text-weight-bold">
+                카메라 리소스가 사용중이거나 존재하지 않습니다.
+              </div>
+              <q-btn @click="leaveSession()">OK</q-btn>
+            </div>
+          </q-card-section>
+        </q-card>
+      </q-dialog>
+
       <q-drawer side="right" v-model="drawer" show-if-above :width="230">
         <q-div id="chattings">
           <h2>{{ newMessage }}</h2>
@@ -94,6 +107,8 @@ export default {
       sessionId: "",
       myUserName: "",
       description: "",
+      videoNotFound: false,
+      cameraDialog: false,
     };
   },
   created() {
@@ -113,26 +128,53 @@ export default {
     }
   },
   beforeRouteLeave: function (to, from, next) {
-    if (window.confirm("want to quit?")) {
+    if (!this.manage) {
       this.session.disconnect();
       this.session = undefined;
       this.mainStreamManager = undefined;
       this.publisher = undefined;
       this.subscribers = [];
       this.OV = undefined;
-
-      if (this.manage) {
+      next();
+    } else {
+      if (this.videoNotFound) {
         api
           .delete("/api/room/" + this.sessionId)
           .then(() => {
+            this.session.disconnect();
+            this.session = undefined;
+            this.mainStreamManager = undefined;
+            this.publisher = undefined;
+            this.subscribers = [];
+            this.OV = undefined;
             next();
+            return;
           })
           .catch(function (error) {
             console.log(error);
           });
+      } else {
+        if (window.confirm("want to quit?")) {
+          api
+            .delete("/api/room/" + this.sessionId)
+            .then(() => {
+              this.session.disconnect();
+              this.session = undefined;
+              this.mainStreamManager = undefined;
+              this.publisher = undefined;
+              this.subscribers = [];
+              this.OV = undefined;
+            })
+            .then(() => {
+              next();
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        } else {
+          next(false);
+        }
       }
-    } else {
-      next(false);
     }
   },
 
@@ -157,13 +199,24 @@ export default {
       });
 
       this.session.on("signal:user-chat", (event) => {
-        if (this.session.connection.connectionId != event.from.connectionId) {
-          let newMessage = document.createElement("div");
-          newMessage.innerText = event.data;
-          newMessage.classList.add("message-blue");
+        const data = JSON.parse(event.data);
 
-          document.getElementById("chattings").appendChild(newMessage);
+        let newMessage = document.createElement("div");
+        let sender = document.createElement("div");
+
+        sender.innerText = data.sender;
+        newMessage.innerText = data.message;
+
+        if (data.sender == this.$store.state.user.userInfo.name) {
+          newMessage.classList.add("message-orange");
+          sender.classList.add("message-sender");
+        } else {
+          newMessage.classList.add("message-blue");
+          sender.classList.add("message-receiver");
         }
+
+        document.getElementById("chattings").appendChild(sender);
+        document.getElementById("chattings").appendChild(newMessage);
       });
 
       this.session.on("streamDestroyed", ({ stream }) => {
@@ -200,20 +253,35 @@ export default {
                 );
               })
               .catch(function (error) {
-                console.log(error);
+                if (error.response.status == 409) {
+                  console.log("방송이 리로드 되었습니다.");
+                } else {
+                  console.log(error);
+                }
               });
           })
           .then(() => {
-            const publisher = this.OV.initPublisher(undefined, {
-              audioSource: undefined, // The source of audio. If undefined default microphone
-              videoSource: undefined, // The source of video. If undefined default webcam
-              publishAudio: true,
-              publishVideo: true,
-              resolution: "640x360", // The resolution of your video
-              frameRate: 30, // The frame rate of your video
-              insertMode: "APPEND",
-              mirror: false, // Whether to mirror your local video or not
-            });
+            const publisher = this.OV.initPublisher(
+              undefined,
+              {
+                audioSource: undefined, // The source of audio. If undefined default microphone
+                videoSource: undefined, // The source of video. If undefined default webcam
+                publishAudio: true,
+                publishVideo: true,
+                resolution: "640x360", // The resolution of your video
+                frameRate: 30, // The frame rate of your video
+                insertMode: "APPEND",
+                mirror: false, // Whether to mirror your local video or not
+              },
+              (error) => {
+                if (error) {
+                  this.videoNotFound = true;
+                  this.cameraDialog = true;
+                } else {
+                  console.log("Publisher successfully initialized");
+                }
+              }
+            );
 
             this.mainStreamManager = publisher;
             this.publisher = publisher;
@@ -240,13 +308,24 @@ export default {
       });
 
       this.session.on("signal:user-chat", (event) => {
-        if (this.session.connection.connectionId != event.from.connectionId) {
-          let newMessage = document.createElement("div");
-          newMessage.innerText = event.data;
-          newMessage.classList.add("message-blue");
+        const data = JSON.parse(event.data);
 
-          document.getElementById("chattings").appendChild(newMessage);
+        let newMessage = document.createElement("div");
+        let sender = document.createElement("div");
+
+        sender.innerText = data.sender;
+        newMessage.innerText = data.message;
+
+        if (data.sender == this.$store.state.user.userInfo.name) {
+          newMessage.classList.add("message-orange");
+          sender.classList.add("message-sender");
+        } else {
+          newMessage.classList.add("message-blue");
+          sender.classList.add("message-receiver");
         }
+
+        document.getElementById("chattings").appendChild(sender);
+        document.getElementById("chattings").appendChild(newMessage);
       });
 
       this.session.on("signal:update-auction", (event) => {
@@ -295,19 +374,17 @@ export default {
 
     sendMessage() {
       if (this.session) {
+        const data = {
+          message: this.message,
+          sender: this.$store.state.user.userInfo.name,
+        };
         this.session
           .signal({
-            data: this.message,
+            data: JSON.stringify(data),
             to: [],
             type: "user-chat",
           })
           .then(() => {
-            let newMessage = document.createElement("div");
-            newMessage.innerText = this.message;
-            newMessage.classList.add("message-orange");
-
-            document.getElementById("chattings").appendChild(newMessage);
-
             this.message = "";
             console.log("Message successfully sent!!!");
           })
@@ -514,6 +591,20 @@ user-video {
   font: 400 0.9em "Open Sans", sans-serif;
   border: 1px solid #dfd087;
   border-radius: 10px;
+}
+.message-sender {
+  position: relative;
+  margin-bottom: 5px;
+  padding: 5px;
+  text-align: right;
+  font: 400 0.9em "Open Sans", sans-serif;
+}
+.message-receiver {
+  position: relative;
+  margin-bottom: 5px;
+  padding: 5px;
+  text-align: left;
+  font: 400 0.9em "Open Sans", sans-serif;
 }
 
 .message-blue:after {
