@@ -1,21 +1,19 @@
 <template>
-  <q-page>
-    <div class="q-pa-md">
-      <div>
-        <q-list v-if="pointHistoryList.length">
-          <point-list-item
-            v-for="(pointItem, key) in pointHistoryList"
-            :key="key"
-            :pointItem="pointItem"
-          >
-          </point-list-item>
-        </q-list>
-        <q-list class="text-center" v-else>
-          <h6 class="text-grey">포인트 내역이 없습니다.</h6>
-        </q-list>
-      </div>
+  <div class="q-pa-md">
+    <div>
+      <q-list v-if="pointHistoryList.length">
+        <point-list-item
+          v-for="(pointItem, key) in pointHistoryList"
+          :key="key"
+          :pointItem="pointItem"
+        >
+        </point-list-item>
+      </q-list>
+      <q-list class="text-center" v-else>
+        <h6 class="text-grey">포인트 내역이 없습니다.</h6>
+      </q-list>
     </div>
-  </q-page>
+  </div>
 </template>
 
 <script>
