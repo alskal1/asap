@@ -28,11 +28,7 @@ const routes = [
         component: () => import("pages/Mypage.vue"),
         meta: { authRequired: true },
       },
-      {
-        path: "/live",
-        component: () => import("pages/live/Live.vue"),
-        meta: { authRequired: true },
-      },
+
       {
         path: "/room",
         component: () => import("pages/CreateRoom.vue"),
@@ -40,6 +36,18 @@ const routes = [
       },
     ],
   },
+  {
+    path: "/live",
+    component: () => import("layouts/AuctionLayout.vue"),
+    children: [
+      {
+        path: "/live/publisher",
+        component: () => import("pages/live/Live.vue"),
+        meta: { authRequired: true },
+      },
+    ],
+  },
+
   {
     path: "/auth",
     component: () => import("layouts/AuthLayout.vue"),
