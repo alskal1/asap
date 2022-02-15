@@ -48,6 +48,7 @@
             :rules="[(val) => !isNaN(val) || '숫자를 입력해주세요']"
             input-class="text-right"
             suffix="₩"
+            clearable
           />
         </div>
 

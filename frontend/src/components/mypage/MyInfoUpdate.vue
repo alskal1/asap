@@ -1,12 +1,10 @@
 <template>
-  <q-page>
-    <q-card class="q-pa-lg">
-      <h6>회원정보변경</h6>
+  <div class="q-mt-xl flex justify-center">
+    <q-card class="q-pa-lg" style="width: 800px">
+      <div class="text-h6">회원정보 변경</div>
       <q-form class="q-pa-md">
         <q-input label="닉네임" color="green" v-model="userInfo.name"
           ><template v-slot:before>
-            <q-avatar size="60px" text-color="green" icon="account_circle">
-            </q-avatar>
             <q-input
               label="아이디"
               color="green"
@@ -62,7 +60,7 @@
         </div>
       </q-form>
     </q-card>
-  </q-page>
+  </div>
 </template>
 
 <script>

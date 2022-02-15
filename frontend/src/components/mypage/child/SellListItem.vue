@@ -1,13 +1,28 @@
 <template>
-  <q-item>
-    <q-item-section class="col-2">{{ sellItem.date }}</q-item-section>
-    <q-item-section class="col-3">{{ sellItem.productName }}</q-item-section>
-    <q-item-section class="col-2">{{ sellItem.sellerId }}</q-item-section>
-    <q-item-section class="col-1">{{ sellItem.count }}</q-item-section>
-    <q-item-section class="col-2">{{ sellItem.finalPrice }}</q-item-section>
-    <q-item-section class="col-1">{{ sellItem.deliveryState }}</q-item-section>
-  </q-item>
-  <q-separator />
+  <q-card class="q-pa-md q-mb-lg">
+    <q-item>
+      <q-item-section class="">
+        <q-item-label>{{ sellItem.productName }}</q-item-label>
+        <q-item-label caption lines="2"
+          >판매날짜 : {{ sellItem.date }}</q-item-label
+        >
+
+        <!-- <q-item-label caption lines="2"
+          >상품 수량 : {{ sellItem.count }}</q-item-label
+        >
+        <q-item-label caption lines="2"
+          >최종 낙찰가 :{{ sellItem.finalPrice }}</q-item-label
+        > -->
+      </q-item-section>
+
+      <q-item-section
+        @click="$emit('intoSellItem', sellItem)"
+        side
+        class="text-primary"
+        >판매상세 조회
+      </q-item-section>
+    </q-item>
+  </q-card>
 </template>
 
 <script>
