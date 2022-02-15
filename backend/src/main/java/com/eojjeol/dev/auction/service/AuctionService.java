@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -32,7 +33,7 @@ public class AuctionService {
 
     public ResponseEntity<AuctionDto> createAuction(AuctionDto auctionDto) {
         Member member = SecurityUtil.getCurrentEmail().flatMap(memberRepository::findOneWithAuthoritiesByEmail).orElse(null);
-        Room room = roomQueryRepository.findRoomBySessionId(member.getEmail().replaceAll("[@.]", ""));
+        Room room = roomQueryRepository.findRoomBySessionId(member.getEmail().replaceAll("[@.]", "-"));
 
         if(room == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -41,11 +42,10 @@ public class AuctionService {
         Auction auction = Auction.builder()
                 .productName(auctionDto.getProductName())
                 .room(room)
-                .finalPrice(auctionDto.getFinalPrice())
+                .finalPrice(0)
                 .startPrice(auctionDto.getStartPrice())
-                .bidTerm(auctionDto.getBidTerm())
-                .priceTerm(auctionDto.getPriceTerm())
-                .currentPrice(auctionDto.getCurrentPrice())
+                .origin(auctionDto.getOrigin())
+                .currentPrice(auctionDto.getStartPrice())
                 .build();
 
         Auction saveAuction = auctionRepository.save(auction);
@@ -75,7 +75,7 @@ public class AuctionService {
 
     public ResponseEntity<AuctionDto> deleteAllAuction(String sessionId) {
         try {
-            Room room = roomQueryRepository.findRoomBySessionId(sessionId.replaceAll("[@.]", ""));
+            Room room = roomQueryRepository.findRoomBySessionId(sessionId.replaceAll("[@.]", "-"));
             auctionQueryRepository.deleteAllAuctionByRoomId(room.getId());
 
             return new ResponseEntity<>(HttpStatus.OK);
@@ -84,9 +84,26 @@ public class AuctionService {
         }
     }
 
+    public ResponseEntity<AuctionDto> updateAuctionPrice(AuctionDto auctionDto) {
+        try {
+            Auction auction = auctionRepository.findById(auctionDto.getRoomId()).orElse(null);
+
+            if(auction == null) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+            auction.setCurrentPrice(auctionDto.getCurrentPrice());
+            AuctionDto changedAuction = AuctionDto.from(auction);
+
+            return new ResponseEntity<>(changedAuction, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
     public ResponseEntity<List<AuctionDto>> selectAllAuction(String sessionId) {
         try {
-            String encSessionId = sessionId.replaceAll("[@.]", "");
+            String encSessionId = sessionId.replaceAll("[@.]", "-");
             Room room = roomQueryRepository.findRoomBySessionId(encSessionId);
 
             if(room == null) {

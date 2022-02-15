@@ -3,7 +3,6 @@ package com.eojjeol.dev.auction.controller;
 import com.eojjeol.dev.auction.dto.AuctionDto;
 import com.eojjeol.dev.auction.service.AuctionService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +28,11 @@ public class AuctionController {
     @GetMapping("/list/{sessionId}")
     public ResponseEntity<List<AuctionDto>> selectAllAuctions(@PathVariable String sessionId) {
         return auctionService.selectAllAuction(sessionId);
+    }
+
+    @PutMapping("/")
+    public ResponseEntity<AuctionDto> updateAuctionPrice(@RequestBody AuctionDto auctionDto) {
+        return auctionService.updateAuctionPrice(auctionDto);
     }
 
     @DeleteMapping("/{id}")

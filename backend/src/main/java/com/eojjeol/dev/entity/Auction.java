@@ -28,9 +28,7 @@ public class Auction extends BaseTimeEntity {
 
     private Integer startPrice;
 
-    private Integer bidTerm;
-
-    private Integer priceTerm;
+    private String origin;
 
     private Integer currentPrice;
 
