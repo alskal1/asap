@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md">
-    <q-card>
+    <q-card style="max-width: 400px">
       <img src="https://cdn.quasar.dev/img/mountains.jpg" />
       <q-card-section>
         <div class="text-h6">{{ room.title }}</div>
