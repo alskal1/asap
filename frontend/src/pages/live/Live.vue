@@ -93,10 +93,12 @@ export default {
       manage: false,
       sessionId: "",
       myUserName: "",
+      description: "",
     };
   },
   created() {
     this.title = this.$route.query.title;
+    this.description = this.$route.query.description;
     this.sessionId = this.$route.query.sessionId
       .replace("@", "-")
       .replace(".", "-");

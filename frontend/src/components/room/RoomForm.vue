@@ -101,6 +101,8 @@ export default {
           userInfo.value.name +
           "&title=" +
           title.value +
+          "&description=" +
+          description.value +
           "&status=PUBLISHER"
       );
     }
