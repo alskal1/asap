@@ -8,10 +8,10 @@
         </div>
         <div class="row">
           <div class="col-md-4">
-            <q-avatar size="md" icon="account_circle"> </q-avatar>판매자
-            <span> {{ title }} </span>
+            <q-avatar size="md" icon="account_circle"> </q-avatar>
+            <span>{{ sessionId }}</span>
+            <span class="q-ml-lg">{{ title }} {{ description }} </span>
           </div>
-          <!-- <span>시청자수</span> -->
           <div class="col-md-4 offset-md-3">
             <q-btn
               side="right"
@@ -64,12 +64,25 @@
           </div>
         </div>
         <q-card class="q-mt-sm q-mb-sm" style="width: 400px; padding: 10px">
-          <span>현재 가격 : </span><span>500000원 </span>
+          <span>현재 가격 : </span>
+
+          <span>{{ currentPrice }}</span>
           <span v-if="manage">
-            <input style="width: 50px" />
-            <q-btn outline style="color: green" label="가격내리기" />
+            <!-- <input v-model="price" style="width: 50px" /> -->
+            <q-btn
+              outline
+              style="color: green"
+              label="가격내리기"
+              @click="sendPriceChangeMessage(currentPrice)"
+            />
           </span>
-          <q-btn v-else outline style="color: green" label="낙찰하기" />
+          <q-btn
+            v-else
+            outline
+            style="color: green"
+            label="낙찰하기"
+            @click="winProduct()"
+          />
         </q-card>
 
         <q-dialog v-model="dialog">
@@ -142,6 +155,7 @@ export default {
   components: {
     UserVideo,
   },
+
   setup() {
     return {
       tab: ref("live"),
@@ -156,7 +170,6 @@ export default {
       position: "center",
       OV: undefined,
       dialog: false,
-      auctionDialog: false,
       session: undefined,
       mainStreamManager: undefined,
       publisher: undefined,
@@ -169,8 +182,11 @@ export default {
       videoNotFound: false,
       cameraDialog: false,
       currentAuction: {},
+      startPrice: "10000",
+      currentPrice: "",
     };
   },
+
   created() {
     this.title = this.$route.query.title;
     this.description = this.$route.query.description;
@@ -255,6 +271,10 @@ export default {
   },
 
   methods: {
+    downPrice() {
+      this.startPrice = this.currentPrice;
+    },
+
     joinSession() {
       this.OV = new OpenVidu();
 
@@ -395,13 +415,16 @@ export default {
         document.getElementById("chattings").appendChild(newMessage);
       });
 
-      this.session.on("signal:update-auction", (event) => {});
+      this.session.on("signal:update-auction", (event) => {
+        const data = JSON.parse(event.data);
+        this.currentPrice = data.price;
 
-      this.session.on("signal:auction-selected", (event) => {
-        console.log("경매 물품 정보가 업데이트되었습니다!!!");
-        const newAuction = JSON.parse(event.data);
-
-        this.$store.commit("moduleExample/selectCurrentAuction", newAuction);
+        console.log("update list message received!!!");
+        this.$store
+          .dispatch("moduleExample/selectAllAuctions", this.sessionId)
+          .catch((error) => {
+            console.log(error);
+          });
       });
 
       this.session.on("streamDestroyed", ({ stream }) => {
@@ -487,6 +510,24 @@ export default {
             console.error(error);
           });
       }
+    },
+
+    winProduct() {
+      const data = {
+        productName: "apple",
+        count: "1",
+        finalPrice: this.currentPrice,
+        deliveryState: "0",
+        sellerId: this.sessionId,
+      };
+      api
+        .post("/api/history/", data)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
 
     leaveSession() {
