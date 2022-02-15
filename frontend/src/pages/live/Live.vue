@@ -35,6 +35,19 @@
         </q-card>
       </q-dialog>
 
+      <q-dialog v-model="cameraDialog" no-esc-dismiss no-backdrop-dismiss>
+        <q-card>
+          <q-card-section class="row items-center no-wrap">
+            <div>
+              <div class="text-weight-bold">
+                카메라 리소스가 사용중이거나 존재하지 않습니다.
+              </div>
+              <q-btn @click="leaveSession()">OK</q-btn>
+            </div>
+          </q-card-section>
+        </q-card>
+      </q-dialog>
+
       <q-drawer side="right" v-model="drawer" show-if-above :width="230">
         <q-div id="chattings">
           <h2>{{ newMessage }}</h2>
@@ -94,6 +107,8 @@ export default {
       sessionId: "",
       myUserName: "",
       description: "",
+      videoNotFound: false,
+      cameraDialog: false,
     };
   },
   created() {
@@ -113,26 +128,53 @@ export default {
     }
   },
   beforeRouteLeave: function (to, from, next) {
-    if (window.confirm("want to quit?")) {
+    if (!this.manage) {
       this.session.disconnect();
       this.session = undefined;
       this.mainStreamManager = undefined;
       this.publisher = undefined;
       this.subscribers = [];
       this.OV = undefined;
+      next();
+    }
 
-      if (this.manage) {
+    if (this.videoNotFound) {
+      api
+        .delete("/api/room/" + this.sessionId)
+        .then(() => {
+          this.session.disconnect();
+          this.session = undefined;
+          this.mainStreamManager = undefined;
+          this.publisher = undefined;
+          this.subscribers = [];
+          this.OV = undefined;
+          next();
+          return;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    } else {
+      if (window.confirm("want to quit?")) {
         api
           .delete("/api/room/" + this.sessionId)
+          .then(() => {
+            this.session.disconnect();
+            this.session = undefined;
+            this.mainStreamManager = undefined;
+            this.publisher = undefined;
+            this.subscribers = [];
+            this.OV = undefined;
+          })
           .then(() => {
             next();
           })
           .catch(function (error) {
             console.log(error);
           });
+      } else {
+        next(false);
       }
-    } else {
-      next(false);
     }
   },
 
@@ -204,16 +246,27 @@ export default {
               });
           })
           .then(() => {
-            const publisher = this.OV.initPublisher(undefined, {
-              audioSource: undefined, // The source of audio. If undefined default microphone
-              videoSource: undefined, // The source of video. If undefined default webcam
-              publishAudio: true,
-              publishVideo: true,
-              resolution: "640x360", // The resolution of your video
-              frameRate: 30, // The frame rate of your video
-              insertMode: "APPEND",
-              mirror: false, // Whether to mirror your local video or not
-            });
+            const publisher = this.OV.initPublisher(
+              undefined,
+              {
+                audioSource: undefined, // The source of audio. If undefined default microphone
+                videoSource: undefined, // The source of video. If undefined default webcam
+                publishAudio: true,
+                publishVideo: true,
+                resolution: "640x360", // The resolution of your video
+                frameRate: 30, // The frame rate of your video
+                insertMode: "APPEND",
+                mirror: false, // Whether to mirror your local video or not
+              },
+              (error) => {
+                if (error) {
+                  this.videoNotFound = true;
+                  this.cameraDialog = true;
+                } else {
+                  console.log("Publisher successfully initialized");
+                }
+              }
+            );
 
             this.mainStreamManager = publisher;
             this.publisher = publisher;
@@ -242,7 +295,13 @@ export default {
       this.session.on("signal:user-chat", (event) => {
         if (this.session.connection.connectionId != event.from.connectionId) {
           let newMessage = document.createElement("div");
-          newMessage.innerText = event.data;
+          let sender = document.createElement("div");
+          let content = document.createElement("div");
+          sender.innerText = event.data.sender;
+          content.innerText = event.data.message;
+
+          newMessage.appendChild(sender);
+          newMessage.appendChild(content);
           newMessage.classList.add("message-blue");
 
           document.getElementById("chattings").appendChild(newMessage);
@@ -297,13 +356,23 @@ export default {
       if (this.session) {
         this.session
           .signal({
-            data: this.message,
+            data: {
+              message: this.message,
+              sender: this.$store.state.user.userInfo.email,
+            },
             to: [],
             type: "user-chat",
           })
           .then(() => {
             let newMessage = document.createElement("div");
-            newMessage.innerText = this.message;
+            let sender = document.createElement("div");
+            let content = document.createElement("div");
+
+            sender.innerText = event.data.sender;
+            content.innerText = event.data.message;
+
+            newMessage.appendChild(sender);
+            newMessage.appendChild(content);
             newMessage.classList.add("message-orange");
 
             document.getElementById("chattings").appendChild(newMessage);
