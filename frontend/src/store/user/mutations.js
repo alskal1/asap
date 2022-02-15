@@ -7,20 +7,8 @@ export function setUserInfo(state, userInfo) {
   state.userInfo = userInfo;
 }
 
-export function setIsJoin(state, isJoin) {
-  state.isJoin = isJoin;
-}
-
-export function setIsDelete(state, isDelete) {
-  state.isDelete = isDelete;
-}
-
-export function setIsUpdate(state, isUpdate) {
-  state.isUpdate = isUpdate;
-}
-
-export function setPoint(state, isCharge) {
-  state.isCharge = isCharge;
+export function setIsManage(state, isManage) {
+  state.isManage = isManage;
 }
 
 export function getSellHistory(state, sellHistory) {

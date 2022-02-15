@@ -25,28 +25,16 @@ export function getUserInfo({ commit }) {
     });
 }
 
-export function updateConfirm({ commit }, user) {
-  return api
-    .put("/api/member/", user)
-    .then((response) => {
-      commit("setIsUpdate", true);
-    })
-    .catch(function (error) {
-      commit("setIsUpdate", false);
-      console.log(error);
-    });
+export function updateConfirm(user) {
+  return api.put("/api/member/", user).catch(function (error) {
+    console.log(error);
+  });
 }
 
-export function chargePoint({ commit }, point) {
-  return api
-    .post("/api/point/", point)
-    .then((response) => {
-      commit("isCharge", true);
-    })
-    .catch(function (error) {
-      commit("isCharge", false);
-      console.log(error);
-    });
+export function chargePoint(point) {
+  return api.post("/api/point/", point).catch(function (error) {
+    console.log(error);
+  });
 }
 export function getSellHistory({ commit }) {
   return api

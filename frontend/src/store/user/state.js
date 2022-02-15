@@ -5,9 +5,6 @@ export default function () {
     winHistory: [],
     pointHistory: [],
     isLogin: false,
-    isJoin: false,
-    isDelete: false,
-    isUpdate: false,
-    isCharge: false,
+    isManage: false,
   };
 }

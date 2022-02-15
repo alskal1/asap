@@ -32,7 +32,8 @@ export default {
     $store.dispatch("moduleExample/updateList");
 
     function goLive(sessionId) {
-      router.push("/live?sessionId=" + sessionId);
+      $store.commit("setIsManage", false);
+      router.push("/live/publisher?sessionId=" + sessionId);
     }
 
     const roomList = computed({
