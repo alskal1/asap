@@ -1,5 +1,5 @@
 <template>
-  <div class="q-mt-xl">
+  <div class="q-pa-md">
     <q-list v-if="sellHistoryList.length">
       <sell-list-item
         @intoSellItem="intoSellItem"
@@ -10,7 +10,7 @@
       </sell-list-item>
     </q-list>
     <q-list class="text-center" v-else>
-      <div class="text-h6 text-grey">판매내역이 없습니다.</div>
+      <h6 class="text-grey">판매내역이 없습니다.</h6>
     </q-list>
   </div>
 </template>
