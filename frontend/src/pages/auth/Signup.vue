@@ -1,59 +1,91 @@
 <template>
   <div class="q-pa-lg row flex-start justify-center">
-    <q-card square bordered style="width: 500px" class="q-pa-lg shadow-1">
+    <q-card flat style="width: 500px" class="q-pa-lg shadow-1">
       <q-card-section>
         <q-form
           @submit.prevent="submitForm(email, name, password, phone, address)"
-          class=""
         >
-          <div class="q-pd-lg text-bold text-green">회원가입</div>
           <q-input
             color="green"
-            filled
+            outlined
             clearable
             v-model="email"
             type="email"
             label="이메일"
-            :rules="[(val) => !!val || '이메일을 입력해주세요.']"
+            lazy-rules
+            :rules="[
+              (val) => {
+                var emailCheck =
+                  /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+                if (emailCheck.test(val) == false) {
+                  const emailError = `이메일 형식이 올바르지않습니다.`;
+                  return emailError;
+                }
+              },
+            ]"
             dense
           />
           <q-input
             color="green"
-            filled
+            outlined
             v-model="name"
             type="text"
-            label="이름"
+            label="닉네임"
+            lazy-rules
             :rules="[(val) => !!val || '이름을 입력해주세요.']"
             dense
           />
 
           <q-input
             color="green"
-            filled
+            outlined
             v-model="password"
             type="password"
             label="비밀번호"
-            :rules="[(val) => !!val || '비밀번호를 입력해주세요.']"
+            lazy-rules
+            :rules="[
+              (val) => {
+                var passCheck =
+                  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+                if (passCheck.test(val) == false) {
+                  const passwordError1 = `최소 8자, 하나 이상의 문자, 하나의 숫자 및 하나의 특수 문자이어야 합니다`;
+                  return passwordError1;
+                }
+              },
+            ]"
             dense
           />
 
           <q-input
             color="green"
-            filled
+            outlined
             v-model="confirmation"
             type="password"
             label="비밀번호 확인"
+            lazy-rules
             :rules="[
-              ((val) => !!val || '비밀번호 확인를 입력해주세요.') ||
-                ((val) => val !== password || '제목이 너무 깁니다.'),
+              (val) => {
+                if (!val) {
+                  const passwordError1 = `비밀번호 확인을 입력해주세요.`;
+                  return passwordError1;
+                }
+                if (
+                  password != confirmation ||
+                  password.length != confirmation.length
+                ) {
+                  const passwordError2 = `비밀번호가 일치하지 않습니다.`;
+                  return passwordError2;
+                }
+              },
             ]"
             dense
           />
+
           <q-input
             color="green"
-            filled
+            outlined
             v-model="phone"
-            type="phone"
+            mask="###-####-####"
             label="전화 번호"
             :rules="[(val) => !!val || '전화번호를 입력해주세요.']"
             dense
@@ -62,10 +94,11 @@
             <q-input
               type="text"
               color="green"
-              filled
+              outlined
               v-model="address.zipCode"
               label="우편번호"
               @click="search()"
+              lazy-rules
               :rules="[(val) => !!val || '우편번호를 입력해주세요.']"
               dense
             >
@@ -80,7 +113,8 @@
               v-model="address.roadAddress"
               label="도로명주소"
               color="green"
-              filled
+              outlined
+              lazy-rules
               :rules="[(val) => !!val || '도로명주소를 입력해주세요.']"
               dense
             />
@@ -88,14 +122,14 @@
             <q-input
               type="text"
               color="green"
-              filled
+              outlined
               v-model="address.detailAddress"
               label="상세주소"
               dense
             />
           </div>
-          <div class="q-pt-md">
-            <q-btn size="md" label="SIGN UP" type="submit" color="green" />
+          <div class="q-pt-md column q-gutter-sm row justify-center">
+            <q-btn style="" label="SIGN UP" type="submit" color="green" />
           </div>
         </q-form>
       </q-card-section>
@@ -128,8 +162,33 @@ export default {
     const $q = useQuasar();
 
     const signupSuccess = () => {
+      successSignup();
       router.push("/auth/login");
     };
+    function sameID() {
+      const dialog = $q
+        .dialog({
+          title: "가입 실패",
+          html: true,
+          message: "아이디가 중복 됩니다.",
+          persistent: true,
+          ok: "확인",
+          color: "negative",
+        })
+        .onOk(() => {
+          // console.log('>>>> OK, received', data)
+        });
+
+      return dialog;
+    }
+    function successSignup() {
+      const notify = $q.notify({
+        message: "회원가입 성공 하였습니다.",
+        color: "green",
+        icon: "announcement",
+      });
+      return notify;
+    }
 
     function submitForm(email, name, password, phone, address) {
       const userData = {
@@ -139,11 +198,7 @@ export default {
         phone: phone,
         address: address,
       };
-      const notifyerror = $q.notify({
-        message: "회원가입 성공 하였습니다.",
-        color: "green",
-        icon: "announcement",
-      });
+
       api
         .post("/api/member/signup", userData)
         .then((response) => {
@@ -152,7 +207,10 @@ export default {
           }
         })
         .catch(function (error) {
-          notifyerror();
+          // notifyerror();
+          if (error.response.status === 500) {
+            sameID();
+          }
           console.log(error);
         });
     }
@@ -161,6 +219,7 @@ export default {
       router,
       signupSuccess,
       submitForm,
+      sameID,
     };
   },
   methods: {
