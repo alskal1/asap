@@ -67,3 +67,12 @@ export async function selectCurrentAuction({ commit }, sessionId) {
     console.log(error);
   }
 }
+
+export async function createHistory({ commit }, history) {
+  try {
+    const response = await api.post("/api/history/", history);
+    commit("selectCurrentAuction", response.data);
+  } catch (error) {
+    console.log(error);
+  }
+}

@@ -74,11 +74,13 @@
             />
           </span>
           <q-btn
+            id="winBtn"
             v-else
             outline
             style="color: green"
             label="낙찰하기"
             @click="winProduct()"
+            :disabled="disabled"
           />
         </q-card>
 
@@ -101,6 +103,19 @@
                   카메라 리소스가 사용중이거나 존재하지 않습니다.
                 </div>
                 <q-btn @click="leaveSession()">OK</q-btn>
+              </div>
+            </q-card-section>
+          </q-card>
+        </q-dialog>
+
+        <q-dialog v-model="auctionNotFound">
+          <q-card>
+            <q-card-section class="row items-center no-wrap">
+              <div>
+                <div class="text-weight-bold">
+                  존재하지 않는 경매 정보입니다.
+                </div>
+                <q-btn @click="closeDialog()">OK</q-btn>
               </div>
             </q-card-section>
           </q-card>
@@ -178,10 +193,12 @@ export default {
       description: "",
       videoNotFound: false,
       cameraDialog: false,
+      auctionNotFound: false,
       currentAuction: this.$store.state.moduleExample.curAuction,
       startPrice: "10000",
       currentPrice: "",
-      term: 1000,
+      term: "",
+      disabled: false,
     };
   },
 
@@ -225,6 +242,7 @@ export default {
           this.sendAuctionSelected(this.currentAuction);
         }
         console.log("물품 변경됨!!!!!");
+        this.disabled = false;
       }
     },
     "$store.state.moduleExample.curAuction.currentPrice": function () {
@@ -301,6 +319,10 @@ export default {
       this.session.on("streamCreated", ({ stream }) => {
         const subscriber = this.session.subscribe(stream);
         this.subscribers.push(subscriber);
+      });
+
+      this.session.on("signal:win-auction", (event) => {
+        alert("판매되었습니다.");
       });
 
       this.session.on("signal:user-chat", (event) => {
@@ -443,6 +465,10 @@ export default {
         this.$store.dispatch("moduleExample/selectCurrentAuction", event.data);
       });
 
+      this.session.on("signal:win-auction", (event) => {
+        this.disabled = true;
+      });
+
       this.session.on("streamDestroyed", ({ stream }) => {
         const index = this.subscribers.indexOf(stream.streamManager, 0);
         if (index >= 0) {
@@ -501,30 +527,33 @@ export default {
     },
 
     sendPriceChangeMessage(newTerm) {
-      const newData = {
-        id: this.currentAuction.id,
-        currentPrice:
-          this.$store.state.moduleExample.curAuction.currentPrice - newTerm,
-      };
-
-      this.$store
-        .dispatch("moduleExample/updateAuction", newData)
-        .then(() => {
-          if (this.session) {
-            this.session
-              .signal({
-                data: this.sessionId,
-                to: [],
-                type: "update-auction",
-              })
-              .catch((error) => {
-                console.error(error);
-              });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      if (this.term > this.currentAuction.currentPrice) {
+        alert("현재 가격보다 큼");
+      } else {
+        const newData = {
+          id: this.currentAuction.id,
+          currentPrice:
+            this.$store.state.moduleExample.curAuction.currentPrice - newTerm,
+        };
+        this.$store
+          .dispatch("moduleExample/updateAuction", newData)
+          .then(() => {
+            if (this.session) {
+              this.session
+                .signal({
+                  data: this.sessionId,
+                  to: [],
+                  type: "update-auction",
+                })
+                .catch((error) => {
+                  console.error(error);
+                });
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     },
 
     sendAuctionSelected(auction) {
@@ -546,25 +575,69 @@ export default {
     },
 
     winProduct() {
-      const data = {
-        productName: "apple",
-        count: "1",
-        finalPrice: this.currentPrice,
-        deliveryState: "0",
-        sellerId: this.sessionId,
+      const newData = {
+        productName: this.currentAuction.productName,
+        finalPrice: this.currentAuction.currentPrice,
+        sellerId: this.$route.query.sessionId,
       };
-      api
-        .post("/api/history/", data)
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      const point = {
+        price: this.currentAuction.currentPrice,
+        status: "WIN",
+      };
+      if (
+        this.$store.state.user.userInfo.point >=
+        this.currentAuction.currentPrice
+      ) {
+        this.$store
+          .dispatch("user/spendPoint", point)
+          .then(() => {
+            this.$store
+              .dispatch("moduleExample/deleteAuction", this.currentAuction.id)
+              .then(() => {
+                this.$store
+                  .dispatch("moduleExample/createHistory", newData)
+                  .then(() => {
+                    if (this.session) {
+                      this.session
+                        .signal({
+                          data: this.$store.state.user.userInfo.name,
+                          to: [],
+                          type: "win-auction",
+                        })
+                        .catch((error) => {
+                          console.error(error);
+                        });
+                    }
+                    alert("낙찰되었습니다.");
+                    this.disabled = true;
+                  })
+                  .catch((error) => {
+                    console.log("history 생성 에러");
+                  });
+              })
+              .catch((error) => {
+                if (error.response.status == 204) {
+                  console.log("존재하지 않는 경매 정보입니다.");
+                  this.auctionNotFound = true;
+                } else {
+                  conosole.log(error);
+                }
+              });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        alert("포인트 충전 후 진행해주세요.");
+      }
     },
 
     leaveSession() {
       this.$router.push("/");
+    },
+
+    closeDialog() {
+      auctionNotFound = false;
     },
 
     getSubToken(mySessionId) {
