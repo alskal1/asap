@@ -1,6 +1,6 @@
 <template>
-  <q-page>
-    <q-card square bordered class="q-pa-lg shadow-1">
+  <div class="q-pa-lg row flex-start justify-center">
+    <q-card square bordered style="width: 500px" class="q-pa-lg shadow-1">
       <q-card-section>
         <q-form class="q-gutter-md">
           <q-input
@@ -10,6 +10,7 @@
             v-model="email"
             type="email"
             label="아이디"
+            dense
           />
           <q-input
             square
@@ -18,6 +19,7 @@
             v-model="password"
             type="password"
             label="비밀번호"
+            dense
           />
         </q-form>
       </q-card-section>
@@ -26,7 +28,7 @@
           unelevated
           @click="login(email, password)"
           color="light-green-7"
-          size="lg"
+          size="md"
           class="full-width"
           label="Login"
         />
@@ -36,13 +38,13 @@
           to="/auth/signup"
           unelevated
           color="grey"
-          size="lg"
+          size="md"
           class="full-width"
           label="SIGN UP"
         />
       </q-card-actions>
     </q-card>
-  </q-page>
+  </div>
 </template>
 
 <script>
