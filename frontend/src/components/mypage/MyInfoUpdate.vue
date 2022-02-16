@@ -3,7 +3,12 @@
     <q-card class="q-pa-lg" style="width: 800px">
       <div class="text-h6">회원정보 변경</div>
       <q-form class="q-pa-md">
-        <q-input label="닉네임" color="green" v-model="userInfo.name"
+        <q-input
+          label="닉네임"
+          color="green"
+          lazy-rules
+          :rules="[(val) => !!val || '이름을 입력해주세요.']"
+          v-model="userInfo.name"
           ><template v-slot:before>
             <q-input
               label="아이디"
@@ -21,6 +26,8 @@
             color="green"
             v-model="addressInfo.zipCode"
             label="우편번호"
+            lazy-rules
+            :rules="[(val) => !!val || '우편번호를 입력해주세요.']"
             @click="search()"
           >
             <template v-slot:prepend>
@@ -33,6 +40,8 @@
             type="text"
             v-model="addressInfo.roadAddress"
             label="도로명주소"
+            lazy-rules
+            :rules="[(val) => !!val || '도로명주소를 입력해주세요.']"
             disable
           />
           <span id="guide" style="color: #000; display: none"></span>
@@ -41,12 +50,16 @@
             color="green"
             v-model="addressInfo.detailAddress"
             label="상세주소"
+            lazy-rules
+            :rules="[(val) => !!val || '상세주소를 입력해주세요.']"
           />
         </div>
         <q-input
           type="text"
           color="green"
           label="전화번호"
+          mask="###-####-####"
+          :rules="[(val) => val.length === 13 || '전화번호를 입력해주세요.']"
           v-model="userInfo.phone"
         />
         <div class="text-center q-mt-lg">

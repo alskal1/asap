@@ -15,7 +15,7 @@
             lazy-rules
             :rules="[
               (val) => {
-                var emailCheck =
+                const emailCheck =
                   /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
                 if (emailCheck.test(val) == false) {
                   const emailError = `이메일 형식이 올바르지않습니다.`;
@@ -45,7 +45,7 @@
             lazy-rules
             :rules="[
               (val) => {
-                var passCheck =
+                const passCheck =
                   /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
                 if (passCheck.test(val) == false) {
                   const passwordError1 = `최소 8자, 하나 이상의 문자, 하나의 숫자 및 하나의 특수 문자이어야 합니다`;
@@ -87,7 +87,7 @@
             v-model="phone"
             mask="###-####-####"
             label="전화 번호"
-            :rules="[(val) => !!val || '전화번호를 입력해주세요.']"
+            :rules="[(val) => val.length === 13 || '전화번호를 입력해주세요.']"
             dense
           />
           <div>
@@ -125,6 +125,8 @@
               outlined
               v-model="address.detailAddress"
               label="상세주소"
+              lazy-rules
+              :rules="[(val) => !!val || '상세주소를 입력해주세요.']"
               dense
             />
           </div>
