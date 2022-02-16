@@ -20,8 +20,6 @@ public class History extends BaseTimeEntity{
 
     private String productName;
 
-    private Integer count;
-
     private Integer finalPrice;
 
     private DeliveryState deliveryState;
