@@ -26,9 +26,17 @@ export function getUserInfo({ commit }) {
 }
 
 export function updateConfirm({ commit }, user) {
-  return api.put("/api/member/", user).catch(function (error) {
-    console.log(error);
-  });
+  return api
+    .put("/api/member/", user)
+    .then(() => {
+      Notify.create({
+        message: "회원정보가 변경되었습니다",
+        color: "green",
+      });
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
 }
 
 export async function chargePoint({ commit }, point) {
