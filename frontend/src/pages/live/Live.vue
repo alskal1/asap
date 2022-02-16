@@ -66,14 +66,14 @@
         <q-card class="q-mt-sm q-mb-sm" style="width: 400px; padding: 10px">
           <span>현재 가격 : {{ currentAuction.currentPrice }}</span>
 
-          <span>{{ currentPrice }}</span>
+          <span>{{ currentAuction.currentPrice }}</span>
           <span v-if="manage">
-            <!-- <input v-model="price" style="width: 50px" /> -->
+            <input v-model="term" placeholder="하향단위" />
             <q-btn
               outline
               style="color: green"
               label="가격내리기"
-              @click="sendPriceChangeMessage(currentPrice)"
+              @click="sendPriceChangeMessage(this.term)"
             />
           </span>
           <q-btn
@@ -184,6 +184,7 @@ export default {
       currentAuction: this.$store.state.moduleExample.curAuction,
       startPrice: "10000",
       currentPrice: "",
+      term: "",
     };
   },
 
@@ -282,10 +283,6 @@ export default {
   },
 
   methods: {
-    downPrice() {
-      this.startPrice = this.currentPrice;
-    },
-
     joinSession() {
       this.OV = new OpenVidu();
 
@@ -429,10 +426,6 @@ export default {
       });
 
       this.session.on("signal:update-auction", (event) => {
-        const data = JSON.parse(event.data);
-        this.currentPrice = data.price;
-
-        console.log("update list message received!!!");
         this.$store
           .dispatch("moduleExample/selectAllAuctions", this.sessionId)
           .catch((error) => {
@@ -507,11 +500,20 @@ export default {
       }
     },
 
-    sendPriceChangeMessage(newPrice) {
+    sendPriceChangeMessage(newTerm) {
+      this.$store
+        .dispatch("moduleExample/updateAuction", this.currentAuction)
+        .catch((error) => {
+          console.log(error);
+        });
+
       if (this.session) {
+        const data = {
+          term: newTerm,
+        };
         this.session
           .signal({
-            data: newPrice,
+            data: JSON.stringify(data),
             to: [],
             type: "update-auction",
           })

@@ -101,7 +101,7 @@ public class AuctionService {
 
     public ResponseEntity<AuctionDto> updateAuctionPrice(AuctionDto auctionDto) {
         try {
-            Auction auction = auctionRepository.findById(auctionDto.getRoomId()).orElse(null);
+            Auction auction = auctionRepository.findById(auctionDto.getId()).orElse(null);
 
             if(auction == null) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
