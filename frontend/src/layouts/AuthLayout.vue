@@ -1,10 +1,10 @@
 <template>
   <q-layout>
-    <div class="row flex-start justify-center">
+    <div class="q-pt-xl row flex-start justify-center">
       <div class="col-xs-12 col-sm-12 col-md-12">
         <h1
           @click="Home"
-          class="cursor-pointer text-bold text-center text-green"
+          class="cursor-pointer text-weight-medium text-center text-green-5"
         >
           ASAP
         </h1>
