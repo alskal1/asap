@@ -136,6 +136,15 @@ export default {
           // console.log('I am triggered on both OK and Cancel')
         });
     }
+    function completePay() {
+      $q.dialog({
+        title: "결제 완료",
+        message: "결제가 완료 되었습니다. ",
+      }).onOk(() => {
+        // console.log('OK')
+        location.reload();
+      });
+    }
     $store.dispatch("user/getUserInfo").then(() => {
       const stateUserInfo = {
         email: $store.state.user.userInfo.email,
@@ -163,12 +172,14 @@ export default {
       };
 
       $store.dispatch("user/chargePoint", point).then(() => {
-        location.reload();
-        router.push("/payment");
+        completePay();
+        // location.reload();
+        // router.push("/");
       });
     }
     return {
       alert,
+      completePay,
       userInfo,
       addressInfo,
       chargePoint,
