@@ -1,5 +1,5 @@
 <template>
-  <div class="q-mt-xl">
+  <div class="q-pa-md">
     <q-list v-if="winHistoryList.length">
       <win-list-item
         v-for="(winItem, key) in winHistoryList"
