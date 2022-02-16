@@ -15,27 +15,6 @@
         </q-btn>
         <q-space />
 
-        <q-input
-          dense
-          outlined
-          color="green"
-          v-model="search"
-          placeholder="Search"
-          style="width: 30%"
-          v-if="$q.screen.gt.xs"
-        >
-          <template v-slot:prepend>
-            <q-icon color="green" v-if="search === ''" name="search" />
-            <q-icon
-              color="green"
-              v-else
-              name="clear"
-              class="cursor-pointer"
-              @click="search = ''"
-            />
-          </template>
-        </q-input>
-
         <q-space />
         <div v-if="isLogin" class="q-gutter-sm row items-center no-wrap">
           <q-btn
@@ -183,14 +162,14 @@ export default defineComponent({
     };
 
     const leftDrawerOpen = ref(false);
-    const search = ref("");
+
     return {
       isLogin,
       userInfo,
       logout,
       leftDrawerOpen,
       currentPointInfo,
-      search,
+
       reLoad,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
