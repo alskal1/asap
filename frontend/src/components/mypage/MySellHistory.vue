@@ -46,8 +46,10 @@ export default {
         .dialog({
           title: `${data.productName}`,
           html: true,
-          message: `<div>상품 수 : ${data.productName}</div> <div>배송 상태 : ${data.deliveryState}</div> <div>최종 낙찰가 : ${data.finalPrice}</div> <div>판매 날짜 : ${data.date}</div>`,
 
+          message: `<div>상품 수 : ${data.productName}</div> <div>배송 상태 : ${data.deliveryState}</div> <div>최종 낙찰가 : ${data.finalPrice}</div> <div>판매 날짜 : ${data.date}</div>`,
+          ok: "닫기",
+          color: "red",
           persistent: true,
         })
         .onOk((data) => {

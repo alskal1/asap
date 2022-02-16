@@ -125,6 +125,7 @@ export default {
       $q.dialog({
         title: "결제오류",
         message: "결제 금액이 너무 작습니다.",
+        ok: "확인",
       })
         .onOk(() => {
           // console.log('OK')
@@ -140,6 +141,7 @@ export default {
       $q.dialog({
         title: "결제 완료",
         message: "결제가 완료 되었습니다. ",
+        ok: "확인",
       }).onOk(() => {
         // console.log('OK')
         location.reload();
