@@ -105,7 +105,7 @@ import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
-import { uploadBytes } from "firebase/storage";
+import { uploadBytes, deleteObject } from "firebase/storage";
 import { thumbnailsRef } from "boot/firebaseConnection";
 
 export default {
@@ -121,6 +121,12 @@ export default {
     const preview = ref(
       "https://img.freepik.com/free-vector/antique-auction-isometric-composition_1284-22062.jpg"
     );
+
+    fetch(preview.value)
+      .then((res) => res.blob())
+      .then((blob) => {
+        thumbnail.value = new File([blob], "base-thumbnail.jpg", blob);
+      });
 
     $store.dispatch("user/getUserInfo").then(() => {
       const stateUserInfo = {
@@ -145,8 +151,6 @@ export default {
           description.value +
           "&status=PUBLISHER"
       );
-
-      if (thumbnail.value == null) return;
 
       const imgName = userInfo.value.email.replace("@", "-").replace(".", "-");
 
