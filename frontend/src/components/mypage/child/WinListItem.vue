@@ -90,7 +90,7 @@ export default {
       findProduct: ref(false),
       t_code: ref(""),
       t_invoice: ref(""),
-      preferred: ref("CJ대한통운"),
+      preferred: ref({ label: "CJ대한통운", value: "04" }),
       options: [
         {
           label: "CJ대한통운",
