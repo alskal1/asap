@@ -20,6 +20,8 @@ public class Room extends BaseTimeEntity{
     @Column(name = "room_id")
     private Long id;
 
+    private Long currentAuction;
+
     private String sessionId;
 
     private String title;
