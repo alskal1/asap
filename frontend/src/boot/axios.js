@@ -51,16 +51,24 @@ export default boot(({ router, store, app }) => {
       !userInfo
     ) {
       Dialog.create({
-        title: "권한",
+        title: "<span class='text-h6 '>권한</span>",
         style: "shadow-box",
-        message: "<span class=''>로그인 후 이용해주세요.</span>",
-        color: "red",
         html: true,
-        cancel: true,
+        message:
+          "<span class='text-h7 text-weight-medium'>로그인 후 이용해주세요.</span>",
+        color: "green",
+        html: true,
+        cancel: "로그인",
+
+        ok: "취소",
+
         persistent: true,
-      }).onOk(() => {
-        router.push("/auth/login");
-      });
+      })
+        .onOk(() => {})
+        .onCancel(() => {
+          // console.log('>>>> Cancel')
+          router.push("/auth/login");
+        });
       next("/");
     } else {
       next();
