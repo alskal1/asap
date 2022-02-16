@@ -80,11 +80,10 @@
             style="color: green"
             label="낙찰하기"
             @click="winProduct()"
-            :disabled="disabled"
           />
         </q-card>
 
-        <q-dialog v-model="dialog">
+        <q-dialog v-model="dialog" no-esc-dismiss no-backdrop-dismiss>
           <q-card>
             <q-card-section class="row items-center no-wrap">
               <div>
@@ -108,6 +107,41 @@
           </q-card>
         </q-dialog>
 
+        <q-dialog v-model="selectAuctionDialog">
+          <q-card>
+            <q-card-section class="row items-center no-wrap">
+              <div>
+                <div class="text-weight-bold">경매 정보를 선택해주세요.</div>
+                <q-btn @click="closeDialog()">OK</q-btn>
+              </div>
+            </q-card-section>
+          </q-card>
+        </q-dialog>
+
+        <q-dialog v-model="pointLessDialog">
+          <q-card>
+            <q-card-section class="row items-center no-wrap">
+              <div>
+                <div class="text-weight-bold">포인트 충전 후 이용해주세요.</div>
+                <q-btn @click="closeDialog()">OK</q-btn>
+              </div>
+            </q-card-section>
+          </q-card>
+        </q-dialog>
+
+        <q-dialog v-model="priceLessDialog">
+          <q-card>
+            <q-card-section class="row items-center no-wrap">
+              <div>
+                <div class="text-weight-bold">
+                  현재가보다 낮은 가격을 설정할 수 없습니다.
+                </div>
+                <q-btn @click="closeDialog()">OK</q-btn>
+              </div>
+            </q-card-section>
+          </q-card>
+        </q-dialog>
+
         <q-dialog v-model="auctionNotFound">
           <q-card>
             <q-card-section class="row items-center no-wrap">
@@ -116,6 +150,30 @@
                   존재하지 않는 경매 정보입니다.
                 </div>
                 <q-btn @click="closeDialog()">OK</q-btn>
+              </div>
+            </q-card-section>
+          </q-card>
+        </q-dialog>
+
+        <q-dialog v-model="isSell">
+          <q-card>
+            <q-card-section class="row items-center no-wrap">
+              <div>
+                <div class="text-weight-bold">
+                  해당 경매 물품이 판매되었습니다.
+                </div>
+                <q-btn @click="refreshAuction()">OK</q-btn>
+              </div>
+            </q-card-section>
+          </q-card>
+        </q-dialog>
+
+        <q-dialog v-model="winDialog">
+          <q-card>
+            <q-card-section class="row items-center no-wrap">
+              <div>
+                <div class="text-weight-bold">낙찰 축하합니다!!!</div>
+                <q-btn @click="closeWinDialog()">OK</q-btn>
               </div>
             </q-card-section>
           </q-card>
@@ -170,8 +228,6 @@ export default {
 
   setup() {
     return {
-      tab: ref("live"),
-      visible: ref(true),
       expanded: ref(true),
     };
   },
@@ -194,15 +250,21 @@ export default {
       videoNotFound: false,
       cameraDialog: false,
       auctionNotFound: false,
-      currentAuction: this.$store.state.moduleExample.curAuction,
+      currentAuction: {},
       startPrice: "10000",
       currentPrice: "",
       term: "",
-      disabled: false,
+      isSell: false,
+      winDialog: false,
+      pointLessDialog: false,
+      priceLessDialog: false,
+      sellerId: "",
+      selectAuctionDialog: false,
     };
   },
 
   created() {
+    this.sellerId = this.$route.query.sessionId;
     this.title = this.$route.query.title;
     this.description = this.$route.query.description;
     this.sessionId = this.$route.query.sessionId
@@ -225,11 +287,6 @@ export default {
       this.justJoinSession();
     }
   },
-  computed: {
-    curAuction() {
-      return this.$store.state.moduleExample.auction;
-    },
-  },
   watch: {
     "$store.state.moduleExample.curAuction.id": function () {
       if (
@@ -239,10 +296,12 @@ export default {
       ) {
         this.currentAuction = this.$store.state.moduleExample.curAuction;
         if (this.manage) {
-          this.sendAuctionSelected(this.currentAuction);
+          if (this.currentAuction.id != undefined) {
+            this.sendAuctionSelected(this.currentAuction);
+          } else {
+            this.sendNoAuction(this.currentAuction);
+          }
         }
-        console.log("물품 변경됨!!!!!");
-        this.disabled = false;
       }
     },
     "$store.state.moduleExample.curAuction.currentPrice": function () {
@@ -253,7 +312,6 @@ export default {
       ) {
         this.currentAuction.currentPrice =
           this.$store.state.moduleExample.curAuction.currentPrice;
-        console.log("가격 변경됨!!!!!");
       }
     },
   },
@@ -322,7 +380,16 @@ export default {
       });
 
       this.session.on("signal:win-auction", (event) => {
-        alert("판매되었습니다.");
+        this.isSell = true;
+        this.term = "";
+        const nullAuction = {
+          id: undefined,
+          currentPrice: "",
+          startPrice: "",
+          productName: "",
+          origin: "",
+        };
+        this.setNoAuction(nullAuction);
       });
 
       this.session.on("signal:user-chat", (event) => {
@@ -436,6 +503,12 @@ export default {
         this.subscribers.push(subscriber);
       });
 
+      this.session.on("signal:win-auction", (event) => {
+        if (this.$store.state.user.userInfo.email == event.data) {
+          this.winDialog = true;
+        }
+      });
+
       this.session.on("signal:user-chat", (event) => {
         const data = JSON.parse(event.data);
 
@@ -465,8 +538,9 @@ export default {
         this.$store.dispatch("moduleExample/selectCurrentAuction", event.data);
       });
 
-      this.session.on("signal:win-auction", (event) => {
-        this.disabled = true;
+      this.session.on("signal:no-auction", (event) => {
+        const newData = JSON.parse(event.data);
+        this.$store.commit("moduleExample/selectCurrentAuction", newData);
       });
 
       this.session.on("streamDestroyed", ({ stream }) => {
@@ -528,12 +602,15 @@ export default {
 
     sendPriceChangeMessage(newTerm) {
       if (this.term > this.currentAuction.currentPrice) {
-        alert("현재 가격보다 큼");
+        this.priceLessDialog = true;
       } else {
+        if (this.currentAuction.id == undefined) {
+          this.selectAuctionDialog = true;
+          return;
+        }
         const newData = {
           id: this.currentAuction.id,
-          currentPrice:
-            this.$store.state.moduleExample.curAuction.currentPrice - newTerm,
+          currentPrice: this.currentAuction.currentPrice - newTerm,
         };
         this.$store
           .dispatch("moduleExample/updateAuction", newData)
@@ -574,11 +651,31 @@ export default {
       }
     },
 
+    sendNoAuction(auction) {
+      const data = JSON.stringify(auction);
+
+      if (this.session) {
+        this.session
+          .signal({
+            data: data,
+            to: [],
+            type: "no-auction",
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+    },
+
+    setNoAuction(auction) {
+      this.$store.commit("moduleExample/selectCurrentAuction", auction);
+    },
+
     winProduct() {
       const newData = {
         productName: this.currentAuction.productName,
         finalPrice: this.currentAuction.currentPrice,
-        sellerId: this.$route.query.sessionId,
+        sellerId: this.sellerId,
       };
       const point = {
         price: this.currentAuction.currentPrice,
@@ -600,7 +697,7 @@ export default {
                     if (this.session) {
                       this.session
                         .signal({
-                          data: this.$store.state.user.userInfo.name,
+                          data: this.$store.state.user.userInfo.email,
                           to: [],
                           type: "win-auction",
                         })
@@ -608,8 +705,6 @@ export default {
                           console.error(error);
                         });
                     }
-                    alert("낙찰되었습니다.");
-                    this.disabled = true;
                   })
                   .catch((error) => {
                     console.log("history 생성 에러");
@@ -628,7 +723,7 @@ export default {
             console.log(error);
           });
       } else {
-        alert("포인트 충전 후 진행해주세요.");
+        this.pointLessDialog = true;
       }
     },
 
@@ -637,7 +732,18 @@ export default {
     },
 
     closeDialog() {
-      auctionNotFound = false;
+      this.auctionNotFound = false;
+      this.pointLessDialog = false;
+      this.priceLessDialog = false;
+      this.selectAuctionDialog = false;
+    },
+
+    closeWinDialog() {
+      this.winDialog = false;
+    },
+
+    refreshAuction() {
+      this.isSell = false;
     },
 
     getSubToken(mySessionId) {

@@ -64,6 +64,9 @@ export async function selectCurrentAuction({ commit }, sessionId) {
     console.log("현재 진행중인 경매 정보 갖고왔음!!!");
     commit("selectCurrentAuction", response.data);
   } catch (error) {
+    if (error.response.status == 204) {
+      console.log("노 컨텐츠 스테이터스 반환");
+    }
     console.log(error);
   }
 }
@@ -71,7 +74,6 @@ export async function selectCurrentAuction({ commit }, sessionId) {
 export async function createHistory({ commit }, history) {
   try {
     const response = await api.post("/api/history/", history);
-    commit("selectCurrentAuction", response.data);
   } catch (error) {
     console.log(error);
   }

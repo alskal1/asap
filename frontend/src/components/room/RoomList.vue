@@ -31,13 +31,20 @@ export default {
 
     $store.dispatch("moduleExample/updateList");
 
-    function goLive(sessionId) {
+    function goLive(sessionId, title, description) {
       $store.commit("user/setIsManage", false);
       // $store.dispatch(
       //   "moduleExample/selectCurrentAuction",
       //   sessionId.replace("@", "-").replace(".", "-")
       // );
-      router.push("/live/publisher?sessionId=" + sessionId);
+      router.push(
+        "/live/publisher?sessionId=" +
+          sessionId.replace("-", "@").replace(/-/g, ".") +
+          "&title=" +
+          title +
+          "&description=" +
+          description
+      );
     }
 
     const roomList = computed({
@@ -46,7 +53,7 @@ export default {
 
     const info = (room) => {
       // console.log("room : ", room);
-      goLive(room.sessionId);
+      goLive(room.sessionId, room.title, room.description);
     };
 
     return {
