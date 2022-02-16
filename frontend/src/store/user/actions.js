@@ -31,10 +31,12 @@ export function updateConfirm({ commit }, user) {
   });
 }
 
-export function chargePoint({ commit }, point) {
-  return api.post("/api/point/", point).catch(function (error) {
+export async function chargePoint({ commit }, point) {
+  try {
+    return await api.post("/api/point/", point);
+  } catch (error) {
     console.log(error);
-  });
+  }
 }
 export function getSellHistory({ commit }) {
   return api
