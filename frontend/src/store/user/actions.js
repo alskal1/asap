@@ -38,6 +38,15 @@ export async function chargePoint({ commit }, point) {
     console.log(error);
   }
 }
+
+export async function spendPoint({ commit }, point) {
+  try {
+    return await api.post("/api/point/", point);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export function getSellHistory({ commit }) {
   return api
     .get("/api/history/sell-list")
