@@ -47,7 +47,6 @@
                 <div v-show="expanded">
                   <q-separator />
                   <q-card-section class="text-subitle2">
-                    <!-- <auction-list></auction-list> -->
                     <div v-if="currentAuction">
                       상품명 : {{ currentAuction.productName }}
                     </div>
@@ -65,8 +64,6 @@
         </div>
         <q-card class="q-mt-sm q-mb-sm" style="width: 400px; padding: 10px">
           <span>현재 가격 : {{ currentAuction.currentPrice }}</span>
-
-          <span>{{ currentAuction.currentPrice }}</span>
           <span v-if="manage">
             <input v-model="term" placeholder="하향단위" />
             <q-btn
@@ -184,7 +181,7 @@ export default {
       currentAuction: this.$store.state.moduleExample.curAuction,
       startPrice: "10000",
       currentPrice: "",
-      term: "",
+      term: 1000,
     };
   },
 
@@ -219,7 +216,9 @@ export default {
   watch: {
     "$store.state.moduleExample.curAuction.id": function () {
       if (
-        this.currentAuction.id != this.$store.state.moduleExample.curAuction.id
+        this.currentAuction.id !=
+          this.$store.state.moduleExample.curAuction.id &&
+        this.session != undefined
       ) {
         this.currentAuction = this.$store.state.moduleExample.curAuction;
         if (this.manage) {
@@ -228,10 +227,20 @@ export default {
         console.log("물품 변경됨!!!!!");
       }
     },
+    "$store.state.moduleExample.curAuction.currentPrice": function () {
+      if (
+        this.currentAuction.id ==
+          this.$store.state.moduleExample.curAuction.id &&
+        this.session != undefined
+      ) {
+        this.currentAuction.currentPrice =
+          this.$store.state.moduleExample.curAuction.currentPrice;
+        console.log("가격 변경됨!!!!!");
+      }
+    },
   },
   beforeRouteLeave: function (to, from, next) {
     if (!this.manage) {
-      this.$store.commit("moduleExample/selectCurrentAuction", {});
       this.session.disconnect();
       this.session = undefined;
       this.mainStreamManager = undefined;
@@ -267,6 +276,7 @@ export default {
               this.publisher = undefined;
               this.subscribers = [];
               this.OV = undefined;
+              this.$store.commit("moduleExample/selectCurrentAuction", {});
             })
             .then(() => {
               this.$store.commit("moduleExample/selectCurrentAuction", {});
@@ -426,19 +436,10 @@ export default {
       });
 
       this.session.on("signal:update-auction", (event) => {
-        this.$store
-          .dispatch("moduleExample/selectAllAuctions", this.sessionId)
-          .catch((error) => {
-            console.log(error);
-          });
+        this.$store.dispatch("moduleExample/selectCurrentAuction", event.data);
       });
 
       this.session.on("signal:auction-selected", (event) => {
-        // const data = JSON.parse(event.data);
-
-        // if (data != this.currentAuction) {
-        //   this.$store.commit("moduleExample/selectCurrentAuction", data);
-        // }
         this.$store.dispatch("moduleExample/selectCurrentAuction", event.data);
       });
 
@@ -449,7 +450,6 @@ export default {
         }
 
         this.dialog = true;
-        this.$store.commit("moduleExample/selectCurrentAuction", {});
       });
 
       this.session.on("exception", ({ exception }) => {
@@ -501,26 +501,30 @@ export default {
     },
 
     sendPriceChangeMessage(newTerm) {
+      const newData = {
+        id: this.currentAuction.id,
+        currentPrice:
+          this.$store.state.moduleExample.curAuction.currentPrice - newTerm,
+      };
+
       this.$store
-        .dispatch("moduleExample/updateAuction", this.currentAuction)
+        .dispatch("moduleExample/updateAuction", newData)
+        .then(() => {
+          if (this.session) {
+            this.session
+              .signal({
+                data: this.sessionId,
+                to: [],
+                type: "update-auction",
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          }
+        })
         .catch((error) => {
           console.log(error);
         });
-
-      if (this.session) {
-        const data = {
-          term: newTerm,
-        };
-        this.session
-          .signal({
-            data: JSON.stringify(data),
-            to: [],
-            type: "update-auction",
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      }
     },
 
     sendAuctionSelected(auction) {

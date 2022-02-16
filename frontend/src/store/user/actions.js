@@ -25,16 +25,18 @@ export function getUserInfo({ commit }) {
     });
 }
 
-export function updateConfirm(user) {
+export function updateConfirm({ commit }, user) {
   return api.put("/api/member/", user).catch(function (error) {
     console.log(error);
   });
 }
 
-export function chargePoint(point) {
-  return api.post("/api/point/", point).catch(function (error) {
+export async function chargePoint({ commit }, point) {
+  try {
+    return await api.post("/api/point/", point);
+  } catch (error) {
     console.log(error);
-  });
+  }
 }
 export function getSellHistory({ commit }) {
   return api

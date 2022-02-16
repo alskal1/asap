@@ -24,7 +24,8 @@ export async function deleteAuction({ commit }, id) {
 
 export async function updateAuction({ commit }, auction) {
   try {
-    const response = await api.put("/api/auction");
+    const response = await api.put("/api/auction/", auction);
+    commit("selectCurrentAuction", response.data);
   } catch (error) {
     console.log(error);
   }
