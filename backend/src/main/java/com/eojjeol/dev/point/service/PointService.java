@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import static com.eojjeol.dev.entity.member.QMember.member;
 
 @Service
 @RequiredArgsConstructor
@@ -28,27 +31,52 @@ public class PointService {
     @Transactional
     public ResponseEntity<PointDto> createPoint(PointDto pointDto) {
         try {
+            Member buyer = SecurityUtil.getCurrentEmail().flatMap(memberRepository::findOneWithAuthoritiesByEmail).orElse(null);
+            Member seller = memberRepository.findOneWithAuthoritiesByEmail(pointDto.getSellerId()).orElse(null);
+
+            Point buyerPoint = Point.builder()
+                    .status(PointStatus.PAYMENT)
+                    .price(pointDto.getPrice())
+                    .member(buyer)
+                    .build();
+
+            Point sellerPoint = Point.builder()
+                    .status(PointStatus.SELL)
+                    .price(pointDto.getPrice())
+                    .member(seller)
+                    .build();
+
+            Point saveBuyerPoint = pointRepository.save(buyerPoint);
+            Point saveSellerPoint = pointRepository.save(sellerPoint);
+
+            buyer.setPoint(buyer.getPoint() - saveBuyerPoint.getPrice());
+            seller.setPoint(seller.getPoint() + saveSellerPoint.getPrice());
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch(Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Transactional
+    public ResponseEntity<PointDto> chargePoint(PointDto pointDto) {
+        try {
             Member member = SecurityUtil.getCurrentEmail().flatMap(memberRepository::findOneWithAuthoritiesByEmail).orElse(null);
 
-            if(pointDto.getStatus().equals(PointStatus.WIN)) {
-                member.setPoint(member.getPoint() - pointDto.getPrice());
-            } else {
-                member.setPoint(member.getPoint() + pointDto.getPrice());
-            }
-
             Point point = Point.builder()
-                    .status(pointDto.getStatus())
+                    .status(PointStatus.CHARGE)
                     .price(pointDto.getPrice())
                     .member(member)
                     .build();
 
             Point savePoint = pointRepository.save(point);
-            PointDto savePointDto = PointDto.from(savePoint);
-            return new ResponseEntity<>(savePointDto, HttpStatus.OK);
+            member.setPoint(member.getPoint() + savePoint.getPrice());
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch(Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
 
     public ResponseEntity<List<PointDto>> selectPoint(){
         try {

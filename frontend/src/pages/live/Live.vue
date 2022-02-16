@@ -679,17 +679,17 @@ export default {
       };
       const point = {
         price: this.currentAuction.currentPrice,
-        status: "WIN",
+        sellerId: this.sellerId,
       };
       if (
         this.$store.state.user.userInfo.point >=
         this.currentAuction.currentPrice
       ) {
         this.$store
-          .dispatch("user/spendPoint", point)
+          .dispatch("moduleExample/deleteAuction", this.currentAuction.id)
           .then(() => {
             this.$store
-              .dispatch("moduleExample/deleteAuction", this.currentAuction.id)
+              .dispatch("user/spendPoint", point)
               .then(() => {
                 this.$store
                   .dispatch("moduleExample/createHistory", newData)

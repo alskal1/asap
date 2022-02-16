@@ -18,18 +18,18 @@ public class PointDto extends BaseTimeEntity {
     @ApiModelProperty(hidden = true)
     private Long id;
 
-    private PointStatus status;
+    private String sellerId;
 
     private Integer price;
 
     private LocalDateTime date;
+
 
     public static PointDto from(Point point) {
         if(point == null) return null;
         return PointDto.builder()
                 .id(point.getId())
                 .date(point.getCreatedDate())
-                .status(point.getStatus())
                 .price(point.getPrice())
                 .build();
     }

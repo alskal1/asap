@@ -31,7 +31,6 @@ public class HistoryService {
             Member member = SecurityUtil.getCurrentEmail().flatMap(memberRepository::findOneWithAuthoritiesByEmail).orElse(null);
             History history = History.builder()
                     .productName(historyDto.getProductName())
-                    .count(historyDto.getCount())
                     .finalPrice(historyDto.getFinalPrice())
                     .deliveryState(DeliveryState.READY)
                     .sellerId(historyDto.getSellerId())
