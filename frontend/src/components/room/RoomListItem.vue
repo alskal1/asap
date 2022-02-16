@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
     <q-card class="scale" style="max-width: 400px">
-      <q-img :src="thumbnail" loading="lazy" />
+      <q-img :src="thumbnail" loading="lazy" :ratio="4 / 3" />
       <q-card-section>
         <div class="text-h6">{{ room.title }}</div>
         <div class="text-subtitle2">{{ room.description }}</div>

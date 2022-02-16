@@ -22,7 +22,7 @@
               <div>
                 <div class="text-green text-weight-bolder">미리보기</div>
                 <q-card>
-                  <q-img :src="preview" />
+                  <q-img :src="preview" :ratio="4 / 3" />
                   <q-card-section>
                     <div class="text-h6">{{ title }}</div>
                     <div class="text-subtitle2">{{ description }}</div>
@@ -122,6 +122,12 @@ export default {
       "https://img.freepik.com/free-vector/antique-auction-isometric-composition_1284-22062.jpg"
     );
 
+    fetch(preview.value)
+      .then((res) => res.blob())
+      .then((blob) => {
+        thumbnail.value = new File([blob], "base-thumbnail.jpg", blob);
+      });
+
     $store.dispatch("user/getUserInfo").then(() => {
       const stateUserInfo = {
         email: $store.state.user.userInfo.email,
@@ -145,8 +151,6 @@ export default {
           description.value +
           "&status=PUBLISHER"
       );
-
-      if (thumbnail.value == null) return;
 
       const imgName = userInfo.value.email.replace("@", "-").replace(".", "-");
 
