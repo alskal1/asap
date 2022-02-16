@@ -24,11 +24,14 @@
             </q-card-section>
             <q-card-section>
               <q-form @submit.prevent="PaymentBtn" class="q-gutter-md">
-                <div class="text-weight-bold text-h6">충전 금액 입력</div>
+                <div class="text-weight-bold text-h7">충전 금액 입력</div>
                 <q-input
-                  filled
+                  outlined
+                  class="text-h6"
                   color="green"
                   v-model="price"
+                  input-class="text-right"
+                  suffix="₩"
                   :rules="[(val) => !isNaN(val) || '숫자를 입력해주세요']"
                 />
                 <div style="text-align: center">
