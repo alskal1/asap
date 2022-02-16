@@ -24,6 +24,12 @@ public class PointController {
         return pointService.createPoint(pointDto);
     }
 
+    @PostMapping("/charge")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity<PointDto> chargePoint(@RequestBody PointDto pointDto) {
+        return pointService.chargePoint(pointDto);
+    }
+
     @GetMapping("/")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<List<PointDto>> selectPoint() {

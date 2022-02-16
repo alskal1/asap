@@ -33,7 +33,7 @@ export function updateConfirm({ commit }, user) {
 
 export async function chargePoint({ commit }, point) {
   try {
-    return await api.post("/api/point/", point);
+    return await api.post("/api/point/charge", point);
   } catch (error) {
     console.log(error);
   }

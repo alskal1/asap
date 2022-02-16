@@ -173,7 +173,6 @@ export default {
     function chargePoint() {
       const point = {
         price: this.price,
-        status: "CHARGE",
       };
 
       $store.dispatch("user/chargePoint", point).then(() => {
