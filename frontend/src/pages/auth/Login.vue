@@ -1,6 +1,6 @@
 <template>
-  <q-page>
-    <q-card square bordered class="q-pa-lg shadow-1">
+  <div class="q-pa-lg row flex-start justify-center">
+    <q-card square bordered style="width: 500px" class="q-pa-lg shadow-1">
       <q-card-section>
         <q-form class="q-gutter-md">
           <q-input
@@ -42,7 +42,7 @@
         />
       </q-card-actions>
     </q-card>
-  </q-page>
+  </div>
 </template>
 
 <script>

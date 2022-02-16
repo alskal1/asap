@@ -1,12 +1,12 @@
 <template>
-  <q-page>
-    <q-card square bordered class="q-pa-lg shadow-1">
+  <div class="q-pa-lg row flex-start justify-center">
+    <q-card square bordered style="width: 500px" class="q-pa-lg shadow-1">
       <q-card-section>
         <q-form
           @submit.prevent="submitForm(email, name, password, phone, address)"
-          class="q-gutter-md"
+          class=""
         >
-          <div class="text-bold text-green">회원가입</div>
+          <div class="q-pd-lg text-bold text-green">회원가입</div>
           <q-input
             color="green"
             filled
@@ -15,6 +15,7 @@
             type="email"
             label="이메일"
             :rules="[(val) => !!val || '이메일을 입력해주세요.']"
+            dense
           />
           <q-input
             color="green"
@@ -23,6 +24,7 @@
             type="text"
             label="이름"
             :rules="[(val) => !!val || '이름을 입력해주세요.']"
+            dense
           />
 
           <q-input
@@ -32,6 +34,7 @@
             type="password"
             label="비밀번호"
             :rules="[(val) => !!val || '비밀번호를 입력해주세요.']"
+            dense
           />
 
           <q-input
@@ -44,6 +47,7 @@
               ((val) => !!val || '비밀번호 확인를 입력해주세요.') ||
                 ((val) => val !== password || '제목이 너무 깁니다.'),
             ]"
+            dense
           />
           <q-input
             color="green"
@@ -52,6 +56,7 @@
             type="phone"
             label="전화 번호"
             :rules="[(val) => !!val || '전화번호를 입력해주세요.']"
+            dense
           />
           <div>
             <q-input
@@ -62,6 +67,7 @@
               label="우편번호"
               @click="search()"
               :rules="[(val) => !!val || '우편번호를 입력해주세요.']"
+              dense
             >
               <template v-slot:prepend>
                 <q-icon color="green" name="search" />
@@ -76,6 +82,7 @@
               color="green"
               filled
               :rules="[(val) => !!val || '도로명주소를 입력해주세요.']"
+              dense
             />
             <span id="guide" style="color: #000; display: none"></span>
             <q-input
@@ -84,15 +91,16 @@
               filled
               v-model="address.detailAddress"
               label="상세주소"
+              dense
             />
           </div>
-          <div>
-            <q-btn label="Submit" type="submit" color="green" />
+          <div class="q-pt-md">
+            <q-btn size="md" label="SIGN UP" type="submit" color="green" />
           </div>
         </q-form>
       </q-card-section>
     </q-card>
-  </q-page>
+  </div>
 </template>
 
 <script>
