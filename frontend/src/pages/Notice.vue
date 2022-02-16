@@ -1,8 +1,8 @@
 <template>
   <q-page padding>
-    <!-- content -->
-    <p>Notice page</p>
-    <q-btn to="/live" push color="red" size="2em" label="Go Live !" />
+    <div class="row flex flex-wrap justify-center">
+      <!-- <div class="items-center" style=""><h1>준비중</h1></div> -->
+    </div>
   </q-page>
 </template>
 
