@@ -30,6 +30,11 @@ public class AuctionController {
         return auctionService.selectAllAuction(sessionId);
     }
 
+    @GetMapping("/current/{sessionId}")
+    public ResponseEntity<AuctionDto> selectCurrentAuction(@PathVariable String sessionId) {
+        return auctionService.selectCurrentAuction(sessionId);
+    }
+
     @PutMapping("/")
     public ResponseEntity<AuctionDto> updateAuctionPrice(@RequestBody AuctionDto auctionDto) {
         return auctionService.updateAuctionPrice(auctionDto);

@@ -34,6 +34,12 @@ public class RoomController {
         return roomService.selectRoom(sessionId);
     }
 
+    @PutMapping("/auction/{auctionId}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity<RoomDto> selectOne(@PathVariable Long auctionId) {
+        return roomService.selectCurrentAuction(auctionId);
+    }
+
     @GetMapping("/")
     public ResponseEntity<List<RoomDto>> selectList() {
         return roomService.selectAll();

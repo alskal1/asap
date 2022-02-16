@@ -1,5 +1,7 @@
 package com.eojjeol.dev.room.service;
 
+import com.eojjeol.dev.auction.repository.AuctionRepository;
+import com.eojjeol.dev.entity.Auction;
 import com.eojjeol.dev.entity.Room;
 import com.eojjeol.dev.entity.member.Member;
 import com.eojjeol.dev.member.repository.MemberRepository;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +25,7 @@ public class RoomService {
 
     private final MemberRepository memberRepository;
     private final RoomRepository roomRepository;
+    private final AuctionRepository auctionRepository;
     private final RoomQueryRepository roomQueryRepository;
 
     @Transactional
@@ -58,6 +62,24 @@ public class RoomService {
             }
 
             roomRepository.deleteById(room.getId());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Transactional
+    public ResponseEntity<RoomDto> selectCurrentAuction(Long auctionId) {
+        try {
+            Auction selectedAuction = auctionRepository.findById(auctionId).orElse(null);
+
+            if(selectedAuction == null) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+            Room room = roomRepository.getById(selectedAuction.getRoom().getId());
+            room.setCurrentAuction(selectedAuction.getId());
+
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

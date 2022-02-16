@@ -64,7 +64,7 @@
           </div>
         </div>
         <q-card class="q-mt-sm q-mb-sm" style="width: 400px; padding: 10px">
-          <span>현재 가격 : </span>
+          <span>현재 가격 : {{ currentAuction.currentPrice }}</span>
 
           <span>{{ currentPrice }}</span>
           <span v-if="manage">
@@ -181,7 +181,7 @@ export default {
       description: "",
       videoNotFound: false,
       cameraDialog: false,
-      currentAuction: {},
+      currentAuction: this.$store.state.moduleExample.curAuction,
       startPrice: "10000",
       currentPrice: "",
     };
@@ -194,6 +194,9 @@ export default {
       .replace("@", "-")
       .replace(".", "-");
     this.myUserName = this.$route.query.myUserName;
+
+    this.$store.dispatch("moduleExample/selectCurrentAuction", this.sessionId);
+
     console.log(this.sessionId);
     if (this.$route.query.status == "PUBLISHER") {
       this.$store.commit("user/setIsManage", true);
@@ -213,14 +216,21 @@ export default {
     },
   },
   watch: {
-    "$store.state.moduleExample.curAuction": function () {
-      this.currentAuction = this.$store.state.moduleExample.curAuction;
-      console.log("물품 변경됨!!!!!");
-      this.sendAuctionSelected(this.currentAuction);
+    "$store.state.moduleExample.curAuction.id": function () {
+      if (
+        this.currentAuction.id != this.$store.state.moduleExample.curAuction.id
+      ) {
+        this.currentAuction = this.$store.state.moduleExample.curAuction;
+        if (this.manage) {
+          this.sendAuctionSelected(this.currentAuction);
+        }
+        console.log("물품 변경됨!!!!!");
+      }
     },
   },
   beforeRouteLeave: function (to, from, next) {
     if (!this.manage) {
+      this.$store.commit("moduleExample/selectCurrentAuction", {});
       this.session.disconnect();
       this.session = undefined;
       this.mainStreamManager = undefined;
@@ -258,6 +268,7 @@ export default {
               this.OV = undefined;
             })
             .then(() => {
+              this.$store.commit("moduleExample/selectCurrentAuction", {});
               next();
             })
             .catch(function (error) {
@@ -311,6 +322,8 @@ export default {
         if (index >= 0) {
           this.subscribers.splice(index, 1);
         }
+
+        this.$store.commit("moduleExample/selectCurrentAuction", {});
       });
 
       this.session.on("exception", ({ exception }) => {
@@ -427,6 +440,15 @@ export default {
           });
       });
 
+      this.session.on("signal:auction-selected", (event) => {
+        // const data = JSON.parse(event.data);
+
+        // if (data != this.currentAuction) {
+        //   this.$store.commit("moduleExample/selectCurrentAuction", data);
+        // }
+        this.$store.dispatch("moduleExample/selectCurrentAuction", event.data);
+      });
+
       this.session.on("streamDestroyed", ({ stream }) => {
         const index = this.subscribers.indexOf(stream.streamManager, 0);
         if (index >= 0) {
@@ -434,6 +456,7 @@ export default {
         }
 
         this.dialog = true;
+        this.$store.commit("moduleExample/selectCurrentAuction", {});
       });
 
       this.session.on("exception", ({ exception }) => {
@@ -500,14 +523,18 @@ export default {
 
     sendAuctionSelected(auction) {
       if (this.session) {
-        this.session
-          .signal({
-            data: JSON.stringify(auction),
-            to: [],
-            type: "auction-selected",
-          })
-          .catch((error) => {
-            console.error(error);
+        this.$store
+          .dispatch("moduleExample/updateCurrentAuction", auction.id)
+          .then(() => {
+            this.session
+              .signal({
+                data: this.sessionId,
+                to: [],
+                type: "auction-selected",
+              })
+              .catch((error) => {
+                console.error(error);
+              });
           });
       }
     },

@@ -8,7 +8,6 @@ import com.eojjeol.dev.entity.Auction;
 import com.eojjeol.dev.entity.member.Member;
 import com.eojjeol.dev.member.repository.MemberRepository;
 import com.eojjeol.dev.room.repository.RoomQueryRepository;
-import com.eojjeol.dev.room.repository.RoomRepository;
 import com.eojjeol.dev.security.util.SecurityUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -79,6 +78,22 @@ public class AuctionService {
             auctionQueryRepository.deleteAllAuctionByRoomId(room.getId());
 
             return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public ResponseEntity<AuctionDto> selectCurrentAuction(String sessionId) {
+        try {
+            Room room = roomQueryRepository.findRoomBySessionId(sessionId.replaceAll("[@.]", "-"));
+            if(room == null || room.getCurrentAuction() == null) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+            Auction currentAuction = auctionRepository.findById(room.getCurrentAuction()).orElse(null);
+            AuctionDto currentAuctionDto = AuctionDto.from(currentAuction);
+            
+            return new ResponseEntity<>(currentAuctionDto, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

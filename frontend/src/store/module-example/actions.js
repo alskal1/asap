@@ -39,3 +39,22 @@ export async function deleteAuctions({ commit }, sessionId) {
     console.log(error);
   }
 }
+
+export async function updateCurrentAuction({ commit }, auctionId) {
+  try {
+    const response = await api.put("/api/room/auction/" + auctionId);
+    console.log("DB정보가 변경되었습니다.!!!");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function selectCurrentAuction({ commit }, sessionId) {
+  try {
+    const response = await api.get("/api/auction/current/" + sessionId);
+    console.log("현재 진행중인 경매 정보 갖고왔음!!!");
+    commit("selectCurrentAuction", response.data);
+  } catch (error) {
+    console.log(error);
+  }
+}

@@ -33,6 +33,10 @@ export default {
 
     function goLive(sessionId) {
       $store.commit("user/setIsManage", false);
+      // $store.dispatch(
+      //   "moduleExample/selectCurrentAuction",
+      //   sessionId.replace("@", "-").replace(".", "-")
+      // );
       router.push("/live/publisher?sessionId=" + sessionId);
     }
 
