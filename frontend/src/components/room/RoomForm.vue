@@ -22,7 +22,7 @@
               <div>
                 <div class="text-green text-weight-bolder">미리보기</div>
                 <q-card>
-                  <q-img :src="preview" />
+                  <q-img :src="preview" :ratio="4 / 3" />
                   <q-card-section>
                     <div class="text-h6">{{ title }}</div>
                     <div class="text-subtitle2">{{ description }}</div>
@@ -105,7 +105,7 @@ import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
-import { uploadBytes, deleteObject } from "firebase/storage";
+import { uploadBytes } from "firebase/storage";
 import { thumbnailsRef } from "boot/firebaseConnection";
 
 export default {
