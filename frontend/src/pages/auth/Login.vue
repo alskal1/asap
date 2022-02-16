@@ -10,6 +10,7 @@
             v-model="email"
             type="email"
             label="아이디"
+            dense
           />
           <q-input
             square
@@ -18,6 +19,7 @@
             v-model="password"
             type="password"
             label="비밀번호"
+            dense
           />
         </q-form>
       </q-card-section>
@@ -26,7 +28,7 @@
           unelevated
           @click="login(email, password)"
           color="light-green-7"
-          size="lg"
+          size="md"
           class="full-width"
           label="Login"
         />
@@ -36,7 +38,7 @@
           to="/auth/signup"
           unelevated
           color="grey"
-          size="lg"
+          size="md"
           class="full-width"
           label="SIGN UP"
         />
