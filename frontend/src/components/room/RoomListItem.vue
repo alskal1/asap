@@ -1,9 +1,7 @@
 <template>
   <div class="q-pa-md">
     <q-card class="scale" style="max-width: 400px">
-      <img
-        src="https://img.freepik.com/free-vector/antique-auction-isometric-composition_1284-22062.jpg"
-      />
+      <q-img :src="thumbnail" loading="lazy" />
       <q-card-section>
         <div class="text-h6">{{ room.title }}</div>
         <div class="text-subtitle2">{{ room.description }}</div>
@@ -13,6 +11,10 @@
 </template>
 
 <script>
+import { ref } from "@vue/reactivity";
+import { thumbnailsRef } from "boot/firebaseConnection";
+import { getDownloadURL } from "@firebase/storage";
+
 export default {
   name: "RoomListItem",
   props: {
@@ -21,7 +23,21 @@ export default {
     },
   },
   setup(props) {
-    return {};
+    const thumbnail = ref("");
+
+    const imgName = ref(props.room.sessionId);
+    getDownloadURL(thumbnailsRef(`${imgName.value}.jpg`))
+      .then((url) => {
+        thumbnail.value = url;
+      })
+      .catch(() => {
+        thumbnail.value =
+          "https://img.freepik.com/free-vector/antique-auction-isometric-composition_1284-22062.jpg";
+      });
+
+    return {
+      thumbnail,
+    };
   },
 };
 </script>

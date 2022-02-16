@@ -6,7 +6,7 @@
           <div>
             <div class="text-green text-weight-bolder">방송 썸네일 입력</div>
             <q-file
-              v-model="thumnail"
+              v-model="thumbnail"
               label="방송 썸네일 이미지 등록하기"
               outlined
               accept=".jpg, image/*"
@@ -105,6 +105,9 @@ import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
+import { uploadBytes } from "firebase/storage";
+import { thumbnailsRef } from "boot/firebaseConnection";
+
 export default {
   name: "RoomForm",
 
@@ -114,7 +117,7 @@ export default {
     const userInfo = ref({});
     const title = ref("");
     const description = ref("");
-    const thumnail = ref(null);
+    const thumbnail = ref(null);
     const preview = ref(
       "https://img.freepik.com/free-vector/antique-auction-isometric-composition_1284-22062.jpg"
     );
@@ -142,20 +145,30 @@ export default {
           description.value +
           "&status=PUBLISHER"
       );
+
+      if (thumbnail.value == null) return;
+
+      const imgName = userInfo.value.email.replace("@", "-").replace(".", "-");
+
+      uploadBytes(thumbnailsRef(`${imgName}.jpg`), thumbnail.value).then(
+        (snapshot) => {
+          console.log("Upload thumbnail!");
+          console.log(snapshot);
+        }
+      );
     }
 
     function putThumnail() {
-      preview.value = URL.createObjectURL(thumnail.value);
-      console.log(thumnail.value);
+      preview.value = URL.createObjectURL(thumbnail.value);
     }
 
-    watch(thumnail, putThumnail);
+    watch(thumbnail, putThumnail);
 
     return {
       userInfo,
       title,
       description,
-      thumnail,
+      thumbnail,
       preview,
       putThumnail,
       goLive,
