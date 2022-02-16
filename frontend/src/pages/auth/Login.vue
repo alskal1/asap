@@ -1,25 +1,15 @@
 <template>
   <div class="q-pa-lg row flex-start justify-center">
-    <q-card square bordered style="width: 500px" class="q-pa-lg shadow-1">
-      <q-card-section>
-        <q-form class="q-gutter-md">
+    <q-card square bordered style="width: 500px" class="q-pa-md shadow-1">
+      <q-card-section class="q-px-md">
+        <q-form class="q-gutter-lg">
+          <q-input square filled v-model="email" type="email" label="아이디" />
           <q-input
             square
             filled
-            clearable
-            v-model="email"
-            type="email"
-            label="아이디"
-            dense
-          />
-          <q-input
-            square
-            filled
-            clearable
             v-model="password"
             type="password"
             label="비밀번호"
-            dense
           />
         </q-form>
       </q-card-section>
@@ -28,9 +18,9 @@
           unelevated
           @click="login(email, password)"
           color="light-green-7"
-          size="md"
+          size="lg"
           class="full-width"
-          label="Login"
+          label="로그인"
         />
       </q-card-actions>
       <q-card-actions class="q-px-md">
@@ -38,9 +28,9 @@
           to="/auth/signup"
           unelevated
           color="grey"
-          size="md"
+          size="lg"
           class="full-width"
-          label="SIGN UP"
+          label="회원가입"
         />
       </q-card-actions>
     </q-card>
