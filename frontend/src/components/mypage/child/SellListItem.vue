@@ -3,9 +3,7 @@
     <q-item>
       <q-item-section class="">
         <q-item-label>{{ sellItem.productName }}</q-item-label>
-        <q-item-label caption lines="2"
-          >판매날짜 : {{ sellItem.date }}</q-item-label
-        >
+        <q-item-label caption lines="2">판매날짜 : {{ sellDate }}</q-item-label>
 
         <!-- <q-item-label caption lines="2"
           >상품 수량 : {{ sellItem.count }}</q-item-label
@@ -26,6 +24,7 @@
 </template>
 
 <script>
+import { date } from "quasar";
 export default {
   name: "SellListItem",
   props: {
@@ -34,7 +33,9 @@ export default {
     },
   },
   setup(props) {
-    return {};
+    const sellDate = date.formatDate(props.sellItem.date, "YYYY-MM-DD HH:mm");
+    // const SellDate = date.inferDateFormat(props.sellItem.date);
+    return { sellDate };
   },
 };
 </script>

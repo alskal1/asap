@@ -55,11 +55,11 @@
     <q-item>
       <q-item-section>
         <div class="text-h6 text-primary">낙찰확정</div>
+        <q-item-label>상품명: {{ winItem.productName }}</q-item-label>
+        <q-item-label>낙찰 날짜 : {{ winDate }}</q-item-label>
 
-        <q-item-label>낙찰 날짜 : {{ winItem.date }}</q-item-label>
-        <q-item-label>상품 : {{ winItem.productName }}</q-item-label>
         <q-item-label>판매자 : {{ winItem.sellerId }}</q-item-label>
-        <q-item-label>수량 : {{ winItem.count }}</q-item-label>
+
         <q-item-label>최종 낙찰가 : {{ winItem.finalPrice }}</q-item-label>
         <q-item-label>배송 상태 : {{ winItem.deliveryState }}</q-item-label>
       </q-item-section>
@@ -77,7 +77,7 @@
 <script>
 import { api } from "boot/axios";
 import { ref } from "vue";
-
+import { date } from "quasar";
 export default {
   name: "WinListItem",
   props: {
@@ -86,7 +86,9 @@ export default {
     },
   },
   setup(props) {
+    const winDate = date.formatDate(props.winItem.date, "YYYY-MM-DD HH:mm");
     return {
+      winDate,
       findProduct: ref(false),
       t_code: ref(""),
       t_invoice: ref(""),

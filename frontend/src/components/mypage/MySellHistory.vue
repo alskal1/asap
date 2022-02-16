@@ -20,7 +20,7 @@ import SellListItem from "./child/SellListItem";
 import { ref, computed } from "vue";
 import { useStore } from "vuex";
 import { useQuasar } from "quasar";
-
+import { date } from "quasar";
 export default {
   name: "MySellHistory",
   components: {
@@ -35,6 +35,7 @@ export default {
   setup() {
     const $store = useStore();
     const $q = useQuasar();
+
     $store.dispatch("user/getSellHistory");
 
     const sellHistoryList = computed({
@@ -42,12 +43,13 @@ export default {
     });
 
     function intoSellItem(data) {
+      const Infodate = date.formatDate(data.date, "YYYY-MM-DD HH:mm");
       const dialog = $q
         .dialog({
           title: `${data.productName}`,
           html: true,
 
-          message: `<div>상품 수 : ${data.productName}</div> <div>배송 상태 : ${data.deliveryState}</div> <div>최종 낙찰가 : ${data.finalPrice}</div> <div>판매 날짜 : ${data.date}</div>`,
+          message: ` <div>배송 상태 : ${data.deliveryState}</div> <div>최종 낙찰가 : ${data.finalPrice}</div> <div>판매 날짜 : ${Infodate}</div>`,
           ok: "닫기",
           color: "red",
           persistent: true,
