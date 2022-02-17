@@ -2,7 +2,7 @@
   <div class="q-mt-xl flex justify-center">
     <q-card class="q-pa-lg" style="width: 800px">
       <div class="text-h6">회원정보 변경</div>
-      <q-form class="q-pa-md">
+      <q-form class="q-pa-md" @submit.prevent="changeInfo()">
         <q-input
           label="닉네임"
           color="green"
@@ -64,11 +64,11 @@
         />
         <div class="text-center q-mt-lg">
           <q-btn
+            type="submit"
             class="q-mr-md"
             outline
             color="green"
             label="변경"
-            @click="changeInfo()"
           />
         </div>
       </q-form>
