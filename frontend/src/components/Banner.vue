@@ -14,9 +14,9 @@
       height="150px"
       control-color="grey"
     >
-      <q-carousel-slide :name="1" img-src="../images/banner1.png" />
-      <q-carousel-slide :name="2" img-src="../images/banner2.png" />
-      <q-carousel-slide :name="3" img-src="../images/banner3.png" />
+      <q-carousel-slide :name="1" img-src="~assets/images/banner1.png" />
+      <q-carousel-slide :name="2" img-src="~assets/images/banner2.png" />
+      <q-carousel-slide :name="3" img-src="~assets/images/banner3.png" />
     </q-carousel>
   </div>
 </template>
