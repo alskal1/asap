@@ -83,7 +83,7 @@
           />
         </q-card>
 
-        <q-dialog v-model="dialog" no-esc-dismiss no-backdrop-dismiss>
+        <q-dialog v-model="streamEndDialog" no-esc-dismiss no-backdrop-dismiss>
           <q-card>
             <q-card-section class="row items-center no-wrap">
               <div>
@@ -179,6 +179,18 @@
           </q-card>
         </q-dialog>
 
+        <q-dialog v-model="auctionEndDialog">
+          <q-card>
+            <q-card-section class="row items-center no-wrap">
+              <div>
+                <div class="text-weight-bold">
+                  해당 경매가 종료되었습니다. 다음 경매 진행을 기다려주세요.
+                </div>
+              </div>
+            </q-card-section>
+          </q-card>
+        </q-dialog>
+
         <div>
           <q-card style="width: 400px; height: 400px; padding: 10px">
             <div name="chat">
@@ -233,33 +245,31 @@ export default {
   },
   data() {
     return {
-      title: "",
-      messageList: "",
-      position: "center",
+      manage: false,
       OV: undefined,
-      dialog: false,
       session: undefined,
+      sessionId: "",
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
       message: "",
-      manage: false,
-      sessionId: "",
+      title: "",
       myUserName: "",
       description: "",
-      videoNotFound: false,
-      cameraDialog: false,
-      auctionNotFound: false,
       currentAuction: {},
-      startPrice: "10000",
       currentPrice: "",
       term: "",
       isSell: false,
       winDialog: false,
+      cameraDialog: false,
+      videoNotFound: false,
+      streamEndDialog: false,
+      auctionNotFound: false,
       pointLessDialog: false,
       priceLessDialog: false,
-      sellerId: "",
+      auctionEndDialog: false,
       selectAuctionDialog: false,
+      sellerId: "",
     };
   },
 
@@ -274,7 +284,6 @@ export default {
 
     this.$store.dispatch("moduleExample/selectCurrentAuction", this.sessionId);
 
-    console.log(this.sessionId);
     if (this.$route.query.status == "PUBLISHER") {
       this.$store.commit("user/setIsManage", true);
     }
@@ -317,12 +326,6 @@ export default {
   },
   beforeRouteLeave: function (to, from, next) {
     if (!this.manage) {
-      this.session.disconnect();
-      this.session = undefined;
-      this.mainStreamManager = undefined;
-      this.publisher = undefined;
-      this.subscribers = [];
-      this.OV = undefined;
       next();
     } else {
       if (this.videoNotFound) {
@@ -450,7 +453,7 @@ export default {
               })
               .catch(function (error) {
                 if (error.response.status == 409) {
-                  console.log("방송이 리로드 되었습니다.");
+                  console.log("방 재생성됨");
                 } else {
                   console.log(error);
                 }
@@ -492,6 +495,34 @@ export default {
             );
           });
       });
+
+      // window.addEventListener("beforeunload", (event) => {
+      //   event.preventDefault();
+      //   event.returnValue = "";
+      // });
+      window.addEventListener("beforeunload", (event) => {
+        event.preventDefault();
+
+        api
+          .delete("/api/room/" + this.sessionId)
+          .then(() => {
+            this.session.disconnect();
+            this.session = undefined;
+            this.mainStreamManager = undefined;
+            this.publisher = undefined;
+            this.subscribers = [];
+            this.OV = undefined;
+            this.$store.commit("moduleExample/selectCurrentAuction", {});
+          })
+          .then(() => {
+            this.$store.commit("moduleExample/selectCurrentAuction", {});
+            next();
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        event.returnValue = "";
+      });
     },
 
     justJoinSession() {
@@ -506,6 +537,12 @@ export default {
       this.session.on("signal:win-auction", (event) => {
         if (this.$store.state.user.userInfo.email == event.data) {
           this.winDialog = true;
+          this.glad();
+        } else {
+          this.auctionEndDialog = true;
+          setTimeout(() => {
+            this.auctionEndDialog = false;
+          }, 3000);
         }
       });
 
@@ -549,7 +586,13 @@ export default {
           this.subscribers.splice(index, 1);
         }
 
-        this.dialog = true;
+        this.session.disconnect();
+        this.session = undefined;
+        this.mainStreamManager = undefined;
+        this.publisher = undefined;
+        this.subscribers = [];
+        this.OV = undefined;
+        this.streamEndDialog = true;
       });
 
       this.session.on("exception", ({ exception }) => {
@@ -601,6 +644,10 @@ export default {
     },
 
     sendPriceChangeMessage(newTerm) {
+      if (this.term == "" || this.term == undefined || this.term == 0) {
+        return;
+      }
+
       if (this.term > this.currentAuction.currentPrice) {
         this.priceLessDialog = true;
       } else {
@@ -740,10 +787,18 @@ export default {
 
     closeWinDialog() {
       this.winDialog = false;
+      this.stop();
     },
 
     refreshAuction() {
       this.isSell = false;
+    },
+
+    glad() {
+      this.$confetti.start();
+    },
+    stop() {
+      this.$confetti.stop();
     },
 
     getSubToken(mySessionId) {

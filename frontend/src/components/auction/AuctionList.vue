@@ -21,8 +21,10 @@
 </template>
 
 <script>
-import AuctionListItem from "./AuctionListItem";
 import { useStore } from "vuex";
+import { Notify } from "quasar";
+import AuctionListItem from "./AuctionListItem";
+
 export default {
   name: "AuctionList",
   components: {
@@ -42,16 +44,28 @@ export default {
   },
   methods: {
     deleteAuction(index) {
-      console.log(index);
       const obj = this.auctionList[index];
 
-      this.$store.dispatch("moduleExample/deleteAuction", obj.id).then(() => {
-        this.$store.dispatch(
-          "moduleExample/selectAllAuctions",
-          this.$store.state.user.userInfo.email
-            .replace("@", "-")
-            .replace(".", "-")
-        );
+      if (this.$store.state.moduleExample.curAuction.id == obj.id) {
+        this.notifyError();
+      } else {
+        this.$store.dispatch("moduleExample/deleteAuction", obj.id).then(() => {
+          this.$store.dispatch(
+            "moduleExample/selectAllAuctions",
+            this.$store.state.user.userInfo.email
+              .replace("@", "-")
+              .replace(".", "-")
+          );
+        });
+      }
+    },
+
+    notifyError() {
+      Notify.create({
+        message: "현재 진행중인 경매는 삭제할 수 없습니다",
+        color: "red",
+        icon: "announcement",
+        position: "top",
       });
     },
   },
