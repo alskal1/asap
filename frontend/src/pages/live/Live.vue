@@ -11,6 +11,11 @@
             <q-item-section>
               <div class="text-h5 q-ml-lg">{{ title }}</div>
             </q-item-section>
+            <space />
+            <div class="text-h7 text-grey q-ml-lg">
+              시청자 수 :
+              {{ session ? session.remoteConnections.size : 0 }}
+            </div>
             <q-btn
               size="sm"
               side="right"
@@ -38,7 +43,7 @@
                   </q-avatar>
                 </q-item-section>
 
-                <q-item-section>{{ sessionId }}</q-item-section>
+                <q-item-section>{{ sellerId }}</q-item-section>
               </q-item>
 
               <q-btn flat color="dark" />
@@ -259,7 +264,7 @@
           <q-card style="width: 400px; height: 400px; padding: 10px">
             <div name="chat">
               <div>채팅</div>
-              <q-scroll-area style="height: 300px">
+              <q-scroll-area ref="chatScroll" style="height: 300px">
                 <div id="chattings"></div>
               </q-scroll-area>
               <div>
@@ -491,6 +496,8 @@ export default {
 
         document.getElementById("chattings").appendChild(sender);
         document.getElementById("chattings").appendChild(newMessage);
+
+        this.animateScroll();
       });
 
       this.session.on("streamDestroyed", ({ stream }) => {
@@ -499,7 +506,7 @@ export default {
           this.subscribers.splice(index, 1);
         }
 
-        this.$store.commit("moduleExample/selectCurrentAuction", {});
+        // this.$store.commit("moduleExample/selectCurrentAuction", {});
       });
 
       this.session.on("exception", ({ exception }) => {
@@ -630,6 +637,8 @@ export default {
 
         document.getElementById("chattings").appendChild(sender);
         document.getElementById("chattings").appendChild(newMessage);
+
+        this.animateScroll();
       });
 
       this.session.on("signal:update-auction", (event) => {
@@ -859,6 +868,19 @@ export default {
 
     refreshAuction() {
       this.isSell = false;
+    },
+
+    animateScroll() {
+      const scrollArea = this.$refs.chatScroll;
+      if (scrollArea != null) {
+        const scrollTarget = scrollArea.getScrollTarget();
+        const duration = 300; // ms - use 0 to instant scroll
+        scrollArea.setScrollPosition(
+          "vertical",
+          scrollTarget.scrollHeight,
+          duration
+        );
+      }
     },
 
     glad() {
