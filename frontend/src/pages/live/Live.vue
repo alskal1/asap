@@ -1050,89 +1050,39 @@ user-video {
   position: relative;
   margin-left: 20px;
   margin-bottom: 10px;
-  padding: 10px;
-  background-color: #a8ddfd;
-  width: 200px;
+  padding: 15px;
+  background-color: #8fd89c;
+  width: 220px;
   height: 50px;
   text-align: left;
   font: 400 0.9em "Open Sans", sans-serif;
-  border: 1px solid #97c6e3;
-  border-radius: 10px;
+  border-radius: 15px;
 }
 
 .message-orange {
   position: relative;
   margin-bottom: 10px;
   margin-left: calc(100% - 240px);
-  padding: 10px;
-  background-color: #f8e896;
-  width: 200px;
+  padding: 15px;
+  background-color: #e2e2e2;
+  width: 220px;
   height: 50px;
   text-align: left;
   font: 400 0.9em "Open Sans", sans-serif;
-  border: 1px solid #dfd087;
-  border-radius: 10px;
+  border-radius: 15px;
 }
 .message-sender {
   position: relative;
   margin-bottom: 5px;
-  padding: 5px;
+  padding: 5px 20px 5px 0px;
   text-align: right;
   font: 400 0.9em "Open Sans", sans-serif;
 }
 .message-receiver {
   position: relative;
   margin-bottom: 5px;
-  padding: 5px;
+  padding: 5px 0px 5px 20px;
   text-align: left;
   font: 400 0.9em "Open Sans", sans-serif;
-}
-
-.message-blue:after {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-top: 15px solid #a8ddfd;
-  border-left: 15px solid transparent;
-  border-right: 15px solid transparent;
-  top: 0;
-  left: -15px;
-}
-
-.message-blue:before {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-top: 17px solid #97c6e3;
-  border-left: 16px solid transparent;
-  border-right: 16px solid transparent;
-  top: -1px;
-  left: -17px;
-}
-
-.message-orange:after {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-bottom: 15px solid #f8e896;
-  border-left: 15px solid transparent;
-  border-right: 15px solid transparent;
-  bottom: 0;
-  right: -15px;
-}
-
-.message-orange:before {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-bottom: 17px solid #dfd087;
-  border-left: 16px solid transparent;
-  border-right: 16px solid transparent;
-  bottom: -1px;
-  right: -17px;
 }
 </style>
