@@ -3,10 +3,11 @@
     v-model="step"
     ref="stepper"
     alternative-labels
-    color="primary"
+    active-color="green"
+    done-color="grey"
     animated
   >
-    <q-step :name="1" title="포인트 충전" icon="shopping_cart" :done="step > 1">
+    <q-step :name="1" title="포인트 충전" icon="shopping_cart" :done="done1">
       <div class="flex justify-center items-center">
         <q-card style="width: 800px; padding: 20px">
           <q-card-section>
@@ -34,23 +35,31 @@
                   label="상기 결제 내용을 동의합니다."
                 />
               </div>
-              <!-- <div style="text-align: center">
-                  <q-btn
-                    v-if="right"
-                    label="충전하기"
-                    type="submit"
-                    color="green"
-                  />
-                </div> -->
             </q-form>
           </q-card-section>
         </q-card>
       </div>
+      <q-stepper-navigation>
+        <div style="text-align: center">
+          <q-btn
+            v-if="right"
+            @click="
+              () => {
+                done1 = true;
+                step = 2;
+                price == 0 ? alert() : PaymentBtn();
+              }
+            "
+            color="green"
+            label="충전"
+          />
+        </div>
+      </q-stepper-navigation>
     </q-step>
 
-    <q-step :name="2" title="결제" icon="paid" :done="step > 2">
+    <q-step :name="2" title="결제 진행" icon="paid" :done="done2">
       <div class="row flex justify-center items-center">
-        <h2>결제 중 입니다.</h2>
+        <h2>결제 진행 중 입니다.</h2>
         <div>
           <q-circular-progress
             indeterminate
@@ -66,31 +75,35 @@
       <div style="text-align: center">
         <p>결제가 안되신다면 다시 결제를 눌러주세요</p>
       </div>
+      <q-stepper-navigation>
+        <div style="text-align: center">
+          <q-btn
+            flat
+            @click="step = 1"
+            color="red"
+            label="다시 결제"
+            class="q-ml-sm"
+          />
+        </div>
+      </q-stepper-navigation>
     </q-step>
 
-    <template v-slot:navigation>
-      <q-stepper-navigation style="text-align: center">
-        <q-btn
-          v-if="right"
-          @click="
-            () => {
-              step = 2;
-              price == 0 ? alert() : PaymentBtn();
-            }
-          "
-          color="green"
-          :label="step === 2 ? '다시 결제' : '결제'"
-        />
-        <q-btn
-          v-if="step > 1"
-          flat
-          color="primary"
-          @click="$refs.stepper.previous()"
-          label="결제취소"
-          class="q-ml-sm"
-        />
+    <q-step :name="3" title="결제 완료" icon="receipt" :done="done3">
+      <div class="row flex justify-center items-center">
+        <h2>결제가 완료 되었습니다.</h2>
+      </div>
+      <q-stepper-navigation>
+        <div style="text-align: center">
+          <q-btn
+            flat
+            @click="step = 1"
+            color="primary"
+            label="완료"
+            class="q-ml-sm"
+          />
+        </div>
       </q-stepper-navigation>
-    </template>
+    </q-step>
   </q-stepper>
 </template>
 
@@ -179,6 +192,9 @@ export default {
       chargePoint,
       currentPointInfo,
       right: ref(false),
+      done1: ref(false),
+      done2: ref(false),
+      done3: ref(false),
       step: ref(1),
     };
   },
@@ -208,6 +224,7 @@ export default {
           console.log(rsp);
           if (rsp.success) {
             console.log("결제 성공");
+            this.step = 3;
             this.chargePoint();
           } else {
             console.log("결제 실패", rsp);
