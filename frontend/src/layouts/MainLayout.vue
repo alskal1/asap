@@ -17,25 +17,25 @@
 
         <q-space />
         <div v-if="isLogin" class="q-gutter-sm row items-center no-wrap">
+          <q-btn to="/payment" round dense flat color="grey-9" icon="paid">
+            <span>{{ currentPointInfo }} 포인트</span>
+          </q-btn>
+          <q-btn to="/room" round dense flat color="grey-9" icon="video_call">
+            <q-tooltip>라이브 경매 생성</q-tooltip>
+          </q-btn>
+          <q-separator vertical />
+          <q-btn to="/member" round dense flat color="green-5">
+            <q-avatar size="md" icon="account_circle"> </q-avatar>
+            <q-tooltip>{{ userInfo.name }} </q-tooltip>
+          </q-btn>
           <q-btn
-            to="/payment"
-            round
+            @click="logout"
             dense
             flat
             color="grey-8"
-            icon="attach_money"
+            class="bg-white-3 rounded-borders"
           >
-            <q-tooltip>현재 포인트: {{ currentPointInfo }}</q-tooltip>
-          </q-btn>
-          <q-btn to="/room" round dense flat color="grey-8" icon="video_call">
-            <q-tooltip>라이브 경매 생성</q-tooltip>
-          </q-btn>
-          <q-btn @click="logout" round dense flat color="grey-8" icon="logout">
-            <q-tooltip>로그아웃</q-tooltip>
-          </q-btn>
-          <q-btn to="/member" round flat>
-            <q-avatar size="md" icon="account_circle"> </q-avatar>
-            <q-tooltip>{{ userInfo.name }}</q-tooltip>
+            로그아웃
           </q-btn>
         </div>
         <div v-else class="q-gutter-sm row items-center no-wrap">
@@ -44,13 +44,25 @@
             round
             dense
             flat
-            color="grey-8"
+            color="grey-9"
             icon="video_call"
           >
             <q-tooltip>라이브 경매 생성</q-tooltip>
           </q-btn>
-          <q-btn to="/auth/login" round dense flat color="grey-8" icon="login">
-            <q-tooltip>로그인</q-tooltip>
+          <q-btn
+            to="/auth/login"
+            flat
+            color="grey-8"
+            class="bg-white-3 rounded-borders"
+          >
+            <span>로그인</span>
+          </q-btn>
+          <q-btn
+            to="/auth/signup"
+            color="white"
+            class="bg-green-5 rounded-borders"
+          >
+            <span>회원가입</span>
           </q-btn>
         </div>
       </q-toolbar>
@@ -118,22 +130,25 @@
         </q-item>
       </q-list>
     </q-drawer>
-
     <q-page-container>
       <router-view />
     </q-page-container>
   </q-layout>
+  <page-footer></page-footer>
 </template>
 
 <script>
 import { defineComponent, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import PageFooter from "components/PageFooter";
 
 export default defineComponent({
   name: "MainLayout",
 
-  components: {},
+  components: {
+    PageFooter,
+  },
 
   setup() {
     const $store = useStore();
