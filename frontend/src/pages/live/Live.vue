@@ -11,7 +11,7 @@
               <div class="text-h5 q-ml-lg">{{ title }}</div>
             </q-item-section>
             <space />
-            <div class="text-h7 text-grey q-ml-lg">
+            <div class="text-h7 text-grey q-mr-md">
               시청자 수 :
               {{ session ? session.remoteConnections.size : 0 }}
             </div>
@@ -412,6 +412,7 @@ export default {
   },
   beforeRouteLeave: function (to, from, next) {
     if (!this.manage) {
+      this.removeAllMessages();
       next();
     } else {
       if (this.videoNotFound) {
@@ -455,6 +456,7 @@ export default {
                 this.publisher = undefined;
                 this.subscribers = [];
                 this.OV = undefined;
+                this.removeAllMessages();
                 this.$store.commit("moduleExample/selectCurrentAuction", {});
               })
               .then(() => {
@@ -600,6 +602,7 @@ export default {
             this.publisher = undefined;
             this.subscribers = [];
             this.OV = undefined;
+            this.removeAllMessages();
             this.$store.commit("moduleExample/selectCurrentAuction", {});
           })
           .then(() => {
@@ -711,23 +714,31 @@ export default {
     },
 
     sendMessage() {
-      if (this.session) {
-        const data = {
-          message: this.message,
-          sender: this.$store.state.user.userInfo.name,
-        };
-        this.session
-          .signal({
-            data: JSON.stringify(data),
-            to: [],
-            type: "user-chat",
-          })
-          .then(() => {
-            this.message = "";
-          })
-          .catch((error) => {
-            console.error(error);
-          });
+      if (
+        this.message == "" ||
+        this.message == undefined ||
+        this.message == null
+      ) {
+        return;
+      } else {
+        if (this.session) {
+          const data = {
+            message: this.message,
+            sender: this.$store.state.user.userInfo.name,
+          };
+          this.session
+            .signal({
+              data: JSON.stringify(data),
+              to: [],
+              type: "user-chat",
+            })
+            .then(() => {
+              this.message = "";
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        }
       }
     },
 
@@ -896,6 +907,10 @@ export default {
           duration
         );
       }
+    },
+
+    removeAllMessages() {
+      document.getElementById("chattings").innerHTML = "";
     },
 
     glad() {
