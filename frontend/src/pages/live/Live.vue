@@ -1050,7 +1050,7 @@ user-video {
   margin-left: 20px;
   margin-bottom: 10px;
   padding: 15px;
-  background-color: #ffde66;
+  background-color: #8fd89c;
   width: 220px;
   height: 50px;
   text-align: left;
@@ -1073,39 +1073,15 @@ user-video {
 .message-sender {
   position: relative;
   margin-bottom: 5px;
-  padding: 5px;
+  padding: 5px 20px 5px 0px;
   text-align: right;
   font: 400 0.9em "Open Sans", sans-serif;
 }
 .message-receiver {
   position: relative;
   margin-bottom: 5px;
-  padding: 5px;
+  padding: 5px 0px 5px 20px;
   text-align: left;
   font: 400 0.9em "Open Sans", sans-serif;
-}
-
-.message-blue:after {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-top: 10px solid #ffde66;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  top: 9px;
-  left: -10px;
-}
-
-.message-orange:after {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-top: 10px solid #e2e2e2;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  bottom: 25px;
-  right: -10px;
 }
 </style>
