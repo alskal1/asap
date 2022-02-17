@@ -1,0 +1,1 @@
+CREATE database if not exists asap collate utf8mb4_general_ci;
