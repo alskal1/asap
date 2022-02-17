@@ -18,7 +18,7 @@
         <q-space />
         <div v-if="isLogin" class="q-gutter-sm row items-center no-wrap">
           <q-btn
-            to="/payment"
+            @click="ChangePointCharging()"
             round
             dense
             flat
@@ -104,7 +104,7 @@
       </q-dialog>
 
       <q-dialog v-if="PointChargingDialog" v-model="PointChargingDialog">
-        <q-card style="background-color: white">
+        <q-card style="background-color: white; width: 800px">
           <payment-form></payment-form>
         </q-card>
       </q-dialog>
