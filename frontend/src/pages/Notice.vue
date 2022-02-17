@@ -31,23 +31,6 @@
           <div class="absolute-top text-center"></div>
         </q-img> -->
     </div>
-    <div class="q-gutter-md">
-      <div class="row flex justify-center">
-        <q-btn class="text-white col-2" color="green" size="xl" @click="glad"
-          >환영합니다!</q-btn
-        >
-      </div>
-      <div class="row flex justify-center">
-        <q-btn class="text-white col-2" color="pink" size="xl" @click="love"
-          >핑크핑크</q-btn
-        >
-      </div>
-      <div class="row flex justify-center">
-        <q-btn class="text-white col-2" color="grey" size="xl" @click="stop"
-          >멈추기</q-btn
-        >
-      </div>
-    </div>
   </q-page>
 </template>
 
@@ -125,27 +108,6 @@ export default {
         Math.ceil(rows.length / pagination.value.rowsPerPage)
       ),
     };
-  },
-  methods: {
-    glad() {
-      this.$confetti.start();
-    },
-    stop() {
-      this.$confetti.stop();
-    },
-    love() {
-      this.$confetti.update({
-        particles: [
-          {
-            type: "heart",
-          },
-          {
-            type: "circle",
-          },
-        ],
-        defaultColors: ["red", "pink", "#ba0000"],
-      });
-    },
   },
 };
 </script>
