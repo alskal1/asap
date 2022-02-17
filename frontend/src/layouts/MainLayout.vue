@@ -23,7 +23,7 @@
           <q-btn to="/room" round dense flat color="grey-9" icon="video_call">
             <q-tooltip>라이브 경매 생성</q-tooltip>
           </q-btn>
-          <q-btn flat dense color="grey-9" icon="more_vert" disable />
+          <q-separator vertical />
           <q-btn to="/member" round dense flat color="green-5">
             <q-avatar size="md" icon="account_circle"> </q-avatar>
             <q-tooltip>{{ userInfo.name }} </q-tooltip>
@@ -130,22 +130,25 @@
         </q-item>
       </q-list>
     </q-drawer>
-
     <q-page-container>
       <router-view />
     </q-page-container>
   </q-layout>
+  <page-footer></page-footer>
 </template>
 
 <script>
 import { defineComponent, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import PageFooter from "components/PageFooter";
 
 export default defineComponent({
   name: "MainLayout",
 
-  components: {},
+  components: {
+    PageFooter,
+  },
 
   setup() {
     const $store = useStore();
