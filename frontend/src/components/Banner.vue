@@ -3,7 +3,6 @@
     <q-carousel
       animated
       v-model="slide"
-      navigation
       infinite
       arrows
       :autoplay="autoplay"
