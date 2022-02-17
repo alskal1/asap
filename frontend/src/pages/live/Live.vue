@@ -1,27 +1,69 @@
 <template>
   <q-page padding>
     <div class="row">
-      <div class="col-1" style="width: 50px"></div>
       <div class="col-8">
-        <div class="col-6">
+        <q-card class="bg-dark q-pa-lg col-6">
           <user-video :stream-manager="mainStreamManager"></user-video>
-        </div>
-        <div class="row">
-          <div class="col-md-4">
-            <q-avatar size="md" icon="account_circle"> </q-avatar>
-            <span>{{ sessionId }}</span>
-            <span class="q-ml-lg">{{ title }} {{ description }} </span>
-          </div>
-          <div class="col-md-4 offset-md-3">
+        </q-card>
+        <q-card class="">
+          <!-- <div class="row"> -->
+          <q-item>
+            <q-item-section>
+              <div class="text-h5 q-ml-lg">{{ title }}</div>
+            </q-item-section>
             <q-btn
+              size="sm"
               side="right"
               v-if="manage"
-              color="red"
+              color="red-5"
               @click="leaveSession()"
               >방송 종료</q-btn
             >
-          </div>
-        </div>
+          </q-item>
+
+          <q-card
+            class="fit bg-grey-2 my-card"
+            bordered
+            style="max-height: 400px; width: 500px"
+          >
+            <q-card-actions>
+              <q-item>
+                <q-item-section avatar>
+                  <q-avatar
+                    color="green"
+                    text-color="white"
+                    icon-right="colorize"
+                    icon="account_circle"
+                  >
+                  </q-avatar>
+                </q-item-section>
+
+                <q-item-section>{{ sessionId }}</q-item-section>
+              </q-item>
+
+              <q-btn flat color="dark" />
+              <q-space />
+              <q-btn
+                color="grey"
+                round
+                flat
+                dense
+                :icon="
+                  expandedDetail ? 'keyboard_arrow_down' : 'keyboard_arrow_up'
+                "
+                @click="expandedDetail = !expandedDetail"
+              />
+            </q-card-actions>
+            <q-slide-transition>
+              <div v-show="expandedDetail">
+                <q-separator class="q-ml-md q-mr-md" />
+                <q-card-section class="text-subitle2 q-ml-md">
+                  {{ description }}
+                </q-card-section>
+              </div>
+            </q-slide-transition>
+          </q-card>
+        </q-card>
       </div>
       <div class="q-pa-sm q-ml-md col-3">
         <div class="col-2">
@@ -241,6 +283,7 @@ export default {
   setup() {
     return {
       expanded: ref(true),
+      expandedDetail: ref(false),
     };
   },
   data() {

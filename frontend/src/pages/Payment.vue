@@ -228,38 +228,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-/* input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-input {
-  width: 300px;
-  border: 0;
-  border-bottom: 1px #a8a8a8 solid;
-  margin: 0 10px 0;
-  padding: 0;
-  height: 40px;
-  line-height: 40px;
-  outline: none;
-} */
-/* .test {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-div {
-  width: 200px;
-  height: 40px;
-  background-color: #ffffff;
-  border: 1px #a8a8a8 solid;
-  color: black;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-} */
-</style>

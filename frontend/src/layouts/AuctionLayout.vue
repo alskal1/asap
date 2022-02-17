@@ -103,7 +103,7 @@
             clickable
           >
             <q-item-section avatar>
-              <q-icon name="playlist_add" />
+              <q-icon name="list" />
             </q-item-section>
             <q-item-section>
               <q-item-label>경매리스트</q-item-label>
@@ -115,15 +115,15 @@
           <q-item
             v-ripple
             active-class="my-menu-link"
-            @click="addAuction()"
+            @click="PointChargingDialog()"
             exact
             clickable
           >
             <q-item-section avatar>
-              <q-icon name="playlist_add" />
+              <q-icon name="attach_money" />
             </q-item-section>
             <q-item-section>
-              <q-item-label>충전 기능 테스트</q-item-label>
+              <q-item-label>경매 충전</q-item-label>
             </q-item-section>
           </q-item>
         </div>
@@ -133,11 +133,19 @@
     <q-page-container>
       <q-dialog v-if="auctionDialog" v-model="auctionDialog">
         <q-card style="background-color: white">
+          <div class="q-pa-md q-ml-sm text-h6">경매 추가</div>
+
           <auction-form @new-auction-added="fetchAuctionList"></auction-form>
         </q-card>
       </q-dialog>
 
       <q-dialog v-if="auctionListDialog" v-model="auctionListDialog">
+        <q-card style="background-color: white">
+          <auction-list></auction-list>
+        </q-card>
+      </q-dialog>
+
+      <q-dialog v-if="PointChargingDialog" v-model="PointChargingDialog">
         <q-card style="background-color: white">
           <auction-list></auction-list>
         </q-card>
@@ -150,9 +158,11 @@
 <script>
 import AuctionForm from "components/auction/AuctionForm";
 import AuctionList from "components/auction/AuctionList";
+
 import { computed, defineComponent, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import { route } from "quasar/wrappers";
 
 export default defineComponent({
   name: "MainLayout",
