@@ -184,19 +184,6 @@
           </q-card>
         </q-dialog>
 
-        <q-dialog v-model="auctionNotFound">
-          <q-card>
-            <q-card-section class="row items-center no-wrap">
-              <div>
-                <div class="text-weight-bold">
-                  존재하지 않는 경매 정보입니다.
-                </div>
-                <q-btn @click="closeDialog()">OK</q-btn>
-              </div>
-            </q-card-section>
-          </q-card>
-        </q-dialog>
-
         <q-dialog v-model="isSell">
           <q-card>
             <q-card-section class="row items-center no-wrap">
@@ -266,6 +253,7 @@
 
 <script>
 import { ref } from "vue";
+import { Dialog } from "quasar";
 import { api } from "boot/axios";
 import { ovapi } from "boot/axios";
 import { OpenVidu } from "openvidu-browser";
@@ -307,7 +295,6 @@ export default {
       cameraDialog: false,
       videoNotFound: false,
       streamEndDialog: false,
-      auctionNotFound: false,
       pointLessDialog: false,
       priceLessDialog: false,
       auctionEndDialog: false,
@@ -388,28 +375,39 @@ export default {
             console.log(error);
           });
       } else {
-        if (window.confirm("want to quit?")) {
-          api
-            .delete("/api/room/" + this.sessionId)
-            .then(() => {
-              this.session.disconnect();
-              this.session = undefined;
-              this.mainStreamManager = undefined;
-              this.publisher = undefined;
-              this.subscribers = [];
-              this.OV = undefined;
-              this.$store.commit("moduleExample/selectCurrentAuction", {});
-            })
-            .then(() => {
-              this.$store.commit("moduleExample/selectCurrentAuction", {});
-              next();
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-        } else {
-          next(false);
-        }
+        Dialog.create({
+          title: "<span class='text-h6'>알림</span>",
+          style: "shadow-box",
+          html: true,
+          message:
+            "<span class='text-h7 text-weight-medium'>방송을 종료하시겠습니까?</span>",
+          color: "green",
+          cancel: "종료하기",
+          ok: "취소",
+          persistent: true,
+        })
+          .onOk(() => {
+            next(false);
+          })
+          .onCancel(() => {
+            api
+              .delete("/api/room/" + this.sessionId)
+              .then(() => {
+                this.session.disconnect();
+                this.session = undefined;
+                this.mainStreamManager = undefined;
+                this.publisher = undefined;
+                this.subscribers = [];
+                this.OV = undefined;
+                this.$store.commit("moduleExample/selectCurrentAuction", {});
+              })
+              .then(() => {
+                next();
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          });
       }
     }
   },
@@ -485,9 +483,6 @@ export default {
 
             api
               .post("/api/room/", newData)
-              .then((response) => {
-                console.log(response);
-              })
               .then(() => {
                 this.$store.dispatch(
                   "moduleExample/selectAllAuctions",
@@ -495,11 +490,7 @@ export default {
                 );
               })
               .catch(function (error) {
-                if (error.response.status == 409) {
-                  console.log("방 재생성됨");
-                } else {
-                  console.log(error);
-                }
+                console.error(error);
               });
           })
           .then(() => {
@@ -558,7 +549,6 @@ export default {
             this.$store.commit("moduleExample/selectCurrentAuction", {});
           })
           .then(() => {
-            this.$store.commit("moduleExample/selectCurrentAuction", {});
             next();
           })
           .catch(function (error) {
@@ -678,7 +668,6 @@ export default {
           })
           .then(() => {
             this.message = "";
-            console.log("Message successfully sent!!!");
           })
           .catch((error) => {
             console.error(error);
@@ -797,16 +786,11 @@ export default {
                     }
                   })
                   .catch((error) => {
-                    console.log("history 생성 에러");
+                    console.error(error);
                   });
               })
               .catch((error) => {
-                if (error.response.status == 204) {
-                  console.log("존재하지 않는 경매 정보입니다.");
-                  this.auctionNotFound = true;
-                } else {
-                  conosole.log(error);
-                }
+                conosole.error(error);
               });
           })
           .catch((error) => {
@@ -822,7 +806,6 @@ export default {
     },
 
     closeDialog() {
-      this.auctionNotFound = false;
       this.pointLessDialog = false;
       this.priceLessDialog = false;
       this.selectAuctionDialog = false;
