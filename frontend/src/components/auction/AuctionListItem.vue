@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md">
-    <q-card style="width: 400px">
+    <q-card flat style="width: 400px">
       <q-card-section>
         <div>
           <div class="text-subtitle2">

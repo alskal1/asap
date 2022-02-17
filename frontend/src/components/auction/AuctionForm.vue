@@ -1,8 +1,8 @@
 <template>
   <q-card>
-    <div style="padding: 30px; width: 350px">
+    <div class="gutter-sm" style="margin: 30px; width: 300px">
       <q-form @submit.prevent="onSubmit">
-        <p class="text-green text-weight-bolder">상품 이름</p>
+        <div class="text-green text-weight-bolder">상품명</div>
         <q-input
           type="text"
           v-model="productName"
@@ -13,7 +13,7 @@
         />
 
         <div>
-          <div class="text-green text-weight-bolder">상품 원산지</div>
+          <div class="text-green text-weight-bolder">원산지</div>
           <q-input
             type="text"
             v-model="origin"
@@ -24,7 +24,7 @@
           />
         </div>
 
-        <div class="text-green text-weight-bolder">시작가</div>
+        <div class="text-green text-weight-bolder">시작 가격</div>
         <q-input
           type="text"
           v-model="startPrice"
@@ -36,7 +36,9 @@
           input-class="text-right"
           suffix="₩"
         />
-        <q-btn label="경매등록" type="submit" color="green" />
+        <div class="q-pt-md column q-gutter-sm row justify-center">
+          <q-btn label="경매등록" type="submit" color="green" />
+        </div>
       </q-form>
     </div>
   </q-card>
