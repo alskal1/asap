@@ -115,7 +115,7 @@
           <q-item
             v-ripple
             active-class="my-menu-link"
-            @click="PointChargingDialog()"
+            @click="ChangePointCharging()"
             exact
             clickable
           >
@@ -147,7 +147,7 @@
 
       <q-dialog v-if="PointChargingDialog" v-model="PointChargingDialog">
         <q-card style="background-color: white">
-          <auction-list></auction-list>
+          <payment-form></payment-form>
         </q-card>
       </q-dialog>
       <router-view />
@@ -158,7 +158,7 @@
 <script>
 import AuctionForm from "components/auction/AuctionForm";
 import AuctionList from "components/auction/AuctionList";
-
+import paymentForm from "components/payment/paymentForm";
 import { computed, defineComponent, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
@@ -167,11 +167,12 @@ import { route } from "quasar/wrappers";
 export default defineComponent({
   name: "MainLayout",
 
-  components: { AuctionForm, AuctionList },
+  components: { AuctionForm, AuctionList, paymentForm },
   data() {
     return {
       auctionDialog: false,
       auctionListDialog: false,
+      PointChargingDialog: false,
     };
   },
   setup() {
@@ -229,6 +230,9 @@ export default defineComponent({
     },
     fetchAuctionList: function () {
       this.auctionDialog = false;
+    },
+    ChangePointCharging() {
+      this.PointChargingDialog = true;
     },
   },
 });
