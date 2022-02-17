@@ -18,7 +18,7 @@
         <q-space />
         <div v-if="isLogin" class="q-gutter-sm row items-center no-wrap">
           <q-btn to="/payment" round dense flat color="grey-9" icon="paid">
-            <span>{{ currentPointInfo }} 포인트</span>
+            <span>{{ user.point }} 포인트</span>
           </q-btn>
           <q-btn to="/room" round dense flat color="grey-9" icon="video_call">
             <q-tooltip>라이브 경매 생성</q-tooltip>
@@ -26,7 +26,7 @@
           <q-separator vertical />
           <q-btn to="/member" round dense flat color="green-5">
             <q-avatar size="md" icon="account_circle"> </q-avatar>
-            <q-tooltip>{{ userInfo.name }} </q-tooltip>
+            <q-tooltip>{{ user.name }} </q-tooltip>
           </q-btn>
           <q-btn
             @click="logout"
@@ -138,7 +138,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import PageFooter from "components/PageFooter";
@@ -155,14 +155,11 @@ export default defineComponent({
     const router = useRouter();
 
     const isLogin = ref(sessionStorage.getItem("jwt"));
-    const userInfo = ref({});
-    const currentPointInfo = ref({});
 
-    $store.dispatch("user/getUserInfo").then(() => {
-      const _userInfo = $store.state.user.userInfo;
-      const currentPoint = $store.state.user.userInfo.point;
-      userInfo.value = _userInfo;
-      currentPointInfo.value = currentPoint;
+    $store.dispatch("user/getUserInfo");
+
+    const user = computed({
+      get: () => $store.state.user.userInfo,
     });
 
     const logout = () => {
@@ -179,11 +176,10 @@ export default defineComponent({
     const leftDrawerOpen = ref(false);
 
     return {
+      user,
       isLogin,
-      userInfo,
       logout,
       leftDrawerOpen,
-      currentPointInfo,
 
       reLoad,
       toggleLeftDrawer() {
