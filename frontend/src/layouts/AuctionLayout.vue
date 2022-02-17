@@ -25,7 +25,7 @@
             color="grey-8"
             icon="attach_money"
           >
-            <q-tooltip>현재 포인트: {{ currentPointInfo }}</q-tooltip>
+            <q-tooltip>현재 포인트: {{ curPoint }}</q-tooltip>
           </q-btn>
           <q-btn round flat>
             <q-avatar size="md" icon="account_circle"> </q-avatar>
@@ -119,7 +119,6 @@ import AuctionList from "components/auction/AuctionList";
 import paymentForm from "components/payment/paymentForm";
 import { computed, defineComponent, ref } from "vue";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "MainLayout",
@@ -137,17 +136,19 @@ export default defineComponent({
 
     const isLogin = ref(sessionStorage.getItem("jwt"));
     const userInfo = ref({});
-    const currentPointInfo = ref({});
 
     const manageMode = computed({
       get: () => $store.state.user.isManage,
+    });
+
+    const curPoint = computed({
+      get: () => $store.state.user.userInfo.point,
     });
 
     $store.dispatch("user/getUserInfo").then(() => {
       const _userInfo = $store.state.user.userInfo;
       const currentPoint = $store.state.user.userInfo.point;
       userInfo.value = _userInfo;
-      currentPointInfo.value = currentPoint;
     });
 
     const reLoad = () => {
@@ -160,7 +161,7 @@ export default defineComponent({
       userInfo,
       manageMode,
       leftDrawerOpen,
-      currentPointInfo,
+      curPoint,
       reLoad,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;

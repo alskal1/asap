@@ -96,7 +96,6 @@
 
 <script>
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { useQuasar } from "quasar";
 const { IMP } = window;
@@ -114,9 +113,7 @@ export default {
     const userInfo = ref({});
     const addressInfo = ref({});
     const currentPointInfo = ref({});
-    const router = useRouter();
     const $q = useQuasar();
-    const flag = ref(true);
     function alert() {
       $q.dialog({
         title: "결제오류",
@@ -138,11 +135,10 @@ export default {
         title: "결제 완료",
         message: "결제가 완료 되었습니다. ",
         ok: "확인",
-      }).onOk(() => {
-        // console.log('OK')
-        // location.reload();
-        $q.dialog.close();
-      });
+      })
+        .onOk(() => {})
+        .onCancel(() => {})
+        .onDismiss(() => {});
     }
     $store.dispatch("user/getUserInfo").then(() => {
       const stateUserInfo = {
@@ -170,9 +166,9 @@ export default {
       };
 
       $store.dispatch("user/chargePoint", point).then(() => {
-        completePay();
-        // location.reload();
-        // router.push("/");
+        $store.dispatch("user/getUserInfo").then(() => {
+          completePay();
+        });
       });
     }
     return {
