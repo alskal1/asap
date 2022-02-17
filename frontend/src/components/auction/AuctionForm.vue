@@ -2,42 +2,44 @@
   <q-card>
     <div class="gutter-sm" style="margin: 30px; width: 300px">
       <q-form @submit.prevent="onSubmit">
-        <div class="text-green text-weight-bolder">상품명</div>
-        <q-input
-          type="text"
-          v-model="productName"
-          dense
-          outlined
-          color="green"
-          clearable
-        />
-
-        <div>
-          <div class="text-green text-weight-bolder">원산지</div>
+        <div class="q-gutter-sm">
+          <div class="text-green text-weight-bolder">상품명</div>
           <q-input
             type="text"
-            v-model="origin"
+            v-model="productName"
             dense
             outlined
             color="green"
             clearable
           />
-        </div>
 
-        <div class="text-green text-weight-bolder">시작 가격</div>
-        <q-input
-          type="text"
-          v-model="startPrice"
-          dense
-          outlined
-          color="green"
-          clearable
-          :rules="[(val) => !isNaN(val) || '숫자를 입력해주세요']"
-          input-class="text-right"
-          suffix="₩"
-        />
-        <div class="q-pt-md column q-gutter-sm row justify-center">
-          <q-btn label="경매등록" type="submit" color="green" />
+          <div>
+            <div class="text-green text-weight-bolder">원산지</div>
+            <q-input
+              type="text"
+              v-model="origin"
+              dense
+              outlined
+              color="green"
+              clearable
+            />
+          </div>
+
+          <div class="text-green text-weight-bolder">시작 가격</div>
+          <q-input
+            type="text"
+            v-model="startPrice"
+            dense
+            outlined
+            color="green"
+            clearable
+            :rules="[(val) => !isNaN(val) || '숫자를 입력해주세요']"
+            input-class="text-right"
+            suffix="₩"
+          />
+          <div class="q-pt-md column q-gutter-sm row justify-center">
+            <q-btn label="경매등록" type="submit" color="green" />
+          </div>
         </div>
       </q-form>
     </div>
