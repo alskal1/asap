@@ -1,6 +1,6 @@
 <template>
-  <div class="q-pa-lg row flex-start justify-center">
-    <q-card flat style="width: 500px" class="q-pa-lg shadow-1">
+  <div class="q-pa-md row flex-start justify-center">
+    <q-card flat style="width: 500px" class="q-pa-md shadow-1">
       <q-card-section>
         <q-form
           @submit.prevent="submitForm(email, name, password, phone, address)"
@@ -23,7 +23,6 @@
                 }
               },
             ]"
-            dense
           />
           <q-input
             color="green"
@@ -33,7 +32,6 @@
             label="닉네임"
             lazy-rules
             :rules="[(val) => !!val || '이름을 입력해주세요.']"
-            dense
           />
 
           <q-input
@@ -53,7 +51,6 @@
                 }
               },
             ]"
-            dense
           />
 
           <q-input
@@ -78,7 +75,6 @@
                 }
               },
             ]"
-            dense
           />
 
           <q-input
@@ -88,7 +84,6 @@
             mask="###-####-####"
             label="전화 번호"
             :rules="[(val) => val.length === 13 || '전화번호를 입력해주세요.']"
-            dense
           />
           <div>
             <q-input
@@ -100,7 +95,6 @@
               @click="search()"
               lazy-rules
               :rules="[(val) => !!val || '우편번호를 입력해주세요.']"
-              dense
             >
               <template v-slot:prepend>
                 <q-icon color="green" name="search" />
@@ -116,7 +110,6 @@
               outlined
               lazy-rules
               :rules="[(val) => !!val || '도로명주소를 입력해주세요.']"
-              dense
             />
             <span id="guide" style="color: #000; display: none"></span>
             <q-input
@@ -127,11 +120,16 @@
               label="상세주소"
               lazy-rules
               :rules="[(val) => !!val || '상세주소를 입력해주세요.']"
-              dense
             />
           </div>
-          <div class="q-pt-md column q-gutter-sm row justify-center">
-            <q-btn style="" label="SIGN UP" type="submit" color="green" />
+          <div class="q-pt-md column q-gutter-lg row justify-center">
+            <q-btn
+              style=""
+              size="lg"
+              label="회원가입"
+              type="submit"
+              color="green"
+            />
           </div>
         </q-form>
       </q-card-section>
