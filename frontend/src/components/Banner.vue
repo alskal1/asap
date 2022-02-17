@@ -11,7 +11,7 @@
       transition-next="slide-left"
       @mouseenter="autoplay = false"
       @mouseleave="autoplay = true"
-      height="30vh"
+      height="30vmin"
       control-color="grey"
     >
       <q-carousel-slide :name="1" img-src="~assets/images/banner1.png" />
