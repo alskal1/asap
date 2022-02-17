@@ -1,7 +1,7 @@
 <template>
   <q-card class="q-pa-md q-mb-lg">
     <q-item>
-      <q-item-section class="">
+      <q-item-section>
         <q-item-label>{{ sellItem.productName }}</q-item-label>
         <q-item-label caption lines="2">판매날짜 : {{ sellDate }}</q-item-label>
 
