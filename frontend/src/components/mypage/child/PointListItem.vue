@@ -6,7 +6,9 @@
         <q-item-label caption lines="2">{{ PointDate }}</q-item-label>
       </q-item-section>
 
-      <q-item-section side class="text-red">CHARGE</q-item-section>
+      <q-item-section side class="text-red">{{
+        pointItem.status
+      }}</q-item-section>
     </q-item>
   </q-card>
 </template>
