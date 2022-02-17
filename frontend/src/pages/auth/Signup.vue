@@ -170,6 +170,7 @@ export default {
         .dialog({
           title: "가입 실패",
           html: true,
+          style: "font-family: pocheon_b",
           message: "아이디가 중복 됩니다.",
           persistent: true,
           ok: "확인",
