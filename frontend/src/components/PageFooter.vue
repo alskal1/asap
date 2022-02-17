@@ -29,7 +29,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .footer {
   width: 100%;
   border: 1px solid #e8eaed;

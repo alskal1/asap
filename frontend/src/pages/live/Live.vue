@@ -1,12 +1,11 @@
 <template>
   <q-page padding>
     <div class="row">
-      <div class="col-8">
-        <q-card class="bg-dark q-pa-lg col-6">
+      <div class="q-pr-sm col-sm-8">
+        <q-card class="col-6">
           <user-video :stream-manager="mainStreamManager"></user-video>
         </q-card>
-        <q-card class="">
-          <!-- <div class="row"> -->
+        <q-card>
           <q-item>
             <q-item-section>
               <div class="text-h5 q-ml-lg">{{ title }}</div>
@@ -69,17 +68,14 @@
             </q-slide-transition>
           </q-card>
         </q-card>
+        <div class="q-pa-sm"></div>
       </div>
-      <div class="q-pa-sm q-ml-md col-3">
-        <div class="col-2">
-          <div>
-            <q-card
-              class="my-card"
-              bordered
-              style="max-height: 400px; width: 400px"
-            >
+      <div class="col-sm-8 col-md-4">
+        <div style="width: 500">
+          <q-item-section class="q-gutter-sm">
+            <q-card class="q-pa-sm">
               <q-card-actions>
-                <q-btn flat color="dark" label="경매 정보" />
+                <q-btn disable flat color="dark" label="경매 정보" />
                 <q-space />
                 <q-btn
                   color="grey"
@@ -93,7 +89,7 @@
               <q-slide-transition>
                 <div v-show="expanded">
                   <q-separator />
-                  <q-card-section class="text-subitle2">
+                  <q-card-section class="q-gutter-sm text-subitle2">
                     <div v-if="currentAuction">
                       상품명 : {{ currentAuction.productName }}
                     </div>
@@ -107,28 +103,73 @@
                 </div>
               </q-slide-transition>
             </q-card>
-          </div>
+
+            <q-card class="q-pa-sm">
+              <q-item>
+                <q-item-section>
+                  <div class="text-h7">
+                    현재가격 : {{ currentAuction.currentPrice }}
+                  </div>
+                </q-item-section>
+                <q-item-section v-if="manage">
+                  <span
+                    ><q-input
+                      outlined
+                      size="sm"
+                      v-model="term"
+                      dense
+                      placeholder="하향단위"
+                    />
+                  </span>
+
+                  <q-btn
+                    class="q-qt-lg"
+                    size="xs"
+                    outline
+                    style="color: green"
+                    label="가격내리기"
+                    @click="sendPriceChangeMessage(this.term)"
+                  />
+                </q-item-section>
+
+                <q-btn
+                  id="winBtn"
+                  v-else
+                  outline
+                  size="xs"
+                  style="color: green"
+                  label="낙찰하기"
+                  @click="winProduct()"
+                />
+              </q-item>
+            </q-card>
+
+            <q-card class="q-pa-sm" style="height: 400px">
+              <div name="chat">
+                <div class="q-pl-sm q-pt-sm">채팅</div>
+                <q-scroll-area ref="chatScroll" style="height: 300px">
+                  <div id="chattings"></div>
+                </q-scroll-area>
+                <div>
+                  <q-input
+                    rounded
+                    outlined
+                    v-model="message"
+                    placeholder="메시지를 입력하세요."
+                  >
+                    <q-btn
+                      flat
+                      round
+                      color="primary"
+                      icon="send"
+                      @click="sendMessage()"
+                    />
+                  </q-input>
+                </div>
+              </div>
+            </q-card>
+          </q-item-section>
         </div>
-        <q-card class="q-mt-sm q-mb-sm" style="width: 400px; padding: 10px">
-          <span>현재 가격 : {{ currentAuction.currentPrice }}</span>
-          <span v-if="manage">
-            <input v-model="term" placeholder="하향단위" />
-            <q-btn
-              outline
-              style="color: green"
-              label="가격내리기"
-              @click="sendPriceChangeMessage(this.term)"
-            />
-          </span>
-          <q-btn
-            id="winBtn"
-            v-else
-            outline
-            style="color: green"
-            label="낙찰하기"
-            @click="winProduct()"
-          />
-        </q-card>
 
         <q-dialog v-model="streamEndDialog" no-esc-dismiss no-backdrop-dismiss>
           <q-card>
@@ -259,33 +300,6 @@
             </q-card-section>
           </q-card>
         </q-dialog>
-
-        <div>
-          <q-card style="width: 400px; height: 400px; padding: 10px">
-            <div name="chat">
-              <div>채팅</div>
-              <q-scroll-area ref="chatScroll" style="height: 300px">
-                <div id="chattings"></div>
-              </q-scroll-area>
-              <div>
-                <q-input
-                  rounded
-                  outlined
-                  v-model="message"
-                  placeholder="메시지를 입력하세요."
-                >
-                  <q-btn
-                    flat
-                    round
-                    color="primary"
-                    icon="send"
-                    @click="sendMessage()"
-                  />
-                </q-input>
-              </div>
-            </div>
-          </q-card>
-        </div>
       </div>
     </div>
   </q-page>
