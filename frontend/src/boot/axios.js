@@ -43,12 +43,12 @@ export default boot(({ router, store, app }) => {
   app.config.globalProperties.$ovapi = ovapi;
 
   router.beforeEach(async (to, from, next) => {
-    const userInfo = store.state.user.userInfo;
+    const jwt = sessionStorage.getItem("jwt");
     if (
       to.matched.some(function (routeInfo) {
         return routeInfo.meta.authRequired;
       }) &&
-      !userInfo
+      !jwt
     ) {
       Dialog.create({
         title: "<span class='text-h6 '>권한</span>",
