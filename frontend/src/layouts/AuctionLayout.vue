@@ -89,7 +89,11 @@
     </q-drawer>
 
     <q-page-container>
-      <q-dialog v-if="auctionDialog" v-model="auctionDialog">
+      <q-dialog
+        style="font-family: pocheon_b"
+        v-if="auctionDialog"
+        v-model="auctionDialog"
+      >
         <q-card style="background-color: white">
           <div class="q-pa-md q-ml-sm text-h6">경매 추가</div>
 
@@ -97,14 +101,22 @@
         </q-card>
       </q-dialog>
 
-      <q-dialog v-if="auctionListDialog" v-model="auctionListDialog">
+      <q-dialog
+        style="font-family: pocheon_b"
+        v-if="auctionListDialog"
+        v-model="auctionListDialog"
+      >
         <q-card style="background-color: white">
           <auction-list></auction-list>
         </q-card>
       </q-dialog>
 
-      <q-dialog v-if="PointChargingDialog" v-model="PointChargingDialog">
-        <q-card style="background-color: white; width: 800px">
+      <q-dialog
+        style="font-family: pocheon_b"
+        v-if="PointChargingDialog"
+        v-model="PointChargingDialog"
+      >
+        <q-card style="background-color: white">
           <payment-form></payment-form>
         </q-card>
       </q-dialog>
