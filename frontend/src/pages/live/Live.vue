@@ -191,19 +191,6 @@
           </q-card>
         </q-dialog>
 
-        <q-dialog v-model="reloadEndDialog">
-          <q-card>
-            <q-card-section class="row items-center no-wrap">
-              <div>
-                <div class="text-weight-bold">
-                  새로고침으로 인해 방송이 종료되었습니다.
-                </div>
-                <q-btn @click="leaveSession()">OK</q-btn>
-              </div>
-            </q-card-section>
-          </q-card>
-        </q-dialog>
-
         <div>
           <q-card style="width: 400px; height: 400px; padding: 10px">
             <div name="chat">
@@ -280,7 +267,6 @@ export default {
       auctionNotFound: false,
       pointLessDialog: false,
       priceLessDialog: false,
-      reloadEndDialog: false,
       auctionEndDialog: false,
       selectAuctionDialog: false,
       sellerId: "",
