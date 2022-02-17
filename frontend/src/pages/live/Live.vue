@@ -129,8 +129,12 @@
           <q-card>
             <q-card-section class="row items-center no-wrap">
               <div>
-                <div class="text-weight-bold">방송이 종료되었습니다.</div>
-                <q-btn @click="leaveSession()">OK</q-btn>
+                <div class="text-weight-bold q-mb-md">
+                  방송이 종료되었습니다.
+                </div>
+                <div class="text-right">
+                  <q-btn @click="leaveSession()">OK</q-btn>
+                </div>
               </div>
             </q-card-section>
           </q-card>
@@ -140,10 +144,12 @@
           <q-card>
             <q-card-section class="row items-center no-wrap">
               <div>
-                <div class="text-weight-bold">
+                <div class="text-weight-bold q-mb-md">
                   카메라 리소스가 사용중이거나 존재하지 않습니다.
                 </div>
-                <q-btn @click="leaveSession()">OK</q-btn>
+                <div class="text-right">
+                  <q-btn @click="leaveSession()">OK</q-btn>
+                </div>
               </div>
             </q-card-section>
           </q-card>
@@ -153,8 +159,12 @@
           <q-card>
             <q-card-section class="row items-center no-wrap">
               <div>
-                <div class="text-weight-bold">경매 정보를 선택해주세요.</div>
-                <q-btn @click="closeDialog()">OK</q-btn>
+                <div class="text-weight-bold q-mb-md">
+                  경매 정보를 선택해주세요.
+                </div>
+                <div class="text-right">
+                  <q-btn @click="closeDialog()">OK</q-btn>
+                </div>
               </div>
             </q-card-section>
           </q-card>
@@ -164,8 +174,27 @@
           <q-card>
             <q-card-section class="row items-center no-wrap">
               <div>
-                <div class="text-weight-bold">포인트 충전 후 이용해주세요.</div>
-                <q-btn @click="closeDialog()">OK</q-btn>
+                <div class="text-weight-bold q-mb-md">
+                  포인트 충전 후 이용해주세요.
+                </div>
+                <div class="text-right">
+                  <q-btn @click="closeDialog()">OK</q-btn>
+                </div>
+              </div>
+            </q-card-section>
+          </q-card>
+        </q-dialog>
+
+        <q-dialog v-model="noAuctionDialog">
+          <q-card>
+            <q-card-section class="row items-center no-wrap">
+              <div>
+                <div class="text-weight-bold q-mb-md">
+                  진행중인 경매 정보가 없습니다.
+                </div>
+                <div class="text-right">
+                  <q-btn @click="closeDialog()">OK</q-btn>
+                </div>
               </div>
             </q-card-section>
           </q-card>
@@ -175,10 +204,12 @@
           <q-card>
             <q-card-section class="row items-center no-wrap">
               <div>
-                <div class="text-weight-bold">
+                <div class="text-weight-bold q-mb-md">
                   현재가보다 낮은 가격을 설정할 수 없습니다.
                 </div>
-                <q-btn @click="closeDialog()">OK</q-btn>
+                <div class="text-right">
+                  <q-btn @click="closeDialog()">OK</q-btn>
+                </div>
               </div>
             </q-card-section>
           </q-card>
@@ -188,10 +219,12 @@
           <q-card>
             <q-card-section class="row items-center no-wrap">
               <div>
-                <div class="text-weight-bold">
+                <div class="text-weight-bold q-mb-md">
                   해당 경매 물품이 판매되었습니다.
                 </div>
-                <q-btn @click="refreshAuction()">OK</q-btn>
+                <div class="text-right">
+                  <q-btn @click="refreshAuction()">OK</q-btn>
+                </div>
               </div>
             </q-card-section>
           </q-card>
@@ -201,8 +234,10 @@
           <q-card>
             <q-card-section class="row items-center no-wrap">
               <div>
-                <div class="text-weight-bold">낙찰 축하합니다!!!</div>
-                <q-btn @click="closeWinDialog()">OK</q-btn>
+                <div class="text-weight-bold q-mb-md">낙찰 축하합니다!!!</div>
+                <div class="text-right">
+                  <q-btn @click="closeWinDialog()">OK</q-btn>
+                </div>
               </div>
             </q-card-section>
           </q-card>
@@ -297,6 +332,7 @@ export default {
       streamEndDialog: false,
       pointLessDialog: false,
       priceLessDialog: false,
+      noAuctionDialog: false,
       auctionEndDialog: false,
       selectAuctionDialog: false,
       sellerId: "",
@@ -530,10 +566,6 @@ export default {
           });
       });
 
-      // window.addEventListener("beforeunload", (event) => {
-      //   event.preventDefault();
-      //   event.returnValue = "";
-      // });
       window.addEventListener("beforeunload", (event) => {
         event.preventDefault();
 
@@ -797,7 +829,15 @@ export default {
             console.log(error);
           });
       } else {
-        this.pointLessDialog = true;
+        if (
+          this.currentAuction.currentPrice == "" ||
+          this.currentAuction.currentPrice == undefined ||
+          this.currentAuction.currentPrice == null
+        ) {
+          this.noAuctionDialog = true;
+        } else {
+          this.pointLessDialog = true;
+        }
       }
     },
 
@@ -806,6 +846,7 @@ export default {
     },
 
     closeDialog() {
+      this.noAuctionDialog = false;
       this.pointLessDialog = false;
       this.priceLessDialog = false;
       this.selectAuctionDialog = false;

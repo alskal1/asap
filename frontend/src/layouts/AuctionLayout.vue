@@ -15,27 +15,6 @@
         </q-btn>
         <q-space />
 
-        <q-input
-          dense
-          outlined
-          color="green"
-          v-model="search"
-          placeholder="Search"
-          style="width: 30%"
-          v-if="$q.screen.gt.xs"
-        >
-          <template v-slot:prepend>
-            <q-icon color="green" v-if="search === ''" name="search" />
-            <q-icon
-              color="green"
-              v-else
-              name="clear"
-              class="cursor-pointer"
-              @click="search = ''"
-            />
-          </template>
-        </q-input>
-
         <q-space />
         <div v-if="isLogin" class="q-gutter-sm row items-center no-wrap">
           <q-btn
@@ -48,30 +27,9 @@
           >
             <q-tooltip>현재 포인트: {{ currentPointInfo }}</q-tooltip>
           </q-btn>
-          <q-btn to="/room" round dense flat color="grey-8" icon="video_call">
-            <q-tooltip>라이브 경매 생성</q-tooltip>
-          </q-btn>
-          <q-btn @click="logout" round dense flat color="grey-8" icon="logout">
-            <q-tooltip>로그아웃</q-tooltip>
-          </q-btn>
-          <q-btn to="/member" round flat>
+          <q-btn round flat>
             <q-avatar size="md" icon="account_circle"> </q-avatar>
             <q-tooltip>{{ userInfo.name }}</q-tooltip>
-          </q-btn>
-        </div>
-        <div v-else class="q-gutter-sm row items-center no-wrap">
-          <q-btn
-            to="/auth/login"
-            round
-            dense
-            flat
-            color="grey-8"
-            icon="video_call"
-          >
-            <q-tooltip>라이브 경매 생성</q-tooltip>
-          </q-btn>
-          <q-btn to="/auth/login" round dense flat color="grey-8" icon="login">
-            <q-tooltip>로그인</q-tooltip>
           </q-btn>
         </div>
       </q-toolbar>
@@ -123,7 +81,7 @@
               <q-icon name="attach_money" />
             </q-item-section>
             <q-item-section>
-              <q-item-label>경매 충전</q-item-label>
+              <q-item-label>포인트 충전</q-item-label>
             </q-item-section>
           </q-item>
         </div>
@@ -162,7 +120,6 @@ import AuctionList from "components/auction/AuctionList";
 import { computed, defineComponent, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import { route } from "quasar/wrappers";
 
 export default defineComponent({
   name: "MainLayout",
@@ -176,7 +133,6 @@ export default defineComponent({
   },
   setup() {
     const $store = useStore();
-    const router = useRouter();
 
     const isLogin = ref(sessionStorage.getItem("jwt"));
     const userInfo = ref({});
@@ -193,27 +149,17 @@ export default defineComponent({
       currentPointInfo.value = currentPoint;
     });
 
-    const logout = () => {
-      sessionStorage.removeItem("jwt");
-      $store.commit("user/setUserInfo", { userInfo: {} });
-      isLogin.value = sessionStorage.getItem("jwt");
-      location.reload();
-      router.push("/");
-    };
     const reLoad = () => {
       location.replace("/");
     };
 
     const leftDrawerOpen = ref(false);
-    const search = ref("");
     return {
       isLogin,
       userInfo,
       manageMode,
-      logout,
       leftDrawerOpen,
       currentPointInfo,
-      search,
       reLoad,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
