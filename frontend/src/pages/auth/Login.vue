@@ -3,13 +3,21 @@
     <q-card square bordered style="width: 500px" class="q-pa-md shadow-1">
       <q-card-section class="q-px-md">
         <q-form class="q-gutter-lg">
-          <q-input square filled v-model="email" type="email" label="아이디" />
+          <q-input
+            square
+            filled
+            v-model="email"
+            type="email"
+            label="아이디"
+            @keyup.enter="login(email, password)"
+          />
           <q-input
             square
             filled
             v-model="password"
             type="password"
             label="비밀번호"
+            @keyup.enter="login(email, password)"
           />
         </q-form>
       </q-card-section>
