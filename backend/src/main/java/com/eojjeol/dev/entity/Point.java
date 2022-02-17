@@ -17,7 +17,6 @@ public class Point extends BaseTimeEntity{
     @Column(name = "point_id")
     private Long id;
 
-    @Enumerated(EnumType.STRING)
     private PointStatus status;
 
     private Integer price;
