@@ -51,9 +51,10 @@ export default boot(({ router, store, app }) => {
       !jwt
     ) {
       Dialog.create({
-        title: "<span class='text-h6 '>권한</span>",
+        title: "<span  class='text-h6' >권한</span>",
         style: "shadow-box",
         html: true,
+        style: "font-family: pocheon_b",
         message:
           "<span class='text-h7 text-weight-medium'>로그인 후 이용해주세요.</span>",
         color: "green",

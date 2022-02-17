@@ -48,7 +48,7 @@ export default {
         .dialog({
           title: `${data.productName}`,
           html: true,
-
+          style: "font-family: pocheon_b",
           message: ` <div>배송 상태 : ${data.deliveryState}</div> <div>최종 낙찰가 : ${data.finalPrice}</div> <div>판매 날짜 : ${Infodate}</div>`,
           ok: "닫기",
           color: "red",
