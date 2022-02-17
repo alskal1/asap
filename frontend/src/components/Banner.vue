@@ -1,34 +1,22 @@
 <template>
-  <div class="q-pa-md">
+  <div>
     <q-carousel
       animated
       v-model="slide"
       navigation
       infinite
-      height="250px"
-      :autoplay="autoplay"
       arrows
+      :autoplay="autoplay"
       transition-prev="slide-right"
       transition-next="slide-left"
       @mouseenter="autoplay = false"
       @mouseleave="autoplay = true"
+      height="150px"
+      control-color="grey"
     >
-      <q-carousel-slide
-        :name="1"
-        img-src="https://cdn.quasar.dev/img/mountains.jpg"
-      />
-      <q-carousel-slide
-        :name="2"
-        img-src="https://cdn.quasar.dev/img/parallax1.jpg"
-      />
-      <q-carousel-slide
-        :name="3"
-        img-src="https://cdn.quasar.dev/img/parallax2.jpg"
-      />
-      <q-carousel-slide
-        :name="4"
-        img-src="https://cdn.quasar.dev/img/quasar.jpg"
-      />
+      <q-carousel-slide :name="1" img-src="../images/banner1.png" />
+      <q-carousel-slide :name="2" img-src="../images/banner2.png" />
+      <q-carousel-slide :name="3" img-src="../images/banner3.png" />
     </q-carousel>
   </div>
 </template>
@@ -41,7 +29,7 @@ export default {
   setup() {
     return {
       slide: ref(1),
-      autoplay: ref(3000),
+      autoplay: ref(2000),
     };
   },
 };
