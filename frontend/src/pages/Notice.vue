@@ -2,14 +2,24 @@
   <q-page padding>
     <div class="row flex justify-center">
       <!-- <q-icon name="notice" /> -->
-      <div class="q-pa-md" style="width: 1500px">
+      <div class="col-12 q-pa-md">
         <q-table
           title="공지사항"
           class="text-green text-weight-bold"
           :rows="rows"
           :columns="columns"
           row-key="name"
+          v-model:pagination="pagination"
+          hide-pagination
         />
+        <div class="row justify-center q-mt-md">
+          <q-pagination
+            v-model="pagination.page"
+            color="green-4"
+            :max="pagesNumber"
+            size="sm"
+          />
+        </div>
       </div>
       <!-- <q-img
           class="col-12"
@@ -21,27 +31,12 @@
           <div class="absolute-top text-center"></div>
         </q-img> -->
     </div>
-    <div class="q-gutter-md">
-      <div class="row flex justify-center">
-        <q-btn class="text-white col-2" color="green" size="xl" @click="glad"
-          >환영합니다!</q-btn
-        >
-      </div>
-      <div class="row flex justify-center">
-        <q-btn class="text-white col-2" color="pink" size="xl" @click="love"
-          >핑크핑크</q-btn
-        >
-      </div>
-      <div class="row flex justify-center">
-        <q-btn class="text-white col-2" color="grey" size="xl" @click="stop"
-          >멈추기</q-btn
-        >
-      </div>
-    </div>
   </q-page>
 </template>
 
 <script>
+import { ref, computed } from "vue";
+
 const columns = [
   {
     name: "num",
@@ -97,31 +92,22 @@ const rows = [
 export default {
   name: "Notice",
   setup() {
+    const pagination = ref({
+      sortBy: "desc",
+      descending: false,
+      page: 1,
+      rowsPerPage: 5,
+      // rowsNumber: xx if getting data from a server
+    });
     return {
+      pagination,
       columns,
       rows,
+
+      pagesNumber: computed(() =>
+        Math.ceil(rows.length / pagination.value.rowsPerPage)
+      ),
     };
-  },
-  methods: {
-    glad() {
-      this.$confetti.start();
-    },
-    stop() {
-      this.$confetti.stop();
-    },
-    love() {
-      this.$confetti.update({
-        particles: [
-          {
-            type: "heart",
-          },
-          {
-            type: "circle",
-          },
-        ],
-        defaultColors: ["red", "pink", "#ba0000"],
-      });
-    },
   },
 };
 </script>
