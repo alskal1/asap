@@ -491,6 +491,7 @@ export default {
           productName: "",
           origin: "",
         };
+        this.$store.dispatch("user/getUserInfo");
         this.setNoAuction(nullAuction);
       });
 
@@ -626,9 +627,11 @@ export default {
 
       this.session.on("signal:win-auction", (event) => {
         if (this.$store.state.user.userInfo.email == event.data) {
+          this.$store.dispatch("user/getUserInfo");
           this.winDialog = true;
           this.glad();
         } else {
+          this.$store.dispatch("user/getUserInfo");
           this.auctionEndDialog = true;
           setTimeout(() => {
             this.auctionEndDialog = false;
