@@ -59,7 +59,7 @@
 
     <q-step :name="2" title="결제 진행" icon="paid" :done="done2">
       <div class="row flex justify-center items-center">
-        <h2>결제 진행 중 입니다.</h2>
+        <h3>결제 진행 중 입니다.</h3>
         <div>
           <q-circular-progress
             indeterminate

@@ -50,16 +50,7 @@ public class Member {
     private Set<MemberAuthority> memberAuthorities = new HashSet<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<ChargeHistory> chargeHistoryList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Notice> noticeList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<Qna> qnaList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<QnaComment> qnaCommentList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Point> pointList = new ArrayList<>();

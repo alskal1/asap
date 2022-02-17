@@ -18,7 +18,7 @@
         <q-space />
         <div v-if="isLogin" class="q-gutter-sm row items-center no-wrap">
           <q-btn
-            to="/payment"
+            @click="ChangePointCharging()"
             round
             dense
             flat

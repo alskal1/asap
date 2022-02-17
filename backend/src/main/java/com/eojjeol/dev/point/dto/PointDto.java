@@ -20,6 +20,8 @@ public class PointDto extends BaseTimeEntity {
 
     private String sellerId;
 
+    private PointStatus status;
+
     private Integer price;
 
     private LocalDateTime date;
@@ -30,6 +32,7 @@ public class PointDto extends BaseTimeEntity {
         return PointDto.builder()
                 .id(point.getId())
                 .date(point.getCreatedDate())
+                .status(point.getStatus())
                 .price(point.getPrice())
                 .build();
     }
