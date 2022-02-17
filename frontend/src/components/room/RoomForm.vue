@@ -24,8 +24,15 @@
                 <q-card>
                   <q-img :src="preview" :ratio="4 / 3" />
                   <q-card-section>
-                    <div class="text-h6">{{ title }}</div>
-                    <div class="text-subtitle2">{{ description }}</div>
+                    <div class="text-h6">
+                      {{
+                        title.length > 15 ? `${title.slice(0, 15)}...` : title
+                      }}
+                    </div>
+                    <div class="text-subtitle2">
+                      <q-avatar size="md" icon="account_circle"> </q-avatar
+                      >{{ userInfo.email }}
+                    </div>
                   </q-card-section>
                 </q-card>
               </div>
@@ -42,8 +49,8 @@
               outlined
               color="green"
               :rules="[
-                ((val) => !!val || '방송 제목을 입력해주세요.') ||
-                  ((val) => val.length <= 100 || '제목이 너무 깁니다.'),
+                (val) => !!val || '방송 제목을 입력해주세요.',
+                (val) => val.length <= 30 || '제목이 너무 깁니다.',
               ]"
               clearable
             />
@@ -57,8 +64,8 @@
               outlined
               color="green"
               :rules="[
-                ((val) => !!val || '방송 설명을 입력해주세요') ||
-                  ((val) => val.length <= 500 || '설명이 너무 깁니다.'),
+                (val) => !!val || '방송 설명을 입력해주세요',
+                (val) => val.length <= 500 || '설명이 너무 깁니다.',
               ]"
               clearable
             />

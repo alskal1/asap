@@ -3,8 +3,16 @@
     <q-card class="scale" style="max-width: 400px">
       <q-img :src="thumbnail" loading="lazy" :ratio="4 / 3" />
       <q-card-section>
-        <div class="text-h6">{{ room.title }}</div>
-        <div class="text-subtitle2">{{ room.description }}</div>
+        <div class="text-h6">
+          {{
+            room.title.length > 15
+              ? `${room.title.slice(0, 15)}...`
+              : room.title
+          }}
+        </div>
+        <div class="text-subtitle2">
+          <q-avatar size="md" icon="account_circle"> </q-avatar>{{ email }}
+        </div>
       </q-card-section>
     </q-card>
   </div>
@@ -12,6 +20,7 @@
 
 <script>
 import { ref } from "@vue/reactivity";
+import { api } from "boot/axios";
 import { thumbnailsRef } from "boot/firebaseConnection";
 import { getDownloadURL } from "@firebase/storage";
 
@@ -35,8 +44,13 @@ export default {
           "https://img.freepik.com/free-vector/antique-auction-isometric-composition_1284-22062.jpg";
       });
 
+    const email = ref(
+      props.room.sessionId.replace("-", "@").replace(/-/g, ".")
+    );
+
     return {
       thumbnail,
+      email,
     };
   },
 };
