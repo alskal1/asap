@@ -1,6 +1,6 @@
 package com.eojjeol.dev.auction.repository;
 
-import com.eojjeol.dev.entity.auction.Auction;
+import com.eojjeol.dev.entity.Auction;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

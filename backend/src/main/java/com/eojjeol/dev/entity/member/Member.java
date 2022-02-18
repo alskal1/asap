@@ -1,8 +1,7 @@
 package com.eojjeol.dev.entity.member;
 
 import com.eojjeol.dev.entity.*;
-import com.eojjeol.dev.entity.auction.Auction;
-import com.eojjeol.dev.entity.auction.AuctionViewer;
+import com.eojjeol.dev.entity.Auction;
 import lombok.*;
 
 import javax.persistence.*;
@@ -36,13 +35,13 @@ public class Member {
     @Column(length = 50)
     private String name;
 
+    @Embedded
+    private Address address;
+
     private Integer point;
 
-    @OneToOne(mappedBy = "member")
-    private Room room;
-
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<WinHistory> winHistoryList = new ArrayList<>();
+    private List<History> historyList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Auction> auctionList = new ArrayList<>();
@@ -51,19 +50,8 @@ public class Member {
     private Set<MemberAuthority> memberAuthorities = new HashSet<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<AuctionViewer> auctionViewerList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<ChargeHistory> chargeHistoryList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Notice> noticeList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<Qna> qnaList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<QnaComment> qnaCommentList = new ArrayList<>();
-
-
+    private List<Point> pointList = new ArrayList<>();
 }
